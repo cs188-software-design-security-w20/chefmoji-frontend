@@ -18,9 +18,17 @@
 	const socket = io('http://localhost:5000');
 
 	socket.on('connect', () => {
-		  console.log(socket.id);
-		  socket.emit('game');
+		console.log(socket.id);
 	});
+
+	socket.on('accepting-connections', () => {
+		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
+		socket.emit('join-req', new Map([['id', '1aLc90']]));
+	});
+
+	socket.on('tick', (data) => {
+		console.log(data);
+	})
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
