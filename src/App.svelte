@@ -13,6 +13,15 @@
 </style>
 
 <script>	
+	import io from '../node_modules/socket.io-client/dist/socket.io.js';
+
+	const socket = io('http://localhost:5000');
+
+	socket.on('connect', () => {
+		  console.log(socket.id);
+		  socket.emit('game');
+	});
+
 	const WALL = '#000';
 	const TABLE = '#ecb476';
 	const FLOOR = '#fff';
@@ -104,33 +113,3 @@
 		</tr>
 	{/each}
 </table>
-<!-- <script>
-	export let name;
-</script>
-
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style> -->
