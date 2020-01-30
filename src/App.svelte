@@ -16,6 +16,23 @@
 </style>
 
 <script>	
+	import io from '../node_modules/socket.io-client/dist/socket.io.js';
+
+	const socket = io('http://localhost:5000');
+
+	socket.on('connect', () => {
+		console.log(socket.id);
+	});
+
+	socket.on('accepting-connections', () => {
+		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
+		socket.emit('join-req', new Map([['id', '1aLc90']]));
+	});
+
+	socket.on('tick', (data) => {
+		console.log(data);
+	})
+
 	const WALL = '#000';
 	const TABLE = '#ecb476';
 	const FLOOR = '#fff';
@@ -108,4 +125,8 @@
 			{/each}
 		</tr>
 	{/each}
+<<<<<<< HEAD
 </table>
+=======
+</table>
+>>>>>>> 1ce1162699a03cff7e290df8aa7cff1413d916c2
