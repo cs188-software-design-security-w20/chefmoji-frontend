@@ -125,8 +125,4 @@
 			{/each}
 		</tr>
 	{/each}
-<<<<<<< HEAD
 </table>
-=======
-</table>
->>>>>>> 1ce1162699a03cff7e290df8aa7cff1413d916c2
