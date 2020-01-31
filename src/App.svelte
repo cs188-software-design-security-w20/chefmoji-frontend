@@ -20,17 +20,24 @@
 
 	const socket = io('http://localhost:5000');
 
+	const TEST_GAME_SESSION = '1aLc90';
+
 	socket.on('connect', () => {
 		console.log(socket.id);
 	});
 
 	socket.on('accepting-connections', () => {
 		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
-		socket.emit('join-req', new Map([['id', '1aLc90']]));
+		socket.emit('join-req', new Map([['id', TEST_GAME_SESSION]]));
 	});
 
 	socket.on('tick', (data) => {
-		console.log(data);
+		if (data.map){
+			data.map.forEach(row => {
+			console.log(row);
+		});
+			map = data.map;
+		}
 	})
 
 	const WALL = '#000';
@@ -62,26 +69,50 @@
 			this.emoji = emoji;
 		}
 	}
-	
-	let player = new Player(2, 3, '🧠');
-	movePlayer(player);
-	
-	let key;
 
 	function handleKeydown(event) {
-		key = event.key;
-		// Purely to prevent well meaning actors to unnecessarily key events across the connection
+		let key = event.key;
+		let game_id = TEST_GAME_SESSION;
+		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
 		if(validKey(key)){
-			socket.emit('key', key, game_id);
+			console.log(key);
+			socket.emit('keypress', key, game_id);
 		}
 	}
 
 	function validKey(key){
 		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
-	
-	function movePlayer(p) {
-		map[p.r][p.c].emoji = p.emoji;
+
+	function cellToColor(cell){
+		switch (cell){
+			case 'W':
+				return WALL;
+			case 'F':
+				return FRIDGE;
+			case 'T':
+				return TABLE;
+			case ' ':
+				return FLOOR;
+		}
+	}
+
+	function cellToEmoji(cell){
+		switch (cell){
+			case 'r':
+				return '🚰'
+			case 'T':
+			case ' ':
+			case 'W':
+			case 'F':
+				return ' '
+			case '0':
+				return '♨️'
+			case 'K':
+				return '🔪'
+			default:
+				return cell
+		}
 	}
 	
 </script>
@@ -92,9 +123,9 @@
 	{#each map as row}
 		<tr>
 			{#each row as cell}
-				<td style='background-color: {cell.type}'>
-					{#if cell.emoji}
-						{cell.emoji}
+				<td style='background-color: {cellToColor(cell)}'>
+					{#if cell}
+						{cellToEmoji(cell)}
 					{/if}
 				</td>
 			{/each}
