@@ -67,39 +67,14 @@
 
 	function handleKeydown(event) {
 		key = event.key;
-		if (key == 'w' || key == 
-				'ArrowUp') { 
-			// UP
-			if (map[player.r - 1][player.c].type == FLOOR) {
-				map[player.r][player.c].emoji = '';
-				player.r -= 1;
-				movePlayer(player)
-			}
-		} else if (key == 'a' || key == 
-				'ArrowLeft') {
-			// LEFT
-			if (map[player.r][player.c - 1].type == FLOOR) {
-				map[player.r][player.c].emoji = '';
-				player.c -= 1;
-				movePlayer(player)
-			}
-		} else if (key == 's' || key == 
-				'ArrowDown') {
-			// DOWN
-			if (map[player.r + 1][player.c].type == FLOOR) {
-				map[player.r][player.c].emoji = '';
-				player.r += 1;
-				movePlayer(player)
-			}
-		} else if (key == 'd' || key == 
-				'ArrowRight') {
-			// RIGHT
-			if (map[player.r][player.c + 1].type == FLOOR) {
-				map[player.r][player.c].emoji = '';
-				player.c += 1;
-				movePlayer(player)
-			}
+		// Purely to prevent well meaning actors to unnecessarily key events across the connection
+		if(validKey(key)){
+			socket.emit('key', key, game_id);
 		}
+	}
+
+	function validKey(key){
+		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
 	
 	function movePlayer(p) {
