@@ -1,8 +1,11 @@
 <style>
+	:root {
+		--main-unit-dim: 40px;
+	}
 	td {
-		width: 40px;
-		line-height: 40px;
-		height: 40px;
+		width: var(--main-unit-dim);
+		line-height: var(--main-unit-dim);
+		height: var(--main-unit-dim);
 		font-size: 36px;
 		padding: 0;
 		margin: 0;
@@ -37,19 +40,19 @@
 	
 
 	let map = [
-		[{emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '🧈', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '🥚', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '🚰', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '♨️', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '🔪', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '🥛', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '🌾', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '🥕', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '🧀', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '🍚', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '🥬', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '➡️', type: TABLE}, {emoji: '➡️', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '🍅', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '🥩', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '🍞', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '🐟', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '🧅', type: TABLE}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: FLOOR}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '🐖', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '', type: FRIDGE}, {emoji: '', type: WALL}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '🥔', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '🧄', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '🍽️', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: TABLE}, {emoji: '', type: WALL}],
-		[{emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}, {emoji: '', type: WALL}]
+		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {emoji: '🧈', type: FRIDGE}, {type: FRIDGE}, {emoji: '🥚', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🚰', type: TABLE}, {type: TABLE}, {emoji: '♨️', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🔪', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥛', type: FRIDGE}, {type: WALL}, {emoji: '🌾', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {emoji: '🥕', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🧀', type: FRIDGE}, {type: WALL}, {emoji: '🍚', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {emoji: '🥬', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '➡️', type: TABLE}, {emoji: '➡️', type: WALL}],
+		[{type: WALL}, {emoji: '🍅', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥩', type: FRIDGE}, {type: WALL}, {emoji: '🍞', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🐟', type: FRIDGE}, {type: WALL}, {emoji: '🧅', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {emoji: '🐖', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🥔', type: TABLE}, {type: TABLE}, {emoji: '🧄', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🍽️', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
+		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}]
 	];
 	
 	class Player {
@@ -88,9 +91,11 @@
 <table>
 	{#each map as row}
 		<tr>
-			{#each row as {emoji, type}}
-				<td style='background-color: {type}'>
-					{emoji}
+			{#each row as cell}
+				<td style='background-color: {cell.type}'>
+					{#if cell.emoji}
+						{cell.emoji}
+					{/if}
 				</td>
 			{/each}
 		</tr>
