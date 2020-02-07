@@ -33,7 +33,7 @@
             return;
         }
 
-        // check with backend, allow or deny privileges
+        // consult backend, allow or deny privileges
 
         const grant_access = 1; // replace this with backend check
 
@@ -52,38 +52,45 @@
 </script>
 
 <main>
-
 	<h1> Chefmoji </h1>
 	<p id="hiddentext">  </p>
+
 	<p> playerid: </p>
 	<label>
         <input type="text" bind:value={playerid}>
     </label>
 	<br>
+
 	<p> password: </p>
 	<label> <!-- ignore warnings in WebStorms, this input block works -->
         <input type="password" bind:value={password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
     </label>
 	<br>
-	<button on:click={submit_signup}> sign in </button> <!-- add .landbtn ids -->
-	<button on:click={submit_login}> log in </button> <!-- add .landbtn ids -->
+
+	<form action="?" method="POST">
+          <div id="recaptcha" class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- WILL NEED PROPER SITE KEY LATER -->
+    </form>
+    <br>
+
+	<button id="landbtn" on:click={submit_signup}> sign in </button>
+	<button id="landbtn" on:click={submit_login}> log in </button>
 </main>
-
-
 
 <svelte:head>
   <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </svelte:head>
 
 <style>
 	main {
-		text-align: center;
+		text-align: left;
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
 	}
 
 	h1 {
+	    text-align: left;
 		color: #003eee;
 		text-transform: lowercase;
 		font-size: 4em;
@@ -92,16 +99,18 @@
 	}
 
 	p {
+	    text-align: left;
 		color: #000000;
 		text-transform: lowercase;
 		font: 'Quicksand';
 	}
 
 	input {
+	    text-align: left;
 		font: 'Quicksand';
 	}
 
-	button{
+	#landbtn {
         font : 'Quicksand';
         padding: 0.15rem 0.5rem;
         background-color: #AEC2DC;
@@ -109,7 +118,7 @@
         color: black; /* font color */
     }
 
-    button:hover {
+    #landbtn:hover {
       background-color: #7E9DC7; /* Green */
       color: white;
     }
