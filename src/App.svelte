@@ -18,20 +18,31 @@
 <script>	
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
-	const socket = io('http://localhost:5000');
+	const socket = io('http://localhost:8080', { transports: ['websocket'] });
+	console.log("Constructed.");
 
 	const TEST_GAME_SESSION = '1aLc90';
+	let uid = '';
+	let game_id = '';
+	let ticked = false;
 
-	socket.on('connect', () => {
-		console.log(socket.id);
+	socket.on('issue-id', (issued_id) => {
+		console.log("Issued id: " + issued_id);
+		uid = issued_id;
 	});
 
-	socket.on('accepting-connections', () => {
-		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
-		socket.emit('join-req', new Map([['id', TEST_GAME_SESSION]]));
+	socket.on('session-init', (generated_game_id) => {
+		game_id = generated_game_id;
+		console.log("GAME ID: " + game_id);
 	});
+
+	// socket.on('accepting-connections', () => {
+	// 	console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
+	// 	socket.emit('join-game-with-id', game_id, uid);
+	// });
 
 	socket.on('tick', (data) => {
+		ticked = true;
 		if (data.map){
 			data.map.forEach(row => {
 			console.log(row);
@@ -45,22 +56,7 @@
 	const FLOOR = '#fff';
 	const FRIDGE = '#75c3d1';
 	
-
-	let map = [
-		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {emoji: '🧈', type: FRIDGE}, {type: FRIDGE}, {emoji: '🥚', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🚰', type: TABLE}, {type: TABLE}, {emoji: '♨️', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🔪', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥛', type: FRIDGE}, {type: WALL}, {emoji: '🌾', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {emoji: '🥕', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🧀', type: FRIDGE}, {type: WALL}, {emoji: '🍚', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {emoji: '🥬', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '➡️', type: TABLE}, {emoji: '➡️', type: WALL}],
-		[{type: WALL}, {emoji: '🍅', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥩', type: FRIDGE}, {type: WALL}, {emoji: '🍞', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🐟', type: FRIDGE}, {type: WALL}, {emoji: '🧅', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {emoji: '🐖', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🥔', type: TABLE}, {type: TABLE}, {emoji: '🧄', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🍽️', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}]
-	];
+	let map;
 	
 	class Player {
 		constructor(r, c, emoji) {
@@ -84,6 +80,7 @@
 		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
 
+	// These cell functions are temporary logic as we figure out how to implement protobuf readings in JS
 	function cellToColor(cell){
 		switch (cell){
 			case 'W':
@@ -114,21 +111,37 @@
 				return cell
 		}
 	}
+
+	function playGame(){
+		socket.emit('play', uid, game_id);
+		ticked = true;
+	}
 	
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
 
-<table>
-	{#each map as row}
-		<tr>
-			{#each row as cell}
-				<td style='background-color: {cellToColor(cell)}'>
-					{#if cell}
-						{cellToEmoji(cell)}
-					{/if}
-				</td>
-			{/each}
-		</tr>
-	{/each}
-</table>
+<h1>Chefmoji!</h1>
+{#if (uid)}
+<h2>With id: {uid}</h2>
+{/if}
+
+{#if (!ticked)}
+	<button on:click={playGame}>Play Game!</button>
+{/if}
+
+{#if map}
+	<table>
+		{#each map as row}
+			<tr>
+				{#each row as cell}
+					<td style='background-color: {cellToColor(cell)}'>
+						{#if cell}
+							{cellToEmoji(cell)}
+						{/if}
+					</td>
+				{/each}
+			</tr>
+		{/each}
+	</table>
+{/if}
