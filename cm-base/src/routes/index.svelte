@@ -59,11 +59,20 @@
 	}
 
   function check_password_constraints() {
-
+    if(password.length < 10 || password.length > 30){
+      pass_len = false
+    } else {
+      pass_len = true
+    }
+    if(password.length < 10 || password.length > 30){
+      pass_len = false
+    } else {
+      pass_len = true
+    }
   }
 
   function toggle_visible() {
-  visible = !visible;
+    visible = !visible;
   }
 
   onMount(() => {

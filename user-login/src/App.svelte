@@ -1,4 +1,10 @@
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</svelte:head>
+
 <script>
+    import { onMount, onDestroy } from 'svelte';
     import { SHA3 } from 'sha3';
     const hash = new SHA3(256);
 
@@ -6,18 +12,22 @@
 	export let password;
 
 	function submit_login() {
-
+        var rc_response = grecaptcha.getResponse();
+        console.log(rc_response);
 	    // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-	    if (password.length < 1 || playerid.length < 1){
+        if (password.length < 1 || playerid.length < 1){
             document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
             password = '';
-            playerid = '';
             return;
-	    }
+        }
         else if (password.length < 10 || password.length > 30){
             document.getElementById("hiddentext").innerHTML = "incorrect password" ;
             password = '';
-            playerid = '';
+            return;
+        }
+        else if (rc_response.length == 0) {
+            document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
+            password = '';
             return;
         }
 
@@ -28,7 +38,6 @@
 
         if (playerid.length < 6 || playerid.length > 20){
             document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
-            playerid = '';
             passhash = '';
             return;
         }
@@ -49,13 +58,21 @@
 
 	}
 
+  onMount(() => {
+    window.submit_login = submit_login;
+  })
+
+  onDestroy(() => {
+    window.submit_login = null;
+  })
+
 </script>
 
 <main>
 	<h1> Chefmoji </h1>
 	<p id="hiddentext">  </p>
 
-	<p> playerid: </p>
+	<p> player id: </p>
 	<label>
         <input type="text" bind:value={playerid}>
     </label>
@@ -67,19 +84,14 @@
     </label>
 	<br>
 
-	<form action="?" method="POST">
-          <div id="recaptcha" class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- WILL NEED PROPER SITE KEY LATER -->
+  	<form action="?" method="POST">
+          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
     </form>
     <br>
 
-	<button id="landbtn" on:click={submit_signup}> sign in </button>
+	<button id="landbtn" on:click={submit_signup}> sign up </button>
 	<button id="landbtn" on:click={submit_login}> log in </button>
 </main>
-
-<svelte:head>
-  <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</svelte:head>
 
 <style>
 	main {
