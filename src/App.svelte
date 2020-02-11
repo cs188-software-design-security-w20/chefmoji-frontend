@@ -17,7 +17,7 @@
 
 <script>	
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, MapRow } from './proto/messages.js';
+	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 	console.log(chefmoji);
 
@@ -54,8 +54,11 @@
 
 	socket.on('tick', (data) => {
 		if (data){
+			console.log(data)
 			let bytes =  new Uint8Array(data);
+			console.log(bytes);
 			let decoded = MapUpdate.decode(bytes);
+			console.log(decoded);
 			map = decoded.map;
 		}
 	})
@@ -79,7 +82,8 @@
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
 		if(validKey(key)){
 			console.log(key);
-			socket.emit('keypress', key, game_id);
+			let keyPress = PlayerAction.create({ key_press : key});
+			socket.emit('keypress', keyPress, game_id);
 		}
 	}
 
