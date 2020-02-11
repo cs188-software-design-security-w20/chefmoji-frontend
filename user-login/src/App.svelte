@@ -55,7 +55,7 @@
 	<h1> Chefmoji </h1>
 	<p id="hiddentext">  </p>
 
-	<p> playerid: </p>
+	<p> player id: </p>
 	<label>
         <input type="text" bind:value={playerid}>
     </label>
@@ -68,11 +68,11 @@
 	<br>
 
 	<form action="?" method="POST">
-          <div id="recaptcha" class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- WILL NEED PROPER SITE KEY LATER -->
+          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
     </form>
     <br>
 
-	<button id="landbtn" on:click={submit_signup}> sign in </button>
+	<button id="landbtn" on:click={submit_signup}> sign up </button>
 	<button id="landbtn" on:click={submit_login}> log in </button>
 </main>
 

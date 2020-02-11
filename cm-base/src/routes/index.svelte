@@ -6,7 +6,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { SHA3 } from 'sha3';
-  const hash = new SHA3(256);
 
 	let playerid, password, repeat_password, email;
   let visible = false;
@@ -32,6 +31,7 @@
       }
 
       // encrypt the password, clear out plaintext password
+      const hash = new SHA3(256);
       hash.update(password);
       password = '';
       var passhash = hash.digest('hex');
