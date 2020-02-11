@@ -10,11 +10,19 @@
 	let playerid, password, repeat_password, email;
   let visible = false;
 
+  let pass_upper = false, pass_lower = false, pass_number = false;
+  let pass_special = false, pass_len = false;
+
+  var isEmailWithTLD = function (email){
+	   return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
+  };
+
 	function click_login() {
       var rc_response = grecaptcha.getResponse();
-      console.log(rc_response);
+      console.log(rc_response); // RECATCHA RESPONSE - REMOVE LINE BEFORE PRODUCTION
+
       // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-      if (password.length < 1 || playerid.length < 1){
+      if (!password || password.length < 1 || !playerid || playerid.length < 1){
           document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
           password = '';
           return;
@@ -59,15 +67,16 @@
 	}
 
   function check_password_constraints() {
-    if(password.length < 10 || password.length > 30){
-      pass_len = false
-    } else {
-      pass_len = true
-    }
-    if(password.length < 10 || password.length > 30){
-      pass_len = false
-    } else {
-      pass_len = true
+    if (!!password) {
+      pass_upper = password != password.toLocaleLowerCase();
+      pass_lower = password != password.toLocaleUpperCase();
+      pass_number = /\d/.test(password);
+      pass_special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password);
+      if(password.length < 10 || password.length > 30){
+        pass_len = false;
+      } else {
+        pass_len = true;
+      }
     }
   }
 
@@ -91,13 +100,13 @@
 
   <p class="input_label" style="left: 513px; top: 270px;"> player id: </p>
 	<label>
-      <input type="text" class="input_box" style="top: 295px;" bind:value={playerid}>
+      <input type="text" name="username" class="input_box" style="top: 295px;" bind:value={playerid}>
   </label>
 	<br>
 
   <p class="input_label" style="left: 500px; top: 330px;"> password: </p>
 	<label> <!-- ignore warnings in WebStorms, this input block works -->
-      <input type="password" class="input_box" style="top: 355px;" bind:value={password} on:change={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      <input type="password" name="password" class="input_box" style="top: 355px;" bind:value={password} on:change={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
   </label>
 	<br>
 
@@ -105,12 +114,28 @@
 
     <p> repeat password: </p>
     <label> <!-- ignore warnings in WebStorms, this input block works -->
-        <input type="password" bind:value={repeat_password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        <input type="password" name="password" bind:value={repeat_password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
     </label>
     <br>
+    {#if pass_upper && pass_lower}
+      <p> contains upper and lowercase letters </p>
+    {:else}
+      <p> does not contain upper and lowercase letters </p>
+    {/if}
+    {#if pass_number}
+      <p> contains number(s) </p>
+    {:else}
+      <p> does not contain number(s) </p>
+    {/if}
+    {#if pass_number}
+      <p> contains symbol(s) from  </p>
+    {:else}
+      <p> does not contain number(s) </p>
+    {/if}
+
     <p> email: </p>
     <label>
-        <input type="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        <input type="email" name="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
     </label>
     <br>
 
