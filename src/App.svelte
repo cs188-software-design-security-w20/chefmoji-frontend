@@ -21,35 +21,22 @@
 	import chefmoji from './proto/messages.js';
 	console.log(chefmoji);
 
-
-	let map = [
-		['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-		['W','F','F🧈','F','F🥚','F','F','W','T','T','T🚰','T','T♨️','T','T','T🔪','T','T','T','W'],
-		['W','F','G','G','G','G','F🥛','W','T🌾','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F🥕','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🧀','W','T🍚','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F🥬','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G➡️','G➡️'],
-		['W','F🍅','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🥩','W','T🍞','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🐟','W','T🧅','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','F','F','F🐖','F','F','W','T','T','T🥔','T','T🧄','T','T','T🍽️','T','T','T','W'],
-		['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-	];
-
-	let encodedMap = Array.from(map, row => MapRow.create({ row: row }));
-
-	let message = MapUpdate.create({ map: encodedMap, players: ['1', '2'], order: ['he']});
-	let buffer  = MapUpdate.encode(message).finish(); // send to the 
-	let decoded = MapUpdate.decode(buffer);
-
-	let myMap = decoded.map;
-	// console.log(message);
-	// console.log(`message = ${JSON.stringify(message)}`);
-	// console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
-	// console.log(`decoded = ${JSON.stringify(decoded)}`);
-
+	let map = [];
+	// let map = [
+	// 	['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+	// 	['W','F','F🧈','F','F🥚','F','F','W','T','T','T🚰','T','T♨️','T','T','T🔪','T','T','T','W'],
+	// 	['W','F','G','G','G','G','F🥛','W','T🌾','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F🥕','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','G','G','G','G','F🧀','W','T🍚','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F🥬','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G➡️','G➡️'],
+	// 	['W','F🍅','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','G','G','G','G','F🥩','W','T🍞','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','G','G','G','G','F🐟','W','T🧅','G','G','G','G','G','G','G','G','G','T','W'],
+	// 	['W','F','F','F','F🐖','F','F','W','T','T','T🥔','T','T🧄','T','T','T🍽️','T','T','T','W'],
+	// 	['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+	// ];
 	
 
 	const socket = io('http://localhost:5000');
@@ -66,11 +53,10 @@
 	});
 
 	socket.on('tick', (data) => {
-		if (data.map){
-			// data.map.forEach(row => {
-			// 	console.log(row);
-			// });
-			// map = data.map;
+		if (data){
+			let bytes =  new Uint8Array(data);
+			let decoded = MapUpdate.decode(bytes);
+			map = decoded.map;
 		}
 	})
 
@@ -78,23 +64,6 @@
 	const TABLE = '#ecb476';
 	const FLOOR = '#fff';
 	const FRIDGE = '#75c3d1';
-	
-
-	let map2 = [
-		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {emoji: '🧈', type: FRIDGE}, {type: FRIDGE}, {emoji: '🥚', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🚰', type: TABLE}, {type: TABLE}, {emoji: '♨️', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🔪', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥛', type: FRIDGE}, {type: WALL}, {emoji: '🌾', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {emoji: '🥕', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🧀', type: FRIDGE}, {type: WALL}, {emoji: '🍚', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {emoji: '🥬', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '➡️', type: TABLE}, {emoji: '➡️', type: WALL}],
-		[{type: WALL}, {emoji: '🍅', type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥩', type: FRIDGE}, {type: WALL}, {emoji: '🍞', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🐟', type: FRIDGE}, {type: WALL}, {emoji: '🧅', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {emoji: '🐖', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🥔', type: TABLE}, {type: TABLE}, {emoji: '🧄', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🍽️', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
-		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}]
-	];
 	
 	class Player {
 		constructor(r, c, emoji) {
@@ -154,7 +123,7 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <table>
-	{#each decoded.map as row}
+	{#each map as row}
 		<tr>
 			{#each row.row as cell}
 				<td style='background-color: {cellToColor(cell.charAt(0))}'>
