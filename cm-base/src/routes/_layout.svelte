@@ -4,7 +4,8 @@
 	export let segment;
 </script>
 
-<style>
+<style> /* this pushes all elements to the side, which we don't want */
+/*
 	main {
 		position: relative;
 		max-width: 56em;
@@ -13,6 +14,7 @@
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
+	*/
 </style>
 
 <Nav {segment}/>
