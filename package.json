@@ -16,6 +16,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "protobufjs": "^6.8.8",
+    "require": "^2.4.20",
     "sirv-cli": "^0.4.4",
     "socket.io": "^2.3.0"
   }

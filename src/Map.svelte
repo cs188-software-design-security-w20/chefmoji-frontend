@@ -1,12 +1,13 @@
 <style>
 	:root {
-		--main-unit-dim: 40px;
+		--emoji_size: 36px;
+		--tile_size: 40px;
 	}
 	td {
-		width: var(--main-unit-dim);
-		line-height: var(--main-unit-dim);
-		height: var(--main-unit-dim);
-		font-size: 36px;
+		width: var(--tile_size);
+		line-height: var(--tile_size);
+		height: var(--tile_size);
+		font-size: var(--emoji_size);
 		padding: 0;
 		margin: 0;
 	}
@@ -16,71 +17,13 @@
 </style>
 
 <script>	
-	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, MapRow } from './proto/messages.js';
-	import chefmoji from './proto/messages.js';
-	console.log(chefmoji);
-
-
-	let map = [
-		['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-		['W','F','F🧈','F','F🥚','F','F','W','T','T','T🚰','T','T♨️','T','T','T🔪','T','T','T','W'],
-		['W','F','G','G','G','G','F🥛','W','T🌾','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F🥕','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🧀','W','T🍚','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F🥬','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G➡️','G➡️'],
-		['W','F🍅','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🥩','W','T🍞','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','G','G','G','G','F🐟','W','T🧅','G','G','G','G','G','G','G','G','G','T','W'],
-		['W','F','F','F','F🐖','F','F','W','T','T','T🥔','T','T🧄','T','T','T🍽️','T','T','T','W'],
-		['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-	];
-
-	let encodedMap = Array.from(map, row => MapRow.create({ row: row }));
-
-	let message = MapUpdate.create({ map: encodedMap, players: ['1', '2'], order: ['he']});
-	let buffer  = MapUpdate.encode(message).finish(); // send to the 
-	let decoded = MapUpdate.decode(buffer);
-
-	let myMap = decoded.map;
-	// console.log(message);
-	// console.log(`message = ${JSON.stringify(message)}`);
-	// console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
-	// console.log(`decoded = ${JSON.stringify(decoded)}`);
-
-	
-
-	const socket = io('http://localhost:5000');
-
-	const TEST_GAME_SESSION = '1aLc90';
-
-	socket.on('connect', () => {
-		console.log(socket.id);
-	});
-
-	socket.on('accepting-connections', () => {
-		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
-		socket.emit('join-req', new Map([['id', TEST_GAME_SESSION]]));
-	});
-
-	socket.on('tick', (data) => {
-		if (data.map){
-			// data.map.forEach(row => {
-			// 	console.log(row);
-			// });
-			// map = data.map;
-		}
-	})
-
 	const WALL = '#000';
 	const TABLE = '#ecb476';
 	const FLOOR = '#fff';
 	const FRIDGE = '#75c3d1';
 	
 
-	let map2 = [
+	let map = [
 		[{type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}, {type: WALL}],
 		[{type: WALL}, {type: FRIDGE}, {emoji: '🧈', type: FRIDGE}, {type: FRIDGE}, {emoji: '🥚', type: FRIDGE}, {type: FRIDGE}, {type: FRIDGE}, {type: WALL}, {type: TABLE}, {type: TABLE}, {emoji: '🚰', type: TABLE}, {type: TABLE}, {emoji: '♨️', type: TABLE}, {type: TABLE}, {type: TABLE}, {emoji: '🔪', type: TABLE}, {type: TABLE}, {type: TABLE}, {type: TABLE}, {type: WALL}],
 		[{type: WALL}, {type: FRIDGE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {emoji: '🥛', type: FRIDGE}, {type: WALL}, {emoji: '🌾', type: TABLE}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: FLOOR}, {type: TABLE}, {type: WALL}],
@@ -103,50 +46,51 @@
 			this.emoji = emoji;
 		}
 	}
+	
+	let player = new Player(2, 3, '🍅');
+	movePlayer(player);
+	
+	let key;
 
 	function handleKeydown(event) {
-		let key = event.key;
-		let game_id = TEST_GAME_SESSION;
-		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
-		if(validKey(key)){
-			console.log(key);
-			socket.emit('keypress', key, game_id);
+		key = event.key;
+		if (key == 'w' || key == 
+				'ArrowUp') { 
+			// UP
+			if (map[player.r - 1][player.c].type == FLOOR) {
+				map[player.r][player.c].emoji = '';
+				player.r -= 1;
+				movePlayer(player)
+			}
+		} else if (key == 'a' || key == 
+				'ArrowLeft') {
+			// LEFT
+			if (map[player.r][player.c - 1].type == FLOOR) {
+				map[player.r][player.c].emoji = '';
+				player.c -= 1;
+				movePlayer(player)
+			}
+		} else if (key == 's' || key == 
+				'ArrowDown') {
+			// DOWN
+			if (map[player.r + 1][player.c].type == FLOOR) {
+				map[player.r][player.c].emoji = '';
+				player.r += 1;
+				movePlayer(player)
+			}
+		} else if (key == 'd' || key == 
+				'ArrowRight') {
+			// RIGHT
+			if (map[player.r][player.c + 1].type == FLOOR) {
+				map[player.r][player.c].emoji = '';
+				player.c += 1;
+				movePlayer(player)
+			}
 		}
 	}
-
-	function validKey(key){
-		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
-	}
-
-	function cellToColor(cell){
-		switch (cell){
-			case 'W':
-				return WALL;
-			case 'F':
-				return FRIDGE;
-			case 'T':
-				return TABLE;
-			case 'G':
-				return FLOOR;
-		}
-	}
-
-	function cellToEmoji(cell){
-		switch (cell){
-			case 'r':
-				return '🚰'
-			case 'T':
-			case ' ':
-			case 'W':
-			case 'F':
-				return ' '
-			case '0':
-				return '♨️'
-			case 'K':
-				return '🔪'
-			default:
-				return cell
-		}
+	
+	function movePlayer(p) {
+		map[p.r][p.c].emoji = p.emoji;
 	}
 	
 </script>
@@ -154,12 +98,12 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <table>
-	{#each decoded.map as row}
+	{#each map as row}
 		<tr>
-			{#each row.row as cell}
-				<td style='background-color: {cellToColor(cell.charAt(0))}'>
-					{#if cell}
-						{cell.slice(1)}
+			{#each row as cell}
+				<td style='background-color: {cell.type}'>
+					{#if cell.emoji}
+						{cell.emoji}
 					{/if}
 				</td>
 			{/each}

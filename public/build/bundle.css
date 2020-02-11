@@ -1,3 +1,3 @@
-td.svelte-13qlg0{width:40px;line-height:40px;height:40px;font-size:36px;padding:0;margin:0}table.svelte-13qlg0{border-spacing:0}
+:root{--main-unit-dim:40px}td.svelte-18ahk4x{width:var(--main-unit-dim);line-height:var(--main-unit-dim);height:var(--main-unit-dim);font-size:36px;padding:0;margin:0}table.svelte-18ahk4x{border-spacing:0}
 
 /*# sourceMappingURL=bundle.css.map */
