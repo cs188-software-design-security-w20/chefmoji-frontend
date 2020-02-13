@@ -1151,7 +1151,7 @@ $root.chefmoji = (function() {
          * Properties of a PlayerAction.
          * @memberof chefmoji
          * @interface IPlayerAction
-         * @property {Uint8Array|null} [keyPress] PlayerAction keyPress
+         * @property {string|null} [keyPress] PlayerAction keyPress
          */
 
         /**
@@ -1171,11 +1171,11 @@ $root.chefmoji = (function() {
 
         /**
          * PlayerAction keyPress.
-         * @member {Uint8Array} keyPress
+         * @member {string} keyPress
          * @memberof chefmoji.PlayerAction
          * @instance
          */
-        PlayerAction.prototype.keyPress = $util.newBuffer([]);
+        PlayerAction.prototype.keyPress = "";
 
         /**
          * Creates a new PlayerAction instance using the specified properties.
@@ -1202,7 +1202,7 @@ $root.chefmoji = (function() {
             if (!writer)
                 writer = $Writer.create();
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.keyPress);
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.keyPress);
             return writer;
         };
 
@@ -1238,7 +1238,7 @@ $root.chefmoji = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.keyPress = reader.bytes();
+                    message.keyPress = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1276,8 +1276,8 @@ $root.chefmoji = (function() {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                if (!(message.keyPress && typeof message.keyPress.length === "number" || $util.isString(message.keyPress)))
-                    return "keyPress: buffer expected";
+                if (!$util.isString(message.keyPress))
+                    return "keyPress: string expected";
             return null;
         };
 
@@ -1294,10 +1294,7 @@ $root.chefmoji = (function() {
                 return object;
             var message = new $root.chefmoji.PlayerAction();
             if (object.keyPress != null)
-                if (typeof object.keyPress === "string")
-                    $util.base64.decode(object.keyPress, message.keyPress = $util.newBuffer($util.base64.length(object.keyPress)), 0);
-                else if (object.keyPress.length)
-                    message.keyPress = object.keyPress;
+                message.keyPress = String(object.keyPress);
             return message;
         };
 
@@ -1315,15 +1312,9 @@ $root.chefmoji = (function() {
                 options = {};
             var object = {};
             if (options.defaults)
-                if (options.bytes === String)
-                    object.keyPress = "";
-                else {
-                    object.keyPress = [];
-                    if (options.bytes !== Array)
-                        object.keyPress = $util.newBuffer(object.keyPress);
-                }
+                object.keyPress = "";
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                object.keyPress = options.bytes === String ? $util.base64.encode(message.keyPress, 0, message.keyPress.length) : options.bytes === Array ? Array.prototype.slice.call(message.keyPress) : message.keyPress;
+                object.keyPress = message.keyPress;
             return object;
         };
 

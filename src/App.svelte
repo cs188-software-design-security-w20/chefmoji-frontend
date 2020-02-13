@@ -1,43 +1,38 @@
 <style>
 	:root {
-		--main-unit-dim: 40px;
+		--main-unit-dim: 45px;
 	}
 	td {
 		width: var(--main-unit-dim);
 		line-height: var(--main-unit-dim);
 		height: var(--main-unit-dim);
-		font-size: 36px;
+		font-size: calc(var(--main-unit-dim) - 4px);
 		padding: 0;
 		margin: 0;
 	}
 	table {
 		border-spacing: 0;
 	}
+	.orders {
+		background-color: lightsteelblue;
+		width: 30%;
+		height: calc(100vh - 16px);
+		float: right;
+		font-family: 'Indie Flower', cursive;
+		text-align: center;
+	}
+
+	.map {
+		display: inline-block;
+	}
 </style>
 
-<script>	
+<script>
+	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 	console.log(chefmoji);
-
-	let map = [];
-	// let map = [
-	// 	['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-	// 	['W','F','F🧈','F','F🥚','F','F','W','T','T','T🚰','T','T♨️','T','T','T🔪','T','T','T','W'],
-	// 	['W','F','G','G','G','G','F🥛','W','T🌾','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F🥕','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','G','G','G','G','F🧀','W','T🍚','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F🥬','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G','G➡️','G➡️'],
-	// 	['W','F🍅','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','G','G','G','G','F🥩','W','T🍞','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','G','G','G','G','F','W','T','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','G','G','G','G','F🐟','W','T🧅','G','G','G','G','G','G','G','G','G','T','W'],
-	// 	['W','F','F','F','F🐖','F','F','W','T','T','T🥔','T','T🧄','T','T','T🍽️','T','T','T','W'],
-	// 	['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-	// ];
-	
 
 	const socket = io('http://localhost:5000');
 
@@ -51,17 +46,108 @@
 		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
 		socket.emit('join-req', new Map([['id', TEST_GAME_SESSION]]));
 	});
-
+	let map = [];
 	socket.on('tick', (data) => {
 		if (data){
-			console.log(data)
 			let bytes =  new Uint8Array(data);
-			console.log(bytes);
 			let decoded = MapUpdate.decode(bytes);
-			console.log(decoded);
 			map = decoded.map;
 		}
 	})
+
+	const recipes = {
+		'🌭' : {
+			name : 'Hot Dog',
+			emoji : '🌭',
+			difficulty : 1,
+			ingredients: [
+				{
+					emoji: '🍞',
+					chopped: false
+				},
+				{
+					emoji: '🥩',
+					chopped: false
+				}
+			],
+			cooked: true
+		},
+		'🍕' : {
+			name : 'Pizza',
+			emoji : '🍕',
+			difficulty : 1,
+			ingredients: [
+				{
+					emoji: '🍞',
+					chopped: false
+				},
+				{
+					emoji: '🧀',
+					chopped: false
+				},
+				{
+					emoji: '🍅',
+					chopped: false
+				}
+			],
+			cooked: true
+		},
+		'🧇' : {
+			name : 'Waffles',
+			emoji : '🧇',
+			difficulty : 1,
+			ingredients: [
+				{
+					emoji: '🥛',
+					chopped: false
+				},
+				{
+					emoji: '🥚',
+					chopped: false
+				},
+				{
+					emoji: '🌾',
+					chopped: false
+				}
+			],
+			cooked: true
+		},
+		'🍔' : {
+			name : 'Hamburger',
+			emoji : '🍔',
+			difficulty : 3,
+			ingredients: [
+				{
+					emoji: '🍞',
+					chopped: false
+				},
+				{
+					emoji: '🧀',
+					chopped: false
+				},
+				{
+					emoji: '🥩',
+					chopped: false
+				},
+				{
+					emoji: '🥬',
+					chopped: true
+				},
+				{
+					emoji: '🍅',
+					chopped: true
+				},
+				{
+					emoji: '🧅',
+					chopped: true
+				}
+
+			],
+			cooked: true
+		},
+	}
+
+	let orders = ['🍔', '🧇'];
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -82,8 +168,11 @@
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
 		if(validKey(key)){
 			console.log(key);
-			let keyPress = PlayerAction.create({ key_press : key});
-			socket.emit('keypress', keyPress, game_id);
+			let keyPress = PlayerAction.create({ keyPress : key});
+			console.log(keyPress)
+			let bytes = PlayerAction.encode(keyPress).finish();
+			console.log(bytes);
+			socket.emit('keypress', bytes, game_id);
 		}
 	}
 
@@ -126,16 +215,32 @@
 
 <svelte:window on:keydown={handleKeydown}/>
 
-<table>
-	{#each map as row}
-		<tr>
-			{#each row.row as cell}
-				<td style='background-color: {cellToColor(cell.charAt(0))}'>
-					{#if cell}
-						{cell.slice(1)}
-					{/if}
-				</td>
+<svelte:head>
+	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+</svelte:head>
+
+
+<div class='content'>
+	<div class='map'>
+		<table>
+			{#each map as row}
+				<tr>
+					{#each row.row as cell}
+						<td style='background-color: {cellToColor(cell.charAt(0))}'>
+							{#if cell}
+								{cell.slice(1)}
+							{/if}
+						</td>
+					{/each}
+				</tr>
 			{/each}
-		</tr>
-	{/each}
-</table>
+		</table>
+	</div>
+	
+	<div class='orders'>
+		<h1>Orders</h1>
+		{#each orders as order}
+			<Order order={recipes[order]}/>
+		{/each}
+	</div>
+</div>

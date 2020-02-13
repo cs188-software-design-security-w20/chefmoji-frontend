@@ -18,13 +18,216 @@ $root.chefmoji = (function() {
      */
     var chefmoji = {};
 
+    chefmoji.MapRow = (function() {
+
+        /**
+         * Properties of a MapRow.
+         * @memberof chefmoji
+         * @interface IMapRow
+         * @property {Array.<string>|null} [row] MapRow row
+         */
+
+        /**
+         * Constructs a new MapRow.
+         * @memberof chefmoji
+         * @classdesc Represents a MapRow.
+         * @implements IMapRow
+         * @constructor
+         * @param {chefmoji.IMapRow=} [properties] Properties to set
+         */
+        function MapRow(properties) {
+            this.row = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * MapRow row.
+         * @member {Array.<string>} row
+         * @memberof chefmoji.MapRow
+         * @instance
+         */
+        MapRow.prototype.row = $util.emptyArray;
+
+        /**
+         * Creates a new MapRow instance using the specified properties.
+         * @function create
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {chefmoji.IMapRow=} [properties] Properties to set
+         * @returns {chefmoji.MapRow} MapRow instance
+         */
+        MapRow.create = function create(properties) {
+            return new MapRow(properties);
+        };
+
+        /**
+         * Encodes the specified MapRow message. Does not implicitly {@link chefmoji.MapRow.verify|verify} messages.
+         * @function encode
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {chefmoji.IMapRow} message MapRow message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MapRow.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.row != null && message.row.length)
+                for (var i = 0; i < message.row.length; ++i)
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.row[i]);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified MapRow message, length delimited. Does not implicitly {@link chefmoji.MapRow.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {chefmoji.IMapRow} message MapRow message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MapRow.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a MapRow message from the specified reader or buffer.
+         * @function decode
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {chefmoji.MapRow} MapRow
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MapRow.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.chefmoji.MapRow();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.row && message.row.length))
+                        message.row = [];
+                    message.row.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a MapRow message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {chefmoji.MapRow} MapRow
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MapRow.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a MapRow message.
+         * @function verify
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        MapRow.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.row != null && message.hasOwnProperty("row")) {
+                if (!Array.isArray(message.row))
+                    return "row: array expected";
+                for (var i = 0; i < message.row.length; ++i)
+                    if (!$util.isString(message.row[i]))
+                        return "row: string[] expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a MapRow message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {chefmoji.MapRow} MapRow
+         */
+        MapRow.fromObject = function fromObject(object) {
+            if (object instanceof $root.chefmoji.MapRow)
+                return object;
+            var message = new $root.chefmoji.MapRow();
+            if (object.row) {
+                if (!Array.isArray(object.row))
+                    throw TypeError(".chefmoji.MapRow.row: array expected");
+                message.row = [];
+                for (var i = 0; i < object.row.length; ++i)
+                    message.row[i] = String(object.row[i]);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a MapRow message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof chefmoji.MapRow
+         * @static
+         * @param {chefmoji.MapRow} message MapRow
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        MapRow.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.row = [];
+            if (message.row && message.row.length) {
+                object.row = [];
+                for (var j = 0; j < message.row.length; ++j)
+                    object.row[j] = message.row[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this MapRow to JSON.
+         * @function toJSON
+         * @memberof chefmoji.MapRow
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        MapRow.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return MapRow;
+    })();
+
     chefmoji.MapUpdate = (function() {
 
         /**
          * Properties of a MapUpdate.
          * @memberof chefmoji
          * @interface IMapUpdate
-         * @property {Array.<string>|null} [map] MapUpdate map
+         * @property {Array.<chefmoji.IMapRow>|null} [map] MapUpdate map
          * @property {Array.<chefmoji.IPlayerUpdate>|null} [players] MapUpdate players
          * @property {Array.<chefmoji.IOrderUpdate>|null} [order] MapUpdate order
          */
@@ -49,7 +252,7 @@ $root.chefmoji = (function() {
 
         /**
          * MapUpdate map.
-         * @member {Array.<string>} map
+         * @member {Array.<chefmoji.IMapRow>} map
          * @memberof chefmoji.MapUpdate
          * @instance
          */
@@ -97,7 +300,7 @@ $root.chefmoji = (function() {
                 writer = $Writer.create();
             if (message.map != null && message.map.length)
                 for (var i = 0; i < message.map.length; ++i)
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.map[i]);
+                    $root.chefmoji.MapRow.encode(message.map[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.players != null && message.players.length)
                 for (var i = 0; i < message.players.length; ++i)
                     $root.chefmoji.PlayerUpdate.encode(message.players[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
@@ -141,7 +344,7 @@ $root.chefmoji = (function() {
                 case 1:
                     if (!(message.map && message.map.length))
                         message.map = [];
-                    message.map.push(reader.string());
+                    message.map.push($root.chefmoji.MapRow.decode(reader, reader.uint32()));
                     break;
                 case 2:
                     if (!(message.players && message.players.length))
@@ -191,9 +394,11 @@ $root.chefmoji = (function() {
             if (message.map != null && message.hasOwnProperty("map")) {
                 if (!Array.isArray(message.map))
                     return "map: array expected";
-                for (var i = 0; i < message.map.length; ++i)
-                    if (!$util.isString(message.map[i]))
-                        return "map: string[] expected";
+                for (var i = 0; i < message.map.length; ++i) {
+                    var error = $root.chefmoji.MapRow.verify(message.map[i]);
+                    if (error)
+                        return "map." + error;
+                }
             }
             if (message.players != null && message.hasOwnProperty("players")) {
                 if (!Array.isArray(message.players))
@@ -232,8 +437,11 @@ $root.chefmoji = (function() {
                 if (!Array.isArray(object.map))
                     throw TypeError(".chefmoji.MapUpdate.map: array expected");
                 message.map = [];
-                for (var i = 0; i < object.map.length; ++i)
-                    message.map[i] = String(object.map[i]);
+                for (var i = 0; i < object.map.length; ++i) {
+                    if (typeof object.map[i] !== "object")
+                        throw TypeError(".chefmoji.MapUpdate.map: object expected");
+                    message.map[i] = $root.chefmoji.MapRow.fromObject(object.map[i]);
+                }
             }
             if (object.players) {
                 if (!Array.isArray(object.players))
@@ -279,7 +487,7 @@ $root.chefmoji = (function() {
             if (message.map && message.map.length) {
                 object.map = [];
                 for (var j = 0; j < message.map.length; ++j)
-                    object.map[j] = message.map[j];
+                    object.map[j] = $root.chefmoji.MapRow.toObject(message.map[j], options);
             }
             if (message.players && message.players.length) {
                 object.players = [];
@@ -1139,10 +1347,14 @@ const MapUpdate = $root.chefmoji.MapUpdate;
 const OrderType = $root.chefmoji.OrderType;
 const PlayerUpdate = $root.chefmoji.PlayerUpdate;
 const OrderUpdate = $root.chefmoji.OrderUpdate;
+const MapRow = $root.chefmoji.MapRow;
+const PlayerAction = $root.chefmoji.PlayerAction;
 module.exports = {
     default: $root.chefmoji,
     MapUpdate,
     OrderType,
     PlayerUpdate,
-    OrderUpdate
+    OrderUpdate,
+    MapRow,
+    PlayerAction
 };
