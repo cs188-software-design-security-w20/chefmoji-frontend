@@ -48,7 +48,7 @@
 	});
 	let map = [];
 	socket.on('tick', (data) => {
-		if (data){
+		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
@@ -166,11 +166,11 @@
 		let key = event.key;
 		let game_id = TEST_GAME_SESSION;
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
-		if(validKey(key)){
+		if (validKey(key)) {
 			console.log(key);
-			let keyPress = PlayerAction.create({ keyPress : key});
-			console.log(keyPress)
-			let bytes = PlayerAction.encode(keyPress).finish();
+			let keyPressMsg = PlayerAction.create({ keyPress : key});
+			console.log(keyPressMsg)
+			let bytes = PlayerAction.encode(keyPressMsg).finish();
 			console.log(bytes);
 			socket.emit('keypress', bytes, game_id);
 		}
@@ -223,13 +223,11 @@
 <div class='content'>
 	<div class='map'>
 		<table>
-			{#each map as row}
+			{#each map as map_row}
 				<tr>
-					{#each row.row as cell}
+					{#each map_row.row as cell}
 						<td style='background-color: {cellToColor(cell.charAt(0))}'>
-							{#if cell}
-								{cell.slice(1)}
-							{/if}
+							{cell.slice(1)}
 						</td>
 					{/each}
 				</tr>
