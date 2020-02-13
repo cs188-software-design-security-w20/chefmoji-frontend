@@ -144,7 +144,7 @@
 
 			],
 			cooked: true
-		},
+		}
 	}
 
 	let orders = ['🍔', '🧇'];
