@@ -62,16 +62,40 @@
 
 	}
 
+  function check_playerid_constraints(playerid) { // SEE IF WE CAN CALL THIS FUNCTION ON CHANGE
+    // length check
+    if (playerid.length < 6 || playerid.length > 20){
+        document.getElementById("hiddentext").innerHTML = "player ID should be between 6 and 20 characters" ;
+        return false;
+    }
+
+    // profanity check
+    else if (playerid.search("fuck") != -1 || playerid.search("shit") != -1 || playerid.search("whore") != -1 || playerid.search("bitch") != -1 || playerid.search("asshole") != -1) {
+      document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
+      return false;
+    }
+
+    // consult database - "that player ID is already in use! try another one!"
+
+    return true;
+
+  }
+
 	function click_signup() {
+    // send PII to server
+    playerid_ok = check_playerid_constraints(playerid);
 
 	}
+
+
 
   function check_password_constraints() {
     if (!!password) {
       pass_upper = password != password.toLocaleLowerCase();
       pass_lower = password != password.toLocaleUpperCase();
       pass_number = /\d/.test(password);
-      pass_special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password);
+      pass_special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password); //OWASP Standard Symbol Set for passwords
+      //pass_special = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/g.test(password);
       if(password.length < 10 || password.length > 30){
         pass_len = false;
       } else {
@@ -106,7 +130,7 @@
 
   <p class="input_label" style="left: 500px; top: 330px;"> password: </p>
 	<label> <!-- ignore warnings in WebStorms, this input block works -->
-      <input type="password" name="password" class="input_box" style="top: 355px;" bind:value={password} on:change={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      <input type="password" name="password" class="input_box" style="top: 355px;" bind:value={password} on:input={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
   </label>
 	<br>
 
@@ -120,17 +144,27 @@
     {#if pass_upper && pass_lower}
       <p> contains upper and lowercase letters </p>
     {:else}
-      <p> does not contain upper and lowercase letters </p>
+      <p> does NOT contain upper and lowercase letters </p>
     {/if}
     {#if pass_number}
-      <p> contains number(s) </p>
+      <p> contains numbers </p>
     {:else}
-      <p> does not contain number(s) </p>
+      <p> does NOT contain numbers </p>
     {/if}
-    {#if pass_number}
-      <p> contains symbol(s) from  </p>
+    {#if pass_special}
+      <p> contains symbols </p>
     {:else}
-      <p> does not contain number(s) </p>
+      <p> does NOT contain symbols </p>
+    {/if}
+    {#if pass_len}
+      <p> length is between is between 10 and 30 characters </p>
+    {:else}
+      <p> length is NOT between is between 10 and 30 characters </p>
+    {/if}
+    {#if password.length() > 1 && password == repeat_password}
+      <p> passwords match </p>
+    {:else}
+      <p> passwords do NOT match </p>
     {/if}
 
     <p> email: </p>
