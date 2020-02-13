@@ -17,11 +17,9 @@
 
 <script>	
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
+	const ADDR = 'http://localhost:8080';
+	const socket = io(ADDR, { transports: ['websocket'] });
 
-	const socket = io('http://localhost:8080', { transports: ['websocket'] });
-	console.log("Constructed.");
-
-	const TEST_GAME_SESSION = '1aLc90';
 	let uid = '';
 	let game_id = '';
 	let ticked = false;
@@ -31,15 +29,23 @@
 		uid = issued_id;
 	});
 
+	socket.on('connect', () => {
+		console.log("CONNECTED");
+		socket.emit('test');
+		fetch(ADDR+'/issue-id').then(()=>{
+			return fetch(ADDR+'/create-game')
+		}).then(()=>{
+			console.log('game created server-side!')
+		}).catch((error) => {
+			console.error(error);
+		});
+	});
+
 	socket.on('session-init', (generated_game_id) => {
 		game_id = generated_game_id;
 		console.log("GAME ID: " + game_id);
+		socket.emit('join-game-with-id', game_id, uid);
 	});
-
-	// socket.on('accepting-connections', () => {
-	// 	console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
-	// 	socket.emit('join-game-with-id', game_id, uid);
-	// });
 
 	socket.on('tick', (data) => {
 		ticked = true;
@@ -68,11 +74,10 @@
 
 	function handleKeydown(event) {
 		let key = event.key;
-		let game_id = TEST_GAME_SESSION;
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
-		if(validKey(key)){
+		if(game_id && validKey(key)){
 			console.log(key);
-			socket.emit('keypress', key, game_id);
+			socket.emit('keypress', key, uid, game_id);
 		}
 	}
 
@@ -122,8 +127,13 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <h1>Chefmoji!</h1>
+
 {#if (uid)}
-<h2>With id: {uid}</h2>
+<h2>With <strong>player id:</strong> {uid}</h2>
+{/if}
+
+{#if (game_id)}
+<h2>With <strong>game id:</strong> {game_id} </h2>
 {/if}
 
 {#if (!ticked)}
