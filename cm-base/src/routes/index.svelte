@@ -10,8 +10,8 @@
 	let playerid, password, repeat_password, email;
   let visible = false;
 
-  let pass_upper = false, pass_lower = false, pass_number = false;
-  let pass_special = false, pass_len = false;
+  // let pass_upper = false, pass_lower = false, pass_number = false;
+  // let pass_special = false, pass_len = false;
 
   var isEmailWithTLD = function (email){
 	   return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
@@ -71,8 +71,8 @@
 
     // profanity check
     else if (playerid.search("fuck") != -1 || playerid.search("shit") != -1 || playerid.search("whore") != -1 || playerid.search("bitch") != -1 || playerid.search("asshole") != -1) {
-      document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
-      return false;
+        document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
+        return false;
     }
 
     // consult database - "that player ID is already in use! try another one!"
@@ -88,19 +88,31 @@
 	}
 
 
-
   function check_password_constraints() {
-    if (!!password) {
-      pass_upper = password != password.toLocaleLowerCase();
-      pass_lower = password != password.toLocaleUpperCase();
-      pass_number = /\d/.test(password);
-      pass_special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password); //OWASP Standard Symbol Set for passwords
-      //pass_special = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/g.test(password);
-      if(password.length < 10 || password.length > 30){
-        pass_len = false;
-      } else {
-        pass_len = true;
-      }
+    if(password && password != password.toLocaleLowerCase() && password != password.toLocaleUpperCase()){ // check forat least one lower and one upper
+      document.getElementById("pw_upper_lower").style.color = "#28A53C"; // green
+    } else {
+      document.getElementById("pw_upper_lower").style.color = "#DD6539"; // red
+    }
+    if(password && /\d/.test(password)){ // check for at least one number
+      document.getElementById("pw_numbers").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_numbers").style.color = "#DD6539";
+    }
+    if(password && /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password)){ // check for at least one symbol //OWASP Standard Symbol Set for passwords
+      document.getElementById("pw_symbols").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_symbols").style.color = "#DD6539";
+    }
+    if(password && password.length >= 10 && password.length <= 30){ // check for acceptable password length
+      document.getElementById("pw_len").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_len").style.color = "#DD6539";
+    }
+    if(password && !(password.value != repeat_password.value)){ // check for repeat password match
+      document.getElementById("pw_repeat_match").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_repeat_match").style.color = "#DD6539";
     }
   }
 
@@ -122,72 +134,51 @@
 	<h1> chef<br>moji </h1>
 	<p id="hiddentext">  </p>
 
-  <p class="input_label" style="left: 513px; top: 270px;"> player id: </p>
+  <p class="input_label" style="right: 810px; top: 220px;"> player id: </p>
 	<label>
-      <input type="text" name="username" class="input_box" style="top: 295px;" bind:value={playerid}>
+      <input type="text" name="username" class="input_box" style="top: 245px;" bind:value={playerid}>
   </label>
 	<br>
 
-  <p class="input_label" style="left: 500px; top: 330px;"> password: </p>
+  <p class="input_label" style="right: 810px; top: 280px;"> password: </p>
 	<label> <!-- ignore warnings in WebStorms, this input block works -->
-      <input type="password" name="password" class="input_box" style="top: 355px;" bind:value={password} on:input={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      <input type="password" name="password" class="input_box" style="top: 305px;" bind:value={password} on:input={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
   </label>
 	<br>
 
   {#if visible}
 
-    <p> repeat password: </p>
+    <p class="input_label" style="right: 810px; top: 340px;"> repeat_password: </p>
     <label> <!-- ignore warnings in WebStorms, this input block works -->
-        <input type="password" name="password" bind:value={repeat_password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        <input type="password" name="password" class="input_box" style="top: 365px;" bind:value={repeat_password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
     </label>
     <br>
-    {#if pass_upper && pass_lower}
-      <p> contains upper and lowercase letters </p>
-    {:else}
-      <p> does NOT contain upper and lowercase letters </p>
-    {/if}
-    {#if pass_number}
-      <p> contains numbers </p>
-    {:else}
-      <p> does NOT contain numbers </p>
-    {/if}
-    {#if pass_special}
-      <p> contains symbols </p>
-    {:else}
-      <p> does NOT contain symbols </p>
-    {/if}
-    {#if pass_len}
-      <p> length is between is between 10 and 30 characters </p>
-    {:else}
-      <p> length is NOT between is between 10 and 30 characters </p>
-    {/if}
-    {#if password.length() > 1 && password == repeat_password}
-      <p> passwords match </p>
-    {:else}
-      <p> passwords do NOT match </p>
-    {/if}
 
-    <p> email: </p>
+    <p class="pw_constraints" id="pw_upper_lower" style="top: 467px; color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
+    <p class="pw_constraints" id="pw_numbers" style="top: 490px; color: #DD6539;"> contains numbers </p>
+    <p class="pw_constraints" id="pw_symbols" style="top: 513px; color: #DD6539;"> contains symbols </p>
+    <p class="pw_constraints" id="pw_len" style="top: 536px; color: #DD6539;"> length is between is between 10 and 30 characters </p>
+    <p class="pw_constraints" id="pw_repeat_match" style="top: 559px; color: #DD6539;"> passwords match </p>
+
+    <p class="input_label" style="right: 810px; top: 400px;"> email: </p>
     <label>
-        <input type="email" name="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        <input type="email" name="email" class="input_box" style="top: 425px;"bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
     </label>
     <br>
 
   {/if}
-
 
 	<form action="?" method="POST">
         <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
   </form>
   <br>
 
-
   {#if !visible}
     <button class="landbtn" style="left: 672px; top: 530px;" on:click={toggle_visible}> sign up </button>
   	<button class="landbtn" style="left: 1022px; top: 530px;" on:click={click_login}> log in </button>
   {:else}
-    <button class="landbtn" style="left: 672px; top: 530px;" on:click={toggle_visible}> go back </button>
-    <button class="landbtn" style="left: 1022px; top: 530px;" on:click={click_signup}> make my account </button>
+    <button class="landbtn" style="left: 672px; top: 680px;" on:click={toggle_visible}> go back </button>
+    <button class="landbtn" style="left: 1022px; top: 680px;" on:click={click_signup}> make my account </button>
   {/if}
 
 
@@ -256,10 +247,17 @@
 		border-radius: 15px;
 	}
 
+  .pw_constraints {
+    position: absolute;
+    left: 672px;
+
+    font-size: 20px;
+  }
+
 	#recaptcha {
 		position: absolute;
 		left: 850px;
-		top: 430px;
+    top: 430px;
 	}
 
 	.landbtn {

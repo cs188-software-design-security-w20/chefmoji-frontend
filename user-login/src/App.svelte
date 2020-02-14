@@ -4,93 +4,186 @@
 </svelte:head>
 
 <script>
-    import { onMount, onDestroy } from 'svelte';
-    import { SHA3 } from 'sha3';
-    const hash = new SHA3(256);
+  import { onMount, onDestroy } from 'svelte';
+  import { SHA3 } from 'sha3';
 
-	export let playerid;
-	export let password;
+	let playerid, password, repeat_password, email;
+  let visible = false;
 
-	function submit_login() {
-        var rc_response = grecaptcha.getResponse();
-        console.log(rc_response);
-	    // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-        if (password.length < 1 || playerid.length < 1){
-            document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
-            password = '';
-            return;
-        }
-        else if (password.length < 10 || password.length > 30){
-            document.getElementById("hiddentext").innerHTML = "incorrect password" ;
-            password = '';
-            return;
-        }
-        else if (rc_response.length == 0) {
-            document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
-            password = '';
-            return;
-        }
+  // let pass_upper = false, pass_lower = false, pass_number = false;
+  // let pass_special = false, pass_len = false;
 
-        // encrypt the password, clear out plaintext password
-        hash.update(password);
-        password = '';
-        var passhash = hash.digest('hex');
+  var isEmailWithTLD = function (email){
+	   return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
+  };
 
-        if (playerid.length < 6 || playerid.length > 20){
-            document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
-            passhash = '';
-            return;
-        }
+	function click_login() {
+      var rc_response = grecaptcha.getResponse();
+      console.log(rc_response); // RECATCHA RESPONSE - REMOVE LINE BEFORE PRODUCTION
 
-        // consult backend, allow or deny privileges
+      // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
+      if (!password || password.length < 1 || !playerid || playerid.length < 1){
+          document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
+          password = '';
+          return;
+      }
+      else if (password.length < 10 || password.length > 30){
+          document.getElementById("hiddentext").innerHTML = "incorrect password" ;
+          password = '';
+          return;
+      }
+      else if (rc_response.length == 0) {
+          document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
+          password = '';
+          return;
+      }
 
-        const grant_access = 1; // replace this with backend check
+      // encrypt the password, clear out plaintext password
+      const hash = new SHA3(256);
+      hash.update(password);
+      password = '';
+      var passhash = hash.digest('hex');
 
-        if (grant_access === 1){
-            document.getElementById("hiddentext").innerHTML = "success" ;
-        } else {
-            document.getElementById("hiddentext").innerHTML = "incorrect player ID or password" ;
-        }
+      if (playerid.length < 6 || playerid.length > 20){
+          document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
+          passhash = '';
+          return;
+      }
+
+      // consult backend, allow or deny privileges
+
+      const grant_access = 1; // replace this with backend check
+
+      if (grant_access === 1){
+          document.getElementById("hiddentext").innerHTML = "success" ;
+      } else {
+          document.getElementById("hiddentext").innerHTML = "incorrect player ID or password" ;
+      }
 
 	}
 
-	function submit_signup() {
+  function check_playerid_constraints(playerid) { // SEE IF WE CAN CALL THIS FUNCTION ON CHANGE
+    // length check
+    if (playerid.length < 6 || playerid.length > 20){
+        document.getElementById("hiddentext").innerHTML = "player ID should be between 6 and 20 characters" ;
+        return false;
+    }
+
+    // profanity check
+    else if (playerid.search("fuck") != -1 || playerid.search("shit") != -1 || playerid.search("whore") != -1 || playerid.search("bitch") != -1 || playerid.search("asshole") != -1) {
+        document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
+        return false;
+    }
+
+    // consult database - "that player ID is already in use! try another one!"
+
+    return true;
+
+  }
+
+	function click_signup() {
+    // send PII to server
+    playerid_ok = check_playerid_constraints(playerid);
 
 	}
+
+
+  function check_password_constraints() {
+    if(password && password != password.toLocaleLowerCase() && password != password.toLocaleUpperCase()){ // check forat least one lower and one upper
+      document.getElementById("pw_upper_lower").style.color = "#28A53C"; // green
+    } else {
+      document.getElementById("pw_upper_lower").style.color = "#DD6539"; // red
+    }
+    if(password && /\d/.test(password)){ // check for at least one number
+      document.getElementById("pw_numbers").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_numbers").style.color = "#DD6539";
+    }
+    if(password && /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(password)){ // check for at least one symbol //OWASP Standard Symbol Set for passwords
+      document.getElementById("pw_symbols").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_symbols").style.color = "#DD6539";
+    }
+    if(password && password.length >= 10 && password.length <= 30){ // check for acceptable password length
+      document.getElementById("pw_len").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_len").style.color = "#DD6539";
+    }
+    if(password && !(password.value != repeat_password.value)){ // check for repeat password match
+      document.getElementById("pw_repeat_match").style.color = "#28A53C";
+    } else {
+      document.getElementById("pw_repeat_match").style.color = "#DD6539";
+    }
+  }
+
+  function toggle_visible() {
+    visible = !visible;
+  }
 
   onMount(() => {
-    window.submit_login = submit_login;
+    window.click_login = null;
   })
 
   onDestroy(() => {
-    window.submit_login = null;
+    window.click_login = null;
   })
 
 </script>
 
 <main>
-	<h1> Chefmoji </h1>
+	<h1> chef<br>moji </h1>
 	<p id="hiddentext">  </p>
 
-	<p> player id: </p>
+  <p class="input_label" style="right: 810px; top: 220px;"> player id: </p>
 	<label>
-        <input type="text" bind:value={playerid}>
-    </label>
+      <input type="text" name="username" class="input_box" style="top: 245px;" bind:value={playerid}>
+  </label>
 	<br>
 
-	<p> password: </p>
+  <p class="input_label" style="right: 810px; top: 280px;"> password: </p>
 	<label> <!-- ignore warnings in WebStorms, this input block works -->
-        <input type="password" bind:value={password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-    </label>
+      <input type="password" name="password" class="input_box" style="top: 305px;" bind:value={password} on:input={visible?check_password_constraints:''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+  </label>
 	<br>
 
-  	<form action="?" method="POST">
-          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
-    </form>
+  {#if visible}
+
+    <p class="input_label" style="right: 810px; top: 340px;"> repeat_password: </p>
+    <label> <!-- ignore warnings in WebStorms, this input block works -->
+        <input type="password" name="password" class="input_box" style="top: 365px;" bind:value={repeat_password} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+    </label>
     <br>
 
-	<button id="landbtn" on:click={submit_signup}> sign up </button>
-	<button id="landbtn" on:click={submit_login}> log in </button>
+    <p class="pw_constraints" id="pw_upper_lower" style="top: 467px; color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
+    <p class="pw_constraints" id="pw_numbers" style="top: 490px; color: #DD6539;"> contains numbers </p>
+    <p class="pw_constraints" id="pw_symbols" style="top: 513px; color: #DD6539;"> contains symbols </p>
+    <p class="pw_constraints" id="pw_len" style="top: 536px; color: #DD6539;"> length is between is between 10 and 30 characters </p>
+    <p class="pw_constraints" id="pw_repeat_match" style="top: 559px; color: #DD6539;"> passwords match </p>
+
+    <p class="input_label" style="right: 810px; top: 400px;"> email: </p>
+    <label>
+        <input type="email" name="email" class="input_box" style="top: 425px;"bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+    </label>
+    <br>
+
+  {/if}
+
+	<form action="?" method="POST">
+        <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
+  </form>
+  <br>
+
+  {#if !visible}
+    <button class="landbtn" style="left: 672px; top: 530px;" on:click={toggle_visible}> sign up </button>
+  	<button class="landbtn" style="left: 1022px; top: 530px;" on:click={click_login}> log in </button>
+  {:else}
+    <button class="landbtn" style="left: 672px; top: 680px;" on:click={toggle_visible}> go back </button>
+    <button class="landbtn" style="left: 1022px; top: 680px;" on:click={click_signup}> make my account </button>
+  {/if}
+
+
+
+
 </main>
 
 <style>
@@ -102,38 +195,92 @@
 	}
 
 	h1 {
-	    text-align: left;
-		color: #003eee;
-		text-transform: lowercase;
-		font-size: 4em;
-		font-weight: 100;
-		font: 'Quicksand'; /* make bold at some point */
+    	position: absolute;
+		width: 210px;
+		height: 250px;
+		left: 70px;
+		top: 225px;
+
+		font-family: Quicksand;
+		font-style: normal;
+		font-weight: bold;
+		font-size: 100px;
+		line-height: 117px;
+		text-align: center;
+
+		color: #7E9DC7;
 	}
 
 	p {
-	    text-align: left;
 		color: #000000;
 		text-transform: lowercase;
-		font: 'Quicksand';
+		font-family: 'Quicksand';
 	}
 
-	input {
-	    text-align: left;
-		font: 'Quicksand';
+	.input_label {
+		/* left and top attributes defined inline */
+    position: absolute;
+		width: 127px;
+		height: 38px;
+
+		font-family: Quicksand;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 30px;
+		line-height: 35px;
+		text-align: right;
+
+		color: #000000;
 	}
 
-	#landbtn {
-        font : 'Quicksand';
-        padding: 0.15rem 0.5rem;
-        background-color: #AEC2DC;
-        cursor: pointer;
-        color: black; /* font color */
-    }
+	.input_box {
+		font-family: Quicksand;
+		font-style: normal;
+		font-weight: normal;
+		position: absolute;
+		width: 650px;
+		height: 40px;
+		left: 672px;
 
-    #landbtn:hover {
-      background-color: #7E9DC7; /* Green */
-      color: white;
-    }
+		background: #FFFFFF;
+		border: 1px solid #000000;
+		border-radius: 15px;
+	}
+
+  .pw_constraints {
+    position: absolute;
+    left: 672px;
+
+    font-size: 20px;
+  }
+
+	#recaptcha {
+		position: absolute;
+		left: 850px;
+    top: 430px;
+	}
+
+	.landbtn {
+		/* left and top attributes defined inline */
+		position: absolute;
+	  width: 300px;
+		height: 40px;
+
+		background: #AEC2DC;
+		border-radius: 15px;
+		cursor: pointer;
+
+    font-family: Quicksand;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 20px;
+    color: black; /* font color */
+  }
+
+  .landbtn:hover {
+    background: #7E9DC7; /* Green */
+    color: white; /* font color */
+  }
 
 	@media (min-width: 640px) {
 		main {
