@@ -84,11 +84,12 @@
 	function click_signup() {
     // send PII to server
     playerid_ok = check_playerid_constraints(playerid);
+    password_ok = check_password_constraints(password);
 
 	}
 
 
-  function check_password_constraints() {
+  function check_password_constraints(password) {
     if(password && password != password.toLocaleLowerCase() && password != password.toLocaleUpperCase()){ // check forat least one lower and one upper
       document.getElementById("pw_upper_lower").style.color = "#28A53C"; // green
     } else {
@@ -195,7 +196,7 @@
 	}
 
 	h1 {
-    	position: absolute;
+    position: absolute;
 		width: 210px;
 		height: 250px;
 		left: 70px;

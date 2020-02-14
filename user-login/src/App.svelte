@@ -81,14 +81,8 @@
 
   }
 
-	function click_signup() {
-    // send PII to server
-    playerid_ok = check_playerid_constraints(playerid);
 
-	}
-
-
-  function check_password_constraints() {
+  function check_password_constraints(password) {
     if(password && password != password.toLocaleLowerCase() && password != password.toLocaleUpperCase()){ // check forat least one lower and one upper
       document.getElementById("pw_upper_lower").style.color = "#28A53C"; // green
     } else {
@@ -115,6 +109,13 @@
       document.getElementById("pw_repeat_match").style.color = "#DD6539";
     }
   }
+
+  function click_signup() {
+    // send PII to server
+    playerid_ok = check_playerid_constraints(playerid);
+    password_ok = check_password_constraints(password);
+
+	}
 
   function toggle_visible() {
     visible = !visible;
@@ -195,7 +196,7 @@
 	}
 
 	h1 {
-    	position: absolute;
+    position: absolute;
 		width: 210px;
 		height: 250px;
 		left: 70px;
@@ -216,6 +217,13 @@
 		text-transform: lowercase;
 		font-family: 'Quicksand';
 	}
+
+  #hiddentext {
+    font-size: 30px;
+    text-align: center;
+    top: 280px;
+
+  }
 
 	.input_label {
 		/* left and top attributes defined inline */
