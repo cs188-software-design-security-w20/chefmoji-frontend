@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package chefmoji;
+
+// /Users/sarthakmore/Documents/CS188/chefmoji-frontend/node_modules/protobufjs/bin/pbjs -t static-module -w commonjs -o compiled.js /Users/sarthakmore/Documents/CS188/chefmoji-frontend/src/proto/game_update.proto /Users/sarthakmore/Documents/CS188/chefmoji-frontend/src/proto/player_action.proto
+
+message PlayerAction {
+    string key_press = 1;
+}
