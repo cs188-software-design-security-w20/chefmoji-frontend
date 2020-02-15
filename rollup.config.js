@@ -5,6 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
+const build_into = process.env.BUILD_INTO || 'public';
 
 export default {
 	input: 'src/main.js',
@@ -12,7 +13,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'public/build/bundle.js'
+		file: build_into+'/build/bundle.js'
 	},
 	plugins: [
 		// If you have external dependencies installed from
@@ -46,7 +47,7 @@ export default {
 
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
-		!production && livereload('public'),
+		!production && livereload(build_into),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify

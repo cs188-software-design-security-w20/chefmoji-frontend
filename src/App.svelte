@@ -34,17 +34,31 @@
 	import chefmoji from './proto/messages.js';
 	console.log(chefmoji);
 
-	const socket = io('http://localhost:5000');
+	let uid = '';
+	let game_id = '';
+	let ticked = false;
 
-	const TEST_GAME_SESSION = '1aLc90';
-
-	socket.on('connect', () => {
-		console.log(socket.id);
+	socket.on('issue-id', (issued_id) => {
+		console.log("Issued id: " + issued_id);
+		uid = issued_id;
 	});
 
-	socket.on('accepting-connections', () => {
-		console.log('Server has notified me that it\'s accepting connections. Time to join the game!');
-		socket.emit('join-req', new Map([['id', TEST_GAME_SESSION]]));
+	socket.on('connect', () => {
+		console.log("CONNECTED");
+		socket.emit('test');
+		fetch(ADDR+'/issue-id').then(()=>{
+			return fetch(ADDR+'/create-game')
+		}).then(()=>{
+			console.log('game created server-side!')
+		}).catch((error) => {
+			console.error(error);
+		});
+	});
+
+	socket.on('session-init', (generated_game_id) => {
+		game_id = generated_game_id;
+		console.log("GAME ID: " + game_id);
+		socket.emit('join-game-with-id', game_id, uid);
 	});
 	let map = [];
 	socket.on('tick', (data) => {
@@ -164,7 +178,6 @@
 
 	function handleKeydown(event) {
 		let key = event.key;
-		let game_id = TEST_GAME_SESSION;
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
 		if (validKey(key)) {
 			console.log(key);
@@ -180,6 +193,7 @@
 		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
 
+	// These cell functions are temporary logic as we figure out how to implement protobuf readings in JS
 	function cellToColor(cell){
 		switch (cell){
 			case 'W':
@@ -209,6 +223,11 @@
 			default:
 				return cell
 		}
+	}
+
+	function playGame(){
+		socket.emit('play', uid, game_id);
+		ticked = true;
 	}
 	
 </script>
