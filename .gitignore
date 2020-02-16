@@ -101,6 +101,9 @@ dist
 # DynamoDB Local files
 .dynamodb/
 
+# Rollup files
+public/build
+
 # TernJS port file
 .tern-port
 
