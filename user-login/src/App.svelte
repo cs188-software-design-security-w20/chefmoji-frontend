@@ -134,7 +134,7 @@
         // send PII to server
         var playerid_ok = check_playerid_constraints(playerid);
         var password_ok = check_password_constraints(password, repeat_password);
-        
+
         // need to hash password before sending to server
         const hash = new SHA3(256);
         hash.update(password);
@@ -154,9 +154,16 @@
             },
             body: JSON.stringify(data),
         })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((data) => {
             console.log('Success Register:', data);
+            console.log(data['success'])
+            // consult backend, allow or deny privileges
+            if (data['success']){
+                document.getElementById("hiddentext").innerHTML = "Successful Registration" ;
+            } else {
+                document.getElementById("hiddentext").innerHTML = "Unable to register account. Please try again" ;
+            }
         })
         .catch((error) => {
             console.error('Error Register:', error);
