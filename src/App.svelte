@@ -40,7 +40,7 @@
 	let map = [];
 	const ADDR = 'http://localhost:8080';
 
-	const socket = io.socket(ADDR, { transports: ['websocket'] });
+	const socket = io(ADDR, { transports: ['websocket'] });
 
 	socket.on('issue-id', (issued_id) => {
 		console.log("Issued id: " + issued_id);
@@ -91,12 +91,9 @@
 		let key = event.key;
 		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
 		if (validKey(key)) {
-			console.log(key);
 			let keyPressMsg = PlayerAction.create({ keyPress : key});
-			console.log(keyPressMsg)
 			let bytes = PlayerAction.encode(keyPressMsg).finish();
-			console.log(bytes);
-			socket.emit('keypress', bytes, game_id);
+			socket.emit('keypress', bytes, uid, game_id);
 		}
 	}
 
@@ -148,6 +145,12 @@
 <svelte:head>
 	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 </svelte:head>
+
+{#if (game_id != '')}
+<button on:click={playGame}>
+	Play game!
+</button>
+{/if}
 
 
 <div class='content'>
