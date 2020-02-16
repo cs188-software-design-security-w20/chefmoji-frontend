@@ -30,13 +30,17 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
+	import {recipes} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
-	console.log(chefmoji);
 
 	let uid = '';
 	let game_id = '';
 	let ticked = false;
+	let map = [];
+	const ADDR = 'http://localhost:8080';
+
+	const socket = io.socket(ADDR, { transports: ['websocket'] });
 
 	socket.on('issue-id', (issued_id) => {
 		console.log("Issued id: " + issued_id);
@@ -45,7 +49,6 @@
 
 	socket.on('connect', () => {
 		console.log("CONNECTED");
-		socket.emit('test');
 		fetch(ADDR+'/issue-id').then(()=>{
 			return fetch(ADDR+'/create-game')
 		}).then(()=>{
@@ -60,106 +63,14 @@
 		console.log("GAME ID: " + game_id);
 		socket.emit('join-game-with-id', game_id, uid);
 	});
-	let map = [];
+
 	socket.on('tick', (data) => {
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 		}
-	})
-
-	const recipes = {
-		'🌭' : {
-			name : 'Hot Dog',
-			emoji : '🌭',
-			difficulty : 1,
-			ingredients: [
-				{
-					emoji: '🍞',
-					chopped: false
-				},
-				{
-					emoji: '🥩',
-					chopped: false
-				}
-			],
-			cooked: true
-		},
-		'🍕' : {
-			name : 'Pizza',
-			emoji : '🍕',
-			difficulty : 1,
-			ingredients: [
-				{
-					emoji: '🍞',
-					chopped: false
-				},
-				{
-					emoji: '🧀',
-					chopped: false
-				},
-				{
-					emoji: '🍅',
-					chopped: false
-				}
-			],
-			cooked: true
-		},
-		'🧇' : {
-			name : 'Waffles',
-			emoji : '🧇',
-			difficulty : 1,
-			ingredients: [
-				{
-					emoji: '🥛',
-					chopped: false
-				},
-				{
-					emoji: '🥚',
-					chopped: false
-				},
-				{
-					emoji: '🌾',
-					chopped: false
-				}
-			],
-			cooked: true
-		},
-		'🍔' : {
-			name : 'Hamburger',
-			emoji : '🍔',
-			difficulty : 3,
-			ingredients: [
-				{
-					emoji: '🍞',
-					chopped: false
-				},
-				{
-					emoji: '🧀',
-					chopped: false
-				},
-				{
-					emoji: '🥩',
-					chopped: false
-				},
-				{
-					emoji: '🥬',
-					chopped: true
-				},
-				{
-					emoji: '🍅',
-					chopped: true
-				},
-				{
-					emoji: '🧅',
-					chopped: true
-				}
-
-			],
-			cooked: true
-		}
-	}
+	});
 
 	let orders = ['🍔', '🧇'];
 
