@@ -101,14 +101,14 @@ dist
 # DynamoDB Local files
 .dynamodb/
 
+# Rollup files
+public/build
+
 # TernJS port file
 .tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
-
-# Rollup builds
-public/
 
 # MacOS .DS_STORE
 **/.DS_STORE
