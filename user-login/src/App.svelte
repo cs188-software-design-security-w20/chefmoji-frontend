@@ -4,62 +4,75 @@
 </svelte:head>
 
 <script>
-  import { onMount, onDestroy } from 'svelte';
-  import { SHA3 } from 'sha3';
+    import { onMount, onDestroy } from 'svelte';
+    import { SHA3 } from 'sha3';
 
-	let playerid, password, repeat_password, email;
-  let visible = false;
+	let playerid, password, repeat_password, email, input_totp;
+    let visible = false;
 
-  // let pass_upper = false, pass_lower = false, pass_number = false;
-  // let pass_special = false, pass_len = false;
+    // let pass_upper = false, pass_lower = false, pass_number = false;
+    // let pass_special = false, pass_len = false;
 
-  var isEmailWithTLD = function (email){
-	   return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
-  };
+    var isEmailWithTLD = function (email){
+        return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
+    };
 
+    //debug
 	function click_login() {
-      var rc_response = grecaptcha.getResponse();
-      console.log(rc_response); // RECATCHA RESPONSE - REMOVE LINE BEFORE PRODUCTION
+        // var rc_response = grecaptcha.getResponse();
+        // console.log(rc_response); // RECATCHA RESPONSE - REMOVE LINE BEFORE PRODUCTION
 
-      // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-      if (!password || password.length < 1 || !playerid || playerid.length < 1){
-          document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
-          password = '';
-          return;
-      }
-      else if (password.length < 10 || password.length > 30){
-          document.getElementById("hiddentext").innerHTML = "incorrect password" ;
-          password = '';
-          return;
-      }
-      else if (rc_response.length == 0) {
-          document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
-          password = '';
-          return;
-      }
+        // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
+        if (!password || password.length < 1 || !playerid || playerid.length < 1){
+            document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
+            password = '';
+            return;
+        }
+        else if (password.length < 10 || password.length > 30){
+            document.getElementById("hiddentext").innerHTML = "incorrect password" ;
+            password = '';
+            return;
+        }
+        else if (playerid.length < 6 || playerid.length > 20){
+            document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
+            passhash = '';
+            return;
+        }
+        // else if (rc_response.length == 0) {
+        //     document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
+        //     password = '';
+        //     return;
+        // }
 
-      // encrypt the password, clear out plaintext password
-      const hash = new SHA3(256);
-      hash.update(password);
-      password = '';
-      var passhash = hash.digest('hex');
+        // encrypt the password, clear out plaintext password
+        const hash = new SHA3(256);
+        hash.update(password);
+        password = '';
+        var passhash = hash.digest('hex');
 
-      if (playerid.length < 6 || playerid.length > 20){
-          document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
-          passhash = '';
-          return;
-      }
-
-      // consult backend, allow or deny privileges
-
-      const grant_access = 1; // replace this with backend check
-
-      if (grant_access === 1){
-          document.getElementById("hiddentext").innerHTML = "success" ;
-      } else {
-          document.getElementById("hiddentext").innerHTML = "incorrect player ID or password" ;
-      }
-
+        console.log(playerid, passhash, input_totp)
+        var data = {playerid: playerid, password: passhash, totp: input_totp};//22DIFT2G4WICP76W
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Success:', data);
+            console.log(data['success'])
+            // consult backend, allow or deny privileges
+            if (data['success']){
+                document.getElementById("hiddentext").innerHTML = "success" ;
+            } else {
+                document.getElementById("hiddentext").innerHTML = "incorrect player ID or password" ;
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 	}
 
   function check_playerid_constraints(pid) { // SEE IF WE CAN CALL THIS FUNCTION ON CHANGE
@@ -117,12 +130,38 @@
     return flag;
   }
 
-  function click_signup() {
-    // send PII to server
-    var playerid_ok = check_playerid_constraints(playerid);
-    var password_ok = check_password_constraints(password, repeat_password);
+    function click_signup() {
+        // send PII to server
+        var playerid_ok = check_playerid_constraints(playerid);
+        var password_ok = check_password_constraints(password, repeat_password);
+        
+        // need to hash password before sending to server
+        const hash = new SHA3(256);
+        hash.update(password);
+        password = '';
+        var passhash = hash.digest('hex');
 
-	}
+        console.log(playerid, passhash)
+        var data = {
+            playerid: playerid,
+            password: passhash,
+            email: email
+        };
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            console.log('Success Register:', data);
+        })
+        .catch((error) => {
+            console.error('Error Register:', error);
+        });
+    }
 
   function toggle_visible() {
     visible = !visible;
@@ -153,6 +192,13 @@
       <input type="password" name="password" class="input_box" style="top: 305px;" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
   </label>
 	<br>
+  {#if !visible}
+  <p class="input_label" style="left: 500px; top: 340px;"> OTP: </p>
+	<label> <!-- ignore warnings in WebStorms, this input block works -->
+      <input type="input_totp" name="input_totp" class="input_box" style="top: 365px;" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+  </label>
+	<br>
+  {/if}
 
   {#if visible}
 

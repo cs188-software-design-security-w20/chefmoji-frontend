@@ -1,0 +1,70 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Chefmoji - Email Confirmation</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      body {
+        /* display: flex; */
+        color: #fff;
+        text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, .5);
+        box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+        height: 100%;
+        background-color: #aaa;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+  </head>
+  <body class="text-center" cz-shortcut-listen="true">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+  </header>
+
+  <main role="main" class="inner cover">
+      {% if success is same as true %}
+        <h1 class="cover-heading">ERROR</h1>
+      {% endif %}
+
+      {% if status == 'DOESNOTEXIST' %}
+      <p class="lead">Account does not exist</p>
+      {% endif %}
+
+
+    <!-- <h1 class="cover-heading">{{main_contentz}}</h1>
+    <p class="lead">{{description}}</p> -->
+
+    <p class="lead">
+      {% if status is sameas true %}
+      <a href="/" class="{{display_button}} btn btn-sm mt-4 btn-secondary">Click Here To Login</a>
+      {% endif %}
+    </p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+  </footer>
+</div>
+
+
+</body></html>
