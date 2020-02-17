@@ -30,7 +30,7 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import {recipes} from './recipes.js';
+	// import {recipes} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
@@ -38,6 +38,7 @@
 	let game_id = '';
 	let ticked = false;
 	let map = [];
+	let cookbook = {};
 	const ADDR = 'http://localhost:8080';
 
 	const socket = io(ADDR, { transports: ['websocket'] });
@@ -58,8 +59,10 @@
 		});
 	});
 
-	socket.on('session-init', (generated_game_id) => {
-		game_id = generated_game_id;
+	socket.on('session-init', (data) => {
+		console.log(data)
+		cookbook = data.cookbook;
+		game_id = data.game_id;
 		console.log("GAME ID: " + game_id);
 		socket.emit('join-game-with-id', game_id, uid);
 	});
@@ -69,6 +72,12 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
+		}
+	});
+
+	socket.on('order', (data) => {
+		if (data) {
+			console.log(data);
 		}
 	});
 
@@ -171,7 +180,9 @@
 	<div class='orders'>
 		<h1>Orders</h1>
 		{#each orders as order}
-			<Order order={recipes[order]}/>
+			{#if cookbook[order]}
+				<Order order={cookbook[order]}/>
+			{/if}
 		{/each}
 	</div>
 </div>

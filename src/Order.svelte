@@ -44,7 +44,6 @@
 
 <script>
     export let order;
-    console.log(order);
 </script>
 
 <div class='order'>
