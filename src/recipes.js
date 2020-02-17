@@ -1,3 +1,21 @@
+
+const OrderTypeEnum = Object.freeze({HOT_DOG: 0, PIZZA: 1, WAFFLES: 2, HAMBURGER: 3});
+
+const EmojiFromOrderEnum = (type) => {
+    switch (type) {
+        case OrderTypeEnum.HOT_DOG:
+            return '🌭';
+        case OrderTypeEnum.PIZZA:
+            return '🍕';
+        case OrderTypeEnum.WAFFLES:
+            return '🧇';
+        case OrderTypeEnum.HAMBURGER:
+            return '🍔';
+        default:
+            return undefined;
+    }
+};
+
 const recipes = {
     '🌭' : {
         name : 'Hot Dog',
@@ -90,4 +108,4 @@ const recipes = {
     }
 }
 
-export {recipes};
+export {recipes, OrderTypeEnum, EmojiFromOrderEnum};

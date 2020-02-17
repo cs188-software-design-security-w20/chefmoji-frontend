@@ -30,7 +30,7 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import {recipes} from './recipes.js';
+	import {recipes, OrderTypeEnum, EmojiFromOrderEnum} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
@@ -72,7 +72,21 @@
 		}
 	});
 
-	let orders = ['🍔', '🧇'];
+	socket.on('order', (data) => {
+		console.log("ORDER RECEIVED!");
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = OrderUpdate.decode(bytes);
+			console.log(JSON.stringify(decoded));
+			if (!decoded.fulfilled) {
+				console.log(decoded.orderType);
+				orders = [...orders, EmojiFromOrderEnum(decoded.orderType)];
+				console.log(orders);
+			}
+		}
+	});
+
+	let orders = [];
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -146,10 +160,10 @@
 	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 </svelte:head>
 
-{#if (game_id != '')}
-<button on:click={playGame}>
-	Play game!
-</button>
+{#if (game_id != '' && !ticked)}
+	<button on:click={playGame}>
+		Play game!
+	</button>
 {/if}
 
 
