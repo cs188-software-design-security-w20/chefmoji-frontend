@@ -30,11 +30,7 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-<<<<<<< HEAD
 	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
-=======
-	// import {recipes} from './recipes.js';
->>>>>>> 4caf28554dd9abfe98fdc9317ec2820304279b01
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
@@ -64,7 +60,7 @@
 	});
 
 	socket.on('session-init', (data) => {
-		console.log(data)
+		console.log(JSON.stringify(data));
 		cookbook = data.cookbook;
 		game_id = data.game_id;
 		console.log("GAME ID: " + game_id);
@@ -79,7 +75,7 @@
 		}
 	});
 
-	let orders = new Map();
+	let orders = {};
 
 	socket.on('order', (data) => {
 		if (data) {
@@ -87,27 +83,21 @@
 			let decoded = OrderUpdate.decode(bytes);
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
-				if (!orders.has(decoded.uid)){
-					orders.set(decoded.uid, {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)});
-					console.log(orders);
-					// Important: this seeming no-op trigger orders prop updates within svelte.
-					orders = orders;
+				if (!orders.hasOwnProperty(`${decoded.uid}`)){
+					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
 				}
 
 				let orderCountdownHandler = undefined;
 				orderCountdownHandler = setInterval(function(uid){
-					console.log(`UID: ${uid}`);
-					console.log(`obj: ${orders.get(uid)}`);
-					orders.set(uid, {ttl: orders.get(uid).ttl-1, ...orders.get(uid)});
-					console.log(orders.get(uid).ttl);
-					if (orders.get(uid).ttl <= 0){
-						orders.delete(uid);
+					let ttl = orders[`${uid}`].ttl;
+					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
+					if (orders[`${uid}`].ttl <= 0){
+						delete orders[`${uid}`]
 						if (orderCountdownHandler !== undefined){
 							clearInterval(orderCountdownHandler);
 						}
 					}
-					// Important: this seeming no-op trigger orders prop updates within svelte.
-					orders = orders;
+					orders = {...orders};
 				}, 1000, decoded.uid);
 			}
 		}
@@ -209,7 +199,7 @@
 	
 	<div class='orders'>
 		<h1>Orders</h1>
-		{#each orders.values() as order}
+		{#each Object.values(orders) as order}
 			<Order order={recipes[order.emoji]} ttl={order.ttl}/>
 		{/each}
 	</div>
