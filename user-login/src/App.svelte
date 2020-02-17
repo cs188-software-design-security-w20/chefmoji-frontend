@@ -75,7 +75,7 @@
         });
 	}
 
-  function check_playerid_constraints(pid) { // SEE IF WE CAN CALL THIS FUNCTION ON CHANGE
+  function check_playerid_constraints(pid) {
     // length check
     if (pid.length < 6 || pid.length > 20){
         document.getElementById("hiddentext").innerHTML = "player ID should be between 6 and 20 characters" ;
@@ -185,65 +185,73 @@
 </script>
 
 <main>
-	<h1> chef<br>moji </h1>
-	<p id="hiddentext">  </p>
+	<h1 id="gamename"> chef<br>moji </h1>
 
-  <p class="input_label" style="left: 512px; top: 220px;"> player id: </p>
-	<label>
-      <input type="text" name="username" class="input_box" style="top: 245px;" bind:value={playerid}>
-  </label>
-	<br>
+  <div id="entire_input_form">
+    <p id="hiddentext"> <br> </p>
+    <div class ="input_div">
+      <p> player id: </p>
+    	<label>
+          <input type="text" name="username" bind:value={playerid}>
+      </label>
+    </div>
 
-  <p class="input_label" style="left: 500px; top: 280px;"> password: </p>
-	<label> <!-- ignore warnings in WebStorms, this input block works -->
-      <input type="password" name="password" class="input_box" style="top: 305px;" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-  </label>
-	<br>
-  {#if !visible}
-  <p class="input_label" style="left: 500px; top: 340px;"> OTP: </p>
-	<label> <!-- ignore warnings in WebStorms, this input block works -->
-      <input type="input_totp" name="input_totp" class="input_box" style="top: 365px;" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-  </label>
-	<br>
-  {/if}
+    <div class ="input_div">
+      <p> password: </p>
+    	<label> <!-- ignore warnings in WebStorms, this input block works -->
+          <input type="password" name="password" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      </label>
+    </div>
 
-  {#if visible}
+    {#if !visible}
+    <div class ="input_div">
+      <p> totp (6 digits): </p>
+    	<label> <!-- ignore warnings in WebStorms, this input block works -->
+          <input type="text" name="input_totp" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      </label>
+    </div>
+    {/if}
 
-    <p class="input_label" style="left: 405px; top: 340px;" > repeat password: </p>
-    <label> <!-- ignore warnings in WebStorms, this input block works -->
-        <input type="password" name="password" class="input_box" style="top: 365px;" bind:value={repeat_password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-    </label>
-    <br>
+    {#if visible}
+      <div class ="input_div">
+        <p> repeat password: </p>
+        <label> <!-- ignore warnings in WebStorms, this input block works -->
+            <input type="password" name="password" bind:value={repeat_password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        </label>
+      </div>
 
-    <p class="pw_constraints" id="pw_upper_lower" style="top: 407px; color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
-    <p class="pw_constraints" id="pw_numbers" style="top: 430px; color: #DD6539;"> contains numbers </p>
-    <p class="pw_constraints" id="pw_symbols" style="top: 453px; color: #DD6539;"> contains symbols </p>
-    <p class="pw_constraints" id="pw_len" style="top: 476px; color: #DD6539;"> length is between is between 10 and 30 characters </p>
-    <p class="pw_constraints" id="pw_repeat_match" style="top: 499px; color: #DD6539;"> passwords match </p>
+      <div class = "pw_constraints_div">
+      <p id="pw_upper_lower" style="color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
+      <p id="pw_numbers" style="color: #DD6539;"> contains numbers </p>
+      <p id="pw_symbols" style="color: #DD6539;"> contains symbols </p>
+      <p id="pw_len" style="color: #DD6539;"> length is between is between 10 and 30 characters </p>
+      <p id="pw_repeat_match" style="color: #DD6539;"> passwords match </p>
+      </div>
 
-    <p class="input_label" style="left: 514px; top: 541px;"> email: </p>
-    <label>
-        <input type="email" name="email" class="input_box" style="top: 566px;"bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-    </label>
-    <br>
+      <div class = "input_div">
+        <p> email: </p>
+        <label>
+            <input type="email" name="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+        </label>
+        <br>
+      </div>
+    {/if}
 
-  {/if}
+  	<form action="?" method="POST">
+          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
+    </form>
 
-	<form action="?" method="POST">
-        <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
-  </form>
-  <br>
+    <div class="landbtn_div">
+      {#if !visible}
+        <button class="landbtn" on:click={toggle_visible}> sign up </button>
+      	<button class="landbtn" on:click={click_login}> log in </button>
+      {:else}
+        <button class="landbtn" on:click={toggle_visible}> go back </button>
+        <button class="landbtn" on:click={click_signup}> make my account </button>
+      {/if}
+    </div>
 
-  {#if !visible}
-    <button class="landbtn" style="left: 672px; top: 530px;" on:click={toggle_visible}> sign up </button>
-  	<button class="landbtn" style="left: 1022px; top: 530px;" on:click={click_login}> log in </button>
-  {:else}
-    <button class="landbtn" style="left: 672px; top: 703px;" on:click={toggle_visible}> go back </button>
-    <button class="landbtn" style="left: 1022px; top: 703px;" on:click={click_signup}> make my account </button>
-  {/if}
-
-
-
+  </div> <!-- end entire_input_form -->
 
 </main>
 
@@ -255,12 +263,15 @@
 		margin: 0 auto;
 	}
 
-	h1 {
+	#gamename {
     position: absolute;
 		width: 210px;
 		height: 250px;
 		left: 70px;
 		top: 225px;
+
+    /* position: absolute;
+    margin-top: 15%; */
 
 		font-family: Quicksand;
 		font-style: normal;
@@ -276,65 +287,101 @@
 		color: #000000;
 		text-transform: lowercase;
 		font-family: 'Quicksand';
+    font-style: normal;
+		font-weight: normal;
+    white-space: nowrap;
 	}
 
-  #hiddentext {
+  #entire_input_form {
     position: absolute;
-    font-size: 30px;
-    text-align: left;
-    top: 150px;
-    left: 680px;
+    margin-top: 5%;
+    margin-left: 35%;
+    display: flex;
+    flex-flow: column nowrap;
   }
 
-	.input_label {
-		/* left and top attributes defined inline */
-    position: absolute;
+  #hiddentext {
+    position: relative;
+    font-size: 30px;
+    text-align: center;
+    margin: 0px 0px 10px 0px;
+  }
+
+  .input_div { /* child items are .input_label and .input_box */
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    float: right;
+  }
+
+	.input_div p { /* labels for input boxes */
+    display: flex;
+    justify-content: flex-end;
+    /* margin-right: 20px; */
+
 		width: 127px;
 		height: 38px;
-
-		font-family: Quicksand;
-		font-style: normal;
-		font-weight: normal;
 		font-size: 30px;
-		line-height: 35px;
-		text-align: right;
+		/* line-height: 35px; */
     white-space: nowrap;
 
 		color: #000000;
+    margin: 23px 20px 23px 0px;
 	}
 
-	.input_box {
+	.input_div input { /* input boxes */
 		font-family: Quicksand;
 		font-style: normal;
 		font-weight: normal;
-		position: absolute;
+
 		width: 650px;
 		height: 40px;
-		left: 672px;
+    margin: 0px 120px 0px 0px;
 
 		background: #FFFFFF;
 		border: 1px solid #000000;
 		border-radius: 15px;
+
 	}
 
-  .pw_constraints {
-    position: absolute;
-    left: 672px;
+  .pw_constraints_div { /* block of constraints */
+    display: flex;
+    flex-flow: column nowrap;
+    /* height: 100%; */
+    position: relative;
+    margin-left: 17%;
+    /* margin-top: 25%; */
+  }
 
+  .pw_constraints_div p { /* individual constraints */
     font-size: 20px;
+    line-height: 23px;
+    flex-basis: content;
+    margin: 0px 0px 0px 0px;
   }
 
 	#recaptcha {
-		position: absolute;
-		left: 850px;
-    top: 100px; /*430px*/
+		/* position: absolute; */
+		/* left: 850px; */
+    /* top: 430px; */
+
+    position: relative;
+    display: block;
+    margin: 0 auto;
 	}
 
+  .landbtn_div {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+  }
+
 	.landbtn {
-		/* left and top attributes defined inline */
-		position: absolute;
 	  width: 300px;
 		height: 40px;
+
+    margin: 15px 60px;
 
 		background: #AEC2DC;
 		border-radius: 15px;
