@@ -30,7 +30,11 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
+<<<<<<< HEAD
 	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
+=======
+	// import {recipes} from './recipes.js';
+>>>>>>> 4caf28554dd9abfe98fdc9317ec2820304279b01
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
@@ -38,6 +42,7 @@
 	let game_id = '';
 	let ticked = false;
 	let map = [];
+	let cookbook = {};
 	const ADDR = 'http://localhost:8080';
 
 	const socket = io(ADDR, { transports: ['websocket'] });
@@ -58,8 +63,10 @@
 		});
 	});
 
-	socket.on('session-init', (generated_game_id) => {
-		game_id = generated_game_id;
+	socket.on('session-init', (data) => {
+		console.log(data)
+		cookbook = data.cookbook;
+		game_id = data.game_id;
 		console.log("GAME ID: " + game_id);
 		socket.emit('join-game-with-id', game_id, uid);
 	});
