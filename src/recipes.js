@@ -16,6 +16,8 @@ const EmojiFromOrderEnum = (type) => {
     }
 };
 
+const ORDER_TTL = 20;
+
 const recipes = {
     '🌭' : {
         name : 'Hot Dog',
@@ -108,4 +110,4 @@ const recipes = {
     }
 }
 
-export {recipes, OrderTypeEnum, EmojiFromOrderEnum};
+export {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL};

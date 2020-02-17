@@ -30,7 +30,7 @@
 <script>
 	import Order from './Order.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import {recipes, OrderTypeEnum, EmojiFromOrderEnum} from './recipes.js';
+	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
@@ -72,21 +72,39 @@
 		}
 	});
 
+	let orders = new Map();
+
 	socket.on('order', (data) => {
-		console.log("ORDER RECEIVED!");
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
-			console.log(JSON.stringify(decoded));
 			if (!decoded.fulfilled) {
-				console.log(decoded.orderType);
-				orders = [...orders, EmojiFromOrderEnum(decoded.orderType)];
-				console.log(orders);
+				// At current, allow no updates
+				if (!orders.has(decoded.uid)){
+					orders.set(decoded.uid, {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)});
+					console.log(orders);
+					// Important: this seeming no-op trigger orders prop updates within svelte.
+					orders = orders;
+				}
+
+				let orderCountdownHandler = undefined;
+				orderCountdownHandler = setInterval(function(uid){
+					console.log(`UID: ${uid}`);
+					console.log(`obj: ${orders.get(uid)}`);
+					orders.set(uid, {ttl: orders.get(uid).ttl-1, ...orders.get(uid)});
+					console.log(orders.get(uid).ttl);
+					if (orders.get(uid).ttl <= 0){
+						orders.delete(uid);
+						if (orderCountdownHandler !== undefined){
+							clearInterval(orderCountdownHandler);
+						}
+					}
+					// Important: this seeming no-op trigger orders prop updates within svelte.
+					orders = orders;
+				}, 1000, decoded.uid);
 			}
 		}
 	});
-
-	let orders = [];
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -184,8 +202,8 @@
 	
 	<div class='orders'>
 		<h1>Orders</h1>
-		{#each orders as order}
-			<Order order={recipes[order]}/>
+		{#each orders.values() as order}
+			<Order order={recipes[order.emoji]} ttl={order.ttl}/>
 		{/each}
 	</div>
 </div>

@@ -44,10 +44,26 @@
 
 <script>
     export let order;
+    export let ttl;
     console.log(order);
+
+    function getTTLStyle(ttl){
+        if(ttl > 10){
+            return '#339933';
+        }
+        else if(ttl > 5){
+            return '#e6e600';
+        }
+        else {
+            return '#e62e00';
+        }
+    }
 </script>
 
 <div class='order'>
+    <div class='timer' style={`color: ${getTTLStyle(ttl)};`}>
+        {ttl}
+    </div>
     <div class='cooked-wrapper'>
         {#if order.cooked}
             Cooked
