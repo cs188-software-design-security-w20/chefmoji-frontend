@@ -52,6 +52,8 @@
         var passhash = hash.digest('hex');
 
         console.log(playerid, passhash, input_totp)
+
+        // consult backend
         var data = {playerid: playerid, password: passhash, totp: input_totp};//22DIFT2G4WICP76W
         fetch('/login', {
             method: 'POST',
@@ -96,8 +98,8 @@
     }
 
     // consult database - "that player ID is already in use! try another one!"
-    var not_unique = false;
-    if (not_unique) {
+    var reused_playerid = false;
+    if (reused_playerid) {
       document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
       return false;
     }
@@ -164,6 +166,8 @@
         var passhash = hash.digest('hex');
 
         console.log(playerid, passhash)
+
+        // consult server
         var data = {
             playerid: playerid,
             password: passhash,
@@ -182,10 +186,14 @@
             console.log(data['success'])
             // consult backend, allow or deny privileges
             if (data['success']){
-                document.getElementById("hiddentext").innerHTML = "Successful Registration" ;
-                email = '';
+              document.getElementById("hiddentext").innerHTML = "success! a verification link has been sent to your email" ;
+              email = '';
+            } else if (data['playerid'] == "NOTUNIQUE"){
+              document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
+            } else if (data['email'] == "NOTUNIQUE"){
+              document.getElementById("hiddentext").innerHTML = "that email is already registered!" ;
             } else {
-                document.getElementById("hiddentext").innerHTML = "Unable to register account. Please try again" ;
+              document.getElementById("hiddentext").innerHTML = "uh oh, something went wrong! please try again!" ;
             }
         })
         .catch((error) => {
