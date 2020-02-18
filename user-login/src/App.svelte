@@ -414,7 +414,7 @@
 
     margin: 15px 60px;
 
-		background: #AEC2DC;
+		background: #AEC2DC; /* light blue */
 		border-radius: 15px;
 		cursor: pointer;
 
@@ -426,7 +426,7 @@
   }
 
   .landbtn:hover {
-    background: #7E9DC7; /* Green */
+    background: #7E9DC7; /* dark blue */
     color: white; /* font color */
   }
 
