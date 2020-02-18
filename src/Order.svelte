@@ -67,6 +67,8 @@
     <div class='cooked-wrapper'>
         {#if order.cooked}
             Cooked
+        {:else}
+        ‎
         {/if}
         <div class='ingredients'>
             {#each order.ingredients as ingredient}

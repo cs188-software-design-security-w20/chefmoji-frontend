@@ -1,5 +1,26 @@
 
-const OrderTypeEnum = Object.freeze({HOT_DOG: 0, PIZZA: 1, WAFFLES: 2, HAMBURGER: 3});
+const OrderTypeEnum = Object.freeze({
+    // easy
+	HOT_DOG: 1,
+	PIZZA: 2,
+	WAFFLES: 3,
+	SUSHI: 4,
+	EGGS: 5,
+
+	// medium
+	GYRO: 6,
+	PANCAKES: 7,
+	RAMEN: 8,
+	STEW: 9,
+
+	// hard
+	BENTO_BOX: 10,
+	TACO: 11,
+	SANDWICH: 12,
+	HAMBURGER: 13,
+	BURRITO: 14,
+	CURRY_RICE: 15
+});
 
 const EmojiFromOrderEnum = (type) => {
     switch (type) {
@@ -9,8 +30,30 @@ const EmojiFromOrderEnum = (type) => {
             return '🍕';
         case OrderTypeEnum.WAFFLES:
             return '🧇';
+        case OrderTypeEnum.SUSHI:
+            return '🍣';
+        case OrderTypeEnum.EGGS:
+            return '🍳';
+        case OrderTypeEnum.GYRO:
+            return '🥙';
+        case OrderTypeEnum.PANCAKES:
+            return '🥞';
+        case OrderTypeEnum.RAMEN:
+            return '🍜';
+        case OrderTypeEnum.STEW:
+            return '🍲';
+        case OrderTypeEnum.BENTO_BOX:
+            return '🍱';
+        case OrderTypeEnum.TACO:
+            return '🌮';
+        case OrderTypeEnum.SANDWICH:
+            return '🥪';
         case OrderTypeEnum.HAMBURGER:
             return '🍔';
+        case OrderTypeEnum.BURRITO:
+            return '🌯';
+        case OrderTypeEnum.CURRY_RICE:
+            return '🍛';
         default:
             return undefined;
     }

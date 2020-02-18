@@ -81,7 +81,10 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
+			console.log(bytes);
+			console.log(decoded);
 			if (!decoded.fulfilled) {
+				console.log(EmojiFromOrderEnum(decoded.orderType));
 				// At current, allow no updates
 				if (!orders.hasOwnProperty(`${decoded.uid}`)){
 					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
@@ -200,7 +203,7 @@
 	<div class='orders'>
 		<h1>Orders</h1>
 		{#each Object.values(orders) as order}
-			<Order order={recipes[order.emoji]} ttl={order.ttl}/>
+			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
 		{/each}
 	</div>
 </div>
