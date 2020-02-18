@@ -221,11 +221,11 @@
       </div>
 
       <div class = "pw_constraints_div">
-      <p id="pw_upper_lower" style="color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
-      <p id="pw_numbers" style="color: #DD6539;"> contains numbers </p>
-      <p id="pw_symbols" style="color: #DD6539;"> contains symbols </p>
-      <p id="pw_len" style="color: #DD6539;"> length is between is between 10 and 30 characters </p>
-      <p id="pw_repeat_match" style="color: #DD6539;"> passwords match </p>
+        <p id="pw_upper_lower" style="color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
+        <p id="pw_numbers" style="color: #DD6539;"> contains numbers </p>
+        <p id="pw_symbols" style="color: #DD6539;"> contains symbols </p>
+        <p id="pw_len" style="color: #DD6539;"> length is between is between 10 and 30 characters </p>
+        <p id="pw_repeat_match" style="color: #DD6539;"> passwords match </p>
       </div>
 
       <div class = "input_div">
