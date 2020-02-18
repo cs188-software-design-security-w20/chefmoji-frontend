@@ -2,7 +2,7 @@
   "name": "svelte-app",
   "version": "1.0.0",
   "scripts": {
-    "build": "node fixeval.js && rollup -c",
+    "build": "node fixeval.js && rollup -c rollup.config.main.js && rollup -c rollup.config.lobby.js",
     "dev": "node fixeval.js && rollup -c -w",
     "start": "sirv --port 8200 public"
   },
