@@ -46,6 +46,7 @@
     {% if success is sameas false %}
       <h1 class="cover-heading">ERROR</h1>
     {% else %}
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/chefmoji_user%40Chefmoji2FA?secret={{totpkey}}&size=300x300">
       <h1 class="cover-heading">{{totpkey}}</h1>
     {% endif %}
 
@@ -54,7 +55,7 @@
     {% elif status == 'JUSTCONFIRMED' %}
       <p class="lead">This is your totp key, please keep it in a safe place</p>
     {% elif status == 'PREVCONFIRMED' %}
-      <p class="lead">This account has been verified</p>
+      <p class="lead">This account has already been verified</p>
     {% else %}
       <p class="lead">Please try again</p>
     {% endif %}
