@@ -23,7 +23,8 @@
         // console.log(rc_response); // RECATCHA RESPONSE - REMOVE LINE BEFORE PRODUCTION
 
         // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-        if (!password || password.length < 1 || !playerid || playerid.length < 1){
+        if (!password || !playerid ){
+            // console.log("Empty password/playerid");
             document.getElementById("hiddentext").innerHTML = "did you fill out all the fields?" ;
             password = '';
             return;
@@ -72,7 +73,13 @@
         })
         .catch((error) => {
             console.error('Error:', error);
+            password = '';
+            passhash = '';
+            totp = '';
         });
+        password = '';
+        passhash = '';
+        totp = '';
 	}
 
   function check_playerid_constraints(pid) {
@@ -89,6 +96,11 @@
     }
 
     // consult database - "that player ID is already in use! try another one!"
+    var not_unique = false;
+    if (not_unique) {
+      document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
+      return false;
+    }
 
     return true;
 
@@ -132,8 +144,18 @@
 
     function click_signup() {
         // send PII to server
-        var playerid_ok = check_playerid_constraints(playerid);
-        var password_ok = check_password_constraints(password, repeat_password);
+        // var playerid_ok = check_playerid_constraints(playerid);
+        if(!check_playerid_constraints(playerid)){
+          password = '';
+          repeat_password = '';
+          return;
+        }
+        // var password_ok = check_password_constraints(password, repeat_password);
+        if (!check_password_constraints(password, repeat_password)) {
+          password = '';
+          repeat_password = '';
+          return;
+        }
 
         // need to hash password before sending to server
         const hash = new SHA3(256);
@@ -161,13 +183,22 @@
             // consult backend, allow or deny privileges
             if (data['success']){
                 document.getElementById("hiddentext").innerHTML = "Successful Registration" ;
+                email = '';
             } else {
                 document.getElementById("hiddentext").innerHTML = "Unable to register account. Please try again" ;
             }
         })
         .catch((error) => {
+            password = '';
+            passhash = '';
+            repeat_password = '';
+            email = '';
             console.error('Error Register:', error);
         });
+        password = '';
+        passhash = '';
+        repeat_password = '';
+        // clear email only if registration was successful
     }
 
   function toggle_visible() {
@@ -229,7 +260,7 @@
       </div>
 
       <div class = "input_div">
-        <p> email: </p>
+        <p> email address: </p>
         <label>
             <input type="email" name="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
         </label>
