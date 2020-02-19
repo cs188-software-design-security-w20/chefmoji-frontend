@@ -60,7 +60,7 @@
 	});
 
 	socket.on('session-init', (data) => {
-		console.log(JSON.stringify(data));
+		// console.log(JSON.stringify(data));
 		cookbook = data.cookbook;
 		game_id = data.game_id;
 		console.log("GAME ID: " + game_id);
@@ -81,10 +81,9 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
-			console.log(bytes);
-			console.log(decoded);
+			// console.log(bytes);
+			// console.log(decoded);
 			if (!decoded.fulfilled) {
-				console.log(EmojiFromOrderEnum(decoded.orderType));
 				// At current, allow no updates
 				if (!orders.hasOwnProperty(`${decoded.uid}`)){
 					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
