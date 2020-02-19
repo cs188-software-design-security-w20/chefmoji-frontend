@@ -155,7 +155,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { SHA3 } from 'sha3';
 
-	let playerid, password, repeat_password, email, input_totp;
+	  let playerid, password, repeat_password, email, input_totp;
     let visible = false;
 
     // let pass_upper = false, pass_lower = false, pass_number = false;
@@ -206,7 +206,7 @@
             },
             body: JSON.stringify(data),
         })
-        .then((response) => response.json())
+        .then((response) => {console.log(response); return response.json();})
         .then((data) => {
             // consult backend, allow or deny privileges
             if (data['success']){
@@ -219,11 +219,11 @@
             console.error('Error:', error);
             password = '';
             passhash = '';
-            totp = '';
+            input_totp = '';
         });
         password = '';
         passhash = '';
-        totp = '';
+        input_totp = '';
 	}
 
   function check_playerid_constraints(pid) {
