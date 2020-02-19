@@ -1,0 +1,73 @@
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Chefmoji - Email Confirmation</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      /* display: flex; */
+      color: #fff;
+      text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, .5);
+      box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+      height: 100%;
+      background-color: #333;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="cover.css" rel="stylesheet">
+</head>
+<body class="text-center" cz-shortcut-listen="true">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<header class="masthead mb-auto">
+</header>
+
+<main role="main" class="inner cover">
+    {% if success is sameas false %}
+      <h1 class="cover-heading">ERROR</h1>
+    {% else %}
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/chefmoji_user%40Chefmoji2FA?secret={{totpkey}}&size=300x300">
+      <h1 class="cover-heading">{{totpkey}}</h1>
+    {% endif %}
+
+    {% if status == 'DOESNOTEXIST' %}
+      <p class="lead">Account does not exist</p>
+    {% elif status == 'JUSTCONFIRMED' %}
+      <p class="lead">This is your totp key, please keep it in a safe place</p>
+    {% elif status == 'PREVCONFIRMED' %}
+      <p class="lead">This account has already been verified</p>
+    {% else %}
+      <p class="lead">Please try again</p>
+    {% endif %}
+
+    {% if success is sameas true %}
+      <a href="/" class="btn btn-sm mt-4 btn-secondary">Click Here To Login</a>
+    {% endif %}
+</main>
+
+<footer class="mastfoot mt-auto">
+</footer>
+</div>
+
+
+</body></html>
