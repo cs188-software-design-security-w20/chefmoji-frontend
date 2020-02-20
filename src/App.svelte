@@ -154,7 +154,7 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
     import { SHA3 } from 'sha3';
-    
+
 	  let playerid, password, repeat_password, email, input_totp;
     let visible = false;
 
@@ -211,6 +211,12 @@
           if (response.status == 200){
             window.location.replace(response.url);
           }
+          if (response.status == 400){
+            return response.json();
+          }
+        })
+        .then((data)=>{
+            document.getElementById("hiddentext").innerHTML = 'Incorrect Player ID or Password';
         })
         .catch((error) => {
             console.error(error);

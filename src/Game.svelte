@@ -47,23 +47,6 @@
 		session_key = issued_id;
 	});
 
-	// socket.on('connect', () => {
-	// 	console.log("CONNECTED");
-	// 	fetch(ADDR+'/issue-id').then(()=>{
-	// 		return fetch(ADDR+'/create-game')
-	// 	}).then(()=>{
-	// 		console.log('game created server-side!')
-	// 	}).catch((error) => {
-	// 		console.error(error);
-	// 	});
-	// });
-
-	// socket.on('session-init', (generated_game_id) => {
-	// 	game_id = generated_game_id;
-	// 	console.log("GAME ID: " + game_id);
-	// 	socket.emit('join-game-with-id', game_id, session_key);
-	// });
-
 	socket.on('tick', (data) => {
 		if (data) {
 			ticked = true;
