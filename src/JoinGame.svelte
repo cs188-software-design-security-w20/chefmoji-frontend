@@ -17,7 +17,7 @@
                 bind:value={game_id}
                 minlength="8"
                 maxlength="8"
-                placeholder="Join Code">
+                placeholder="join code">
         </form>
         <button on:click={joinGame}>
             join an existing game
@@ -33,13 +33,13 @@
 
 <style>
 
-  .join-game, .create-game {
+  /* .join-game, .create-game {
     postion: relative;
     margin: 0 auto;
-  }
+  } */
 
   .join-game button, .create-game button { /* labels for input boxes */
-    width: 250px;
+    width: 300px;
 		height: 40px;
     margin: 15px 15px;
 
@@ -65,7 +65,7 @@
     font-style: normal;
     font-weight: normal;
 
-    width: 250px;
+    width: 300px;
     height: 40px;
     margin: 15px 15px;
 

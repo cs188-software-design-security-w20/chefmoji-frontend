@@ -107,14 +107,16 @@
 
 <main>
   <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
-  {#if authd()}
-      {#if !game_id}
-          <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
-      {:else}
-          <Game {session_key} {game_id} {socket}/>
-      {/if}
-  {:else}
-      <h1 id="redirect_text"> redirecting you to the login screen... </h1>
-      <script> window.location.replace("index.html"); </script>
-  {/if}
+  <div style="display: table; margin: 0px auto;">
+    {#if authd()}
+        {#if !game_id}
+            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+        {:else}
+            <Game {session_key} {game_id} {socket}/>
+        {/if}
+    {:else}
+        <h1 id="redirect_text"> redirecting you to the login screen... </h1>
+        <script> window.location.replace("index.html"); </script>
+    {/if}
+  </div>
 </main>
