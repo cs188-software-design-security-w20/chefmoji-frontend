@@ -35,8 +35,11 @@
 		console.log("CONNECTED");
     });
 
+    socket.on('disconnect', () => {
+        game_id = '';
+    });
+
     socket.on('session-init', (issued_game_id) => {
-        console.log("Game ID given");
         joinGame();
         game_id = issued_game_id;
     });
