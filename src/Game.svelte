@@ -37,15 +37,13 @@
 	export let session_key = '';
 	export let game_id = '';
 	export let socket;
+	export let cookbook = {};
+
 
 	let ticked = false;
 	let map = [];
+	// TODO: CHANGE FOR PRODUCTION
 	const ADDR = 'http://localhost:8080';
-
-	socket.on('issue-id', (issued_id) => {
-		console.log("Issued id: " + issued_id);
-		session_key = issued_id;
-	});
 
 	socket.on('tick', (data) => {
 		if (data) {
@@ -56,7 +54,35 @@
 		}
 	});
 
-	let orders = ['🍔', '🧇'];
+	let orders = {};
+
+	socket.on('order', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = OrderUpdate.decode(bytes);
+			// console.log(bytes);
+			// console.log(decoded);
+			if (!decoded.fulfilled) {
+				// At current, allow no updates
+				if (!orders.hasOwnProperty(`${decoded.uid}`)){
+					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
+				}
+
+				let orderCountdownHandler = undefined;
+				orderCountdownHandler = setInterval(function(uid){
+					let ttl = orders[`${uid}`].ttl;
+					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
+					if (orders[`${uid}`].ttl <= 0){
+						delete orders[`${uid}`]
+						if (orderCountdownHandler !== undefined){
+							clearInterval(orderCountdownHandler);
+						}
+					}
+					orders = {...orders};
+				}, 1000, decoded.uid);
+			}
+		}
+	});
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -153,8 +179,8 @@
 	
 	<div class='orders'>
 		<h1>Orders</h1>
-		{#each orders as order}
-			<Order order={recipes[order]}/>
+		{#each Object.values(orders) as order}
+			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
 		{/each}
 	</div>
 </div>

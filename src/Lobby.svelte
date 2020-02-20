@@ -7,6 +7,7 @@
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
     const PORT = '8080';
+    // TODO: Change for production from localhist
     const ADDR = `http://localhost:${PORT}`;
     const socket = io(ADDR, { transports: ['websocket'] });
     const SESSION_KEY = 'session-key';
@@ -15,6 +16,7 @@
     let game_id = undefined;
     let session_key = undefined;
     let player_id = undefined;
+    let cookbook = {};
 
     // Get session-key and player-id from cookie store
     // Picks the first cookie matching the search name found
@@ -40,8 +42,9 @@
     });
 
     socket.on('session-init', (issued_game_id) => {
-        joinGame();
+        cookbook = data.cookbook;
         game_id = issued_game_id;
+        joinGame();
     });
 
     session_key = fromCookie(SESSION_KEY);
@@ -81,7 +84,7 @@
     {#if !game_id}
         <JoinGame joinGame={joinGame} {createGame} {game_id} {player_id}/>
     {:else}
-        <Game {session_key} {game_id} {socket}/>
+        <Game {session_key} {game_id} {cookbook} {socket}/>
     {/if}
 {:else}
     <h1 style="color: red; font-size: 24px;">Client did not receive session-key and player-ID</h1>

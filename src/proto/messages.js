@@ -18,193 +18,6 @@ $root.chefmoji = (function() {
      */
     var chefmoji = {};
 
-    chefmoji.PlayerAction = (function() {
-
-        /**
-         * Properties of a PlayerAction.
-         * @memberof chefmoji
-         * @interface IPlayerAction
-         * @property {string|null} [keyPress] PlayerAction keyPress
-         */
-
-        /**
-         * Constructs a new PlayerAction.
-         * @memberof chefmoji
-         * @classdesc Represents a PlayerAction.
-         * @implements IPlayerAction
-         * @constructor
-         * @param {chefmoji.IPlayerAction=} [properties] Properties to set
-         */
-        function PlayerAction(properties) {
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * PlayerAction keyPress.
-         * @member {string} keyPress
-         * @memberof chefmoji.PlayerAction
-         * @instance
-         */
-        PlayerAction.prototype.keyPress = "";
-
-        /**
-         * Creates a new PlayerAction instance using the specified properties.
-         * @function create
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {chefmoji.IPlayerAction=} [properties] Properties to set
-         * @returns {chefmoji.PlayerAction} PlayerAction instance
-         */
-        PlayerAction.create = function create(properties) {
-            return new PlayerAction(properties);
-        };
-
-        /**
-         * Encodes the specified PlayerAction message. Does not implicitly {@link chefmoji.PlayerAction.verify|verify} messages.
-         * @function encode
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {chefmoji.IPlayerAction} message PlayerAction message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PlayerAction.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.keyPress);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified PlayerAction message, length delimited. Does not implicitly {@link chefmoji.PlayerAction.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {chefmoji.IPlayerAction} message PlayerAction message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PlayerAction.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a PlayerAction message from the specified reader or buffer.
-         * @function decode
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {chefmoji.PlayerAction} PlayerAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PlayerAction.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.chefmoji.PlayerAction();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    message.keyPress = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a PlayerAction message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {chefmoji.PlayerAction} PlayerAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PlayerAction.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a PlayerAction message.
-         * @function verify
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        PlayerAction.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                if (!$util.isString(message.keyPress))
-                    return "keyPress: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a PlayerAction message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {chefmoji.PlayerAction} PlayerAction
-         */
-        PlayerAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.chefmoji.PlayerAction)
-                return object;
-            var message = new $root.chefmoji.PlayerAction();
-            if (object.keyPress != null)
-                message.keyPress = String(object.keyPress);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a PlayerAction message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof chefmoji.PlayerAction
-         * @static
-         * @param {chefmoji.PlayerAction} message PlayerAction
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        PlayerAction.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.defaults)
-                object.keyPress = "";
-            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                object.keyPress = message.keyPress;
-            return object;
-        };
-
-        /**
-         * Converts this PlayerAction to JSON.
-         * @function toJSON
-         * @memberof chefmoji.PlayerAction
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        PlayerAction.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return PlayerAction;
-    })();
-
     chefmoji.MapRow = (function() {
 
         /**
@@ -1589,6 +1402,193 @@ $root.chefmoji = (function() {
         };
 
         return OrderUpdate;
+    })();
+
+    chefmoji.PlayerAction = (function() {
+
+        /**
+         * Properties of a PlayerAction.
+         * @memberof chefmoji
+         * @interface IPlayerAction
+         * @property {string|null} [keyPress] PlayerAction keyPress
+         */
+
+        /**
+         * Constructs a new PlayerAction.
+         * @memberof chefmoji
+         * @classdesc Represents a PlayerAction.
+         * @implements IPlayerAction
+         * @constructor
+         * @param {chefmoji.IPlayerAction=} [properties] Properties to set
+         */
+        function PlayerAction(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * PlayerAction keyPress.
+         * @member {string} keyPress
+         * @memberof chefmoji.PlayerAction
+         * @instance
+         */
+        PlayerAction.prototype.keyPress = "";
+
+        /**
+         * Creates a new PlayerAction instance using the specified properties.
+         * @function create
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {chefmoji.IPlayerAction=} [properties] Properties to set
+         * @returns {chefmoji.PlayerAction} PlayerAction instance
+         */
+        PlayerAction.create = function create(properties) {
+            return new PlayerAction(properties);
+        };
+
+        /**
+         * Encodes the specified PlayerAction message. Does not implicitly {@link chefmoji.PlayerAction.verify|verify} messages.
+         * @function encode
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {chefmoji.IPlayerAction} message PlayerAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PlayerAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.keyPress);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified PlayerAction message, length delimited. Does not implicitly {@link chefmoji.PlayerAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {chefmoji.IPlayerAction} message PlayerAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PlayerAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a PlayerAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {chefmoji.PlayerAction} PlayerAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PlayerAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.chefmoji.PlayerAction();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.keyPress = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a PlayerAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {chefmoji.PlayerAction} PlayerAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PlayerAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a PlayerAction message.
+         * @function verify
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        PlayerAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
+                if (!$util.isString(message.keyPress))
+                    return "keyPress: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a PlayerAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {chefmoji.PlayerAction} PlayerAction
+         */
+        PlayerAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.chefmoji.PlayerAction)
+                return object;
+            var message = new $root.chefmoji.PlayerAction();
+            if (object.keyPress != null)
+                message.keyPress = String(object.keyPress);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a PlayerAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof chefmoji.PlayerAction
+         * @static
+         * @param {chefmoji.PlayerAction} message PlayerAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        PlayerAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults)
+                object.keyPress = "";
+            if (message.keyPress != null && message.hasOwnProperty("keyPress"))
+                object.keyPress = message.keyPress;
+            return object;
+        };
+
+        /**
+         * Converts this PlayerAction to JSON.
+         * @function toJSON
+         * @memberof chefmoji.PlayerAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        PlayerAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return PlayerAction;
     })();
 
     return chefmoji;

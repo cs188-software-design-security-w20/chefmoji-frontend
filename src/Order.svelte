@@ -13,7 +13,7 @@
         font-size: 32px;
         position: relative;
     }
-    .content-wrapper {
+    .order-wrapper {
         display: flex;
         flex-direction: row;
     }
