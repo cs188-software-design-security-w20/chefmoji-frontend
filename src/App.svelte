@@ -71,9 +71,18 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
+			console.log(decoded);
 			map = decoded.map;
 		}
 	});
+
+	// socket.on('inventory-update', (data) => {
+	// 	if (data) {
+	// 		let bytes =  new Uint8Array(data);
+	// 		let decoded = PlayerUpdate.decode(bytes);
+	// 		console.log(decoded);
+	// 	}
+	// });
 
 	let orders = {};
 
