@@ -66,6 +66,7 @@
 
 	socket.on('tick', (data) => {
 		if (data) {
+			ticked = true;
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
@@ -89,7 +90,7 @@
 
 	function handleKeydown(event) {
 		let key = event.key;
-		// Purely to prevent well meaning actors to unnecessarily send key events across the connection
+		// Purely to prevent well meaning actors from unnecessarily sending key events across the connection
 		if (validKey(key)) {
 			let keyPressMsg = PlayerAction.create({ keyPress : key});
 			let bytes = PlayerAction.encode(keyPressMsg).finish();
@@ -135,7 +136,6 @@
 
 	function playGame(){
 		socket.emit('play', session_key, game_id);
-		ticked = true;
 	}
 	
 </script>
@@ -146,13 +146,13 @@
 	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 </svelte:head>
 
-{#if (game_id != '')}
+{#if (game_id != '' && !ticked)}
 	<button on:click={playGame}>
 		Play game!
 	</button>
 {/if}
 
-
+{#if (game_id != '' && ticked)}
 <div class='content'>
 	<div class='map'>
 		<table>
@@ -175,3 +175,4 @@
 		{/each}
 	</div>
 </div>
+{/if}

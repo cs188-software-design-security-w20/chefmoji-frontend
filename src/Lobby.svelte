@@ -31,10 +31,6 @@
         return (session_key !== undefined && player_id !== undefined);
     }
 
-    function inGame(){
-        return game_id !== undefined;
-    }
-
     socket.on('connect', () => {
 		console.log("CONNECTED");
     });
@@ -48,8 +44,12 @@
     session_key = fromCookie(SESSION_KEY);
     player_id = fromCookie(PLAYER_ID);
 
+    function inGame(){
+        return (game_id !== undefined);
+    }
+
     function joinGame(){
-        if (authd() && !inGame()){
+        if (authd()){
             socket.emit('join-game-with-id', game_id, player_id, session_key);
         }
     }
@@ -64,21 +64,19 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-            }).then((resp)=>resp.text()).then((data)=>{
-                console.log(data);
-                game_id=data["game_id"];
-                console.log(`GAME ID: ${game_id}`);
+            }).then((resp)=>resp.json()).then((data)=>{
+                game_id=data.game_id;
+                joinGame();
             }).catch((e)=>{
                 console.error(e);
             });
         }
     }
-
 </script>
 
 {#if authd()}
-    {#if !inGame()}
-        <JoinGame {joinGame} {createGame} {game_id}/>
+    {#if !game_id}
+        <JoinGame joinGame={joinGame} {createGame} {game_id} {player_id}/>
     {:else}
         <Game {session_key} {game_id} {socket}/>
     {/if}

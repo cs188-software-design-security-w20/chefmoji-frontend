@@ -154,7 +154,7 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
     import { SHA3 } from 'sha3';
-
+    
 	  let playerid, password, repeat_password, email, input_totp;
     let visible = false;
 
