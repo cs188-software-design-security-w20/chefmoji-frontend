@@ -13,9 +13,10 @@
         font-size: 32px;
         position: relative;
     }
-    .order {
-        margin: 10px;
+    .order-wrapper {
+        margin: 10px 10px 2px 10px;
         display: flex;
+        flex-direction: row;
     }
     .ingredients {
         display: flex;
@@ -44,10 +45,26 @@
 
 <script>
     export let order;
+    export let ttl;
     console.log(order);
+
+    function getTTLStyle(ttl){
+        if(ttl > 10){
+            return '#339933';
+        }
+        else if(ttl > 5){
+            return '#e6e600';
+        }
+        else {
+            return '#e62e00';
+        }
+    }
+    function getTTLWidth(ttl) {
+        return (ttl * 100 / 20) + '%';
+    }
 </script>
 
-<div class='order'>
+<div class='order-wrapper'>
     <div class='cooked-wrapper'>
         {#if order.cooked}
             Cooked
@@ -77,4 +94,12 @@
             {order.emoji}
         </div>
     </div>
+</div>
+<div class='timer' style={`
+    color: ${getTTLStyle(ttl)};
+    width: ${getTTLWidth(ttl)};
+    background-color: ${getTTLStyle(ttl)};
+    height: 2px;
+    `} >
+    {ttl}
 </div>

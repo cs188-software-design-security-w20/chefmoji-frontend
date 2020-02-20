@@ -523,8 +523,9 @@ $root.chefmoji = (function() {
          * @memberof chefmoji
          * @interface IPlayerUpdate
          * @property {Array.<number>|null} [position] PlayerUpdate position
-         * @property {string|null} [inventory] PlayerUpdate inventory
+         * @property {chefmoji.IInventoryUpdate|null} [inventory] PlayerUpdate inventory
          * @property {string|null} [id] PlayerUpdate id
+         * @property {string|null} [emoji] PlayerUpdate emoji
          */
 
         /**
@@ -553,11 +554,11 @@ $root.chefmoji = (function() {
 
         /**
          * PlayerUpdate inventory.
-         * @member {string} inventory
+         * @member {chefmoji.IInventoryUpdate|null|undefined} inventory
          * @memberof chefmoji.PlayerUpdate
          * @instance
          */
-        PlayerUpdate.prototype.inventory = "";
+        PlayerUpdate.prototype.inventory = null;
 
         /**
          * PlayerUpdate id.
@@ -566,6 +567,14 @@ $root.chefmoji = (function() {
          * @instance
          */
         PlayerUpdate.prototype.id = "";
+
+        /**
+         * PlayerUpdate emoji.
+         * @member {string} emoji
+         * @memberof chefmoji.PlayerUpdate
+         * @instance
+         */
+        PlayerUpdate.prototype.emoji = "";
 
         /**
          * Creates a new PlayerUpdate instance using the specified properties.
@@ -598,9 +607,11 @@ $root.chefmoji = (function() {
                 writer.ldelim();
             }
             if (message.inventory != null && message.hasOwnProperty("inventory"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.inventory);
+                $root.chefmoji.InventoryUpdate.encode(message.inventory, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.id != null && message.hasOwnProperty("id"))
                 writer.uint32(/* id 3, wireType 2 =*/26).string(message.id);
+            if (message.emoji != null && message.hasOwnProperty("emoji"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.emoji);
             return writer;
         };
 
@@ -646,10 +657,13 @@ $root.chefmoji = (function() {
                         message.position.push(reader.uint32());
                     break;
                 case 2:
-                    message.inventory = reader.string();
+                    message.inventory = $root.chefmoji.InventoryUpdate.decode(reader, reader.uint32());
                     break;
                 case 3:
                     message.id = reader.string();
+                    break;
+                case 4:
+                    message.emoji = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -693,12 +707,17 @@ $root.chefmoji = (function() {
                     if (!$util.isInteger(message.position[i]))
                         return "position: integer[] expected";
             }
-            if (message.inventory != null && message.hasOwnProperty("inventory"))
-                if (!$util.isString(message.inventory))
-                    return "inventory: string expected";
+            if (message.inventory != null && message.hasOwnProperty("inventory")) {
+                var error = $root.chefmoji.InventoryUpdate.verify(message.inventory);
+                if (error)
+                    return "inventory." + error;
+            }
             if (message.id != null && message.hasOwnProperty("id"))
                 if (!$util.isString(message.id))
                     return "id: string expected";
+            if (message.emoji != null && message.hasOwnProperty("emoji"))
+                if (!$util.isString(message.emoji))
+                    return "emoji: string expected";
             return null;
         };
 
@@ -721,10 +740,15 @@ $root.chefmoji = (function() {
                 for (var i = 0; i < object.position.length; ++i)
                     message.position[i] = object.position[i] >>> 0;
             }
-            if (object.inventory != null)
-                message.inventory = String(object.inventory);
+            if (object.inventory != null) {
+                if (typeof object.inventory !== "object")
+                    throw TypeError(".chefmoji.PlayerUpdate.inventory: object expected");
+                message.inventory = $root.chefmoji.InventoryUpdate.fromObject(object.inventory);
+            }
             if (object.id != null)
                 message.id = String(object.id);
+            if (object.emoji != null)
+                message.emoji = String(object.emoji);
             return message;
         };
 
@@ -744,8 +768,9 @@ $root.chefmoji = (function() {
             if (options.arrays || options.defaults)
                 object.position = [];
             if (options.defaults) {
-                object.inventory = "";
+                object.inventory = null;
                 object.id = "";
+                object.emoji = "";
             }
             if (message.position && message.position.length) {
                 object.position = [];
@@ -753,9 +778,11 @@ $root.chefmoji = (function() {
                     object.position[j] = message.position[j];
             }
             if (message.inventory != null && message.hasOwnProperty("inventory"))
-                object.inventory = message.inventory;
+                object.inventory = $root.chefmoji.InventoryUpdate.toObject(message.inventory, options);
             if (message.id != null && message.hasOwnProperty("id"))
                 object.id = message.id;
+            if (message.emoji != null && message.hasOwnProperty("emoji"))
+                object.emoji = message.emoji;
             return object;
         };
 
@@ -771,6 +798,260 @@ $root.chefmoji = (function() {
         };
 
         return PlayerUpdate;
+    })();
+
+    chefmoji.InventoryUpdate = (function() {
+
+        /**
+         * Properties of an InventoryUpdate.
+         * @memberof chefmoji
+         * @interface IInventoryUpdate
+         * @property {string|null} [item] InventoryUpdate item
+         * @property {boolean|null} [plated] InventoryUpdate plated
+         * @property {boolean|null} [cooked] InventoryUpdate cooked
+         * @property {boolean|null} [chopped] InventoryUpdate chopped
+         */
+
+        /**
+         * Constructs a new InventoryUpdate.
+         * @memberof chefmoji
+         * @classdesc Represents an InventoryUpdate.
+         * @implements IInventoryUpdate
+         * @constructor
+         * @param {chefmoji.IInventoryUpdate=} [properties] Properties to set
+         */
+        function InventoryUpdate(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * InventoryUpdate item.
+         * @member {string} item
+         * @memberof chefmoji.InventoryUpdate
+         * @instance
+         */
+        InventoryUpdate.prototype.item = "";
+
+        /**
+         * InventoryUpdate plated.
+         * @member {boolean} plated
+         * @memberof chefmoji.InventoryUpdate
+         * @instance
+         */
+        InventoryUpdate.prototype.plated = false;
+
+        /**
+         * InventoryUpdate cooked.
+         * @member {boolean} cooked
+         * @memberof chefmoji.InventoryUpdate
+         * @instance
+         */
+        InventoryUpdate.prototype.cooked = false;
+
+        /**
+         * InventoryUpdate chopped.
+         * @member {boolean} chopped
+         * @memberof chefmoji.InventoryUpdate
+         * @instance
+         */
+        InventoryUpdate.prototype.chopped = false;
+
+        /**
+         * Creates a new InventoryUpdate instance using the specified properties.
+         * @function create
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {chefmoji.IInventoryUpdate=} [properties] Properties to set
+         * @returns {chefmoji.InventoryUpdate} InventoryUpdate instance
+         */
+        InventoryUpdate.create = function create(properties) {
+            return new InventoryUpdate(properties);
+        };
+
+        /**
+         * Encodes the specified InventoryUpdate message. Does not implicitly {@link chefmoji.InventoryUpdate.verify|verify} messages.
+         * @function encode
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {chefmoji.IInventoryUpdate} message InventoryUpdate message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        InventoryUpdate.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.item != null && message.hasOwnProperty("item"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.item);
+            if (message.plated != null && message.hasOwnProperty("plated"))
+                writer.uint32(/* id 2, wireType 0 =*/16).bool(message.plated);
+            if (message.cooked != null && message.hasOwnProperty("cooked"))
+                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.cooked);
+            if (message.chopped != null && message.hasOwnProperty("chopped"))
+                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.chopped);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified InventoryUpdate message, length delimited. Does not implicitly {@link chefmoji.InventoryUpdate.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {chefmoji.IInventoryUpdate} message InventoryUpdate message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        InventoryUpdate.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes an InventoryUpdate message from the specified reader or buffer.
+         * @function decode
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {chefmoji.InventoryUpdate} InventoryUpdate
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        InventoryUpdate.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.chefmoji.InventoryUpdate();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.item = reader.string();
+                    break;
+                case 2:
+                    message.plated = reader.bool();
+                    break;
+                case 3:
+                    message.cooked = reader.bool();
+                    break;
+                case 4:
+                    message.chopped = reader.bool();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes an InventoryUpdate message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {chefmoji.InventoryUpdate} InventoryUpdate
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        InventoryUpdate.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies an InventoryUpdate message.
+         * @function verify
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        InventoryUpdate.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.item != null && message.hasOwnProperty("item"))
+                if (!$util.isString(message.item))
+                    return "item: string expected";
+            if (message.plated != null && message.hasOwnProperty("plated"))
+                if (typeof message.plated !== "boolean")
+                    return "plated: boolean expected";
+            if (message.cooked != null && message.hasOwnProperty("cooked"))
+                if (typeof message.cooked !== "boolean")
+                    return "cooked: boolean expected";
+            if (message.chopped != null && message.hasOwnProperty("chopped"))
+                if (typeof message.chopped !== "boolean")
+                    return "chopped: boolean expected";
+            return null;
+        };
+
+        /**
+         * Creates an InventoryUpdate message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {chefmoji.InventoryUpdate} InventoryUpdate
+         */
+        InventoryUpdate.fromObject = function fromObject(object) {
+            if (object instanceof $root.chefmoji.InventoryUpdate)
+                return object;
+            var message = new $root.chefmoji.InventoryUpdate();
+            if (object.item != null)
+                message.item = String(object.item);
+            if (object.plated != null)
+                message.plated = Boolean(object.plated);
+            if (object.cooked != null)
+                message.cooked = Boolean(object.cooked);
+            if (object.chopped != null)
+                message.chopped = Boolean(object.chopped);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from an InventoryUpdate message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof chefmoji.InventoryUpdate
+         * @static
+         * @param {chefmoji.InventoryUpdate} message InventoryUpdate
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        InventoryUpdate.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults) {
+                object.item = "";
+                object.plated = false;
+                object.cooked = false;
+                object.chopped = false;
+            }
+            if (message.item != null && message.hasOwnProperty("item"))
+                object.item = message.item;
+            if (message.plated != null && message.hasOwnProperty("plated"))
+                object.plated = message.plated;
+            if (message.cooked != null && message.hasOwnProperty("cooked"))
+                object.cooked = message.cooked;
+            if (message.chopped != null && message.hasOwnProperty("chopped"))
+                object.chopped = message.chopped;
+            return object;
+        };
+
+        /**
+         * Converts this InventoryUpdate to JSON.
+         * @function toJSON
+         * @memberof chefmoji.InventoryUpdate
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        InventoryUpdate.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return InventoryUpdate;
     })();
 
     /**
@@ -1151,7 +1432,7 @@ $root.chefmoji = (function() {
          * Properties of a PlayerAction.
          * @memberof chefmoji
          * @interface IPlayerAction
-         * @property {Uint8Array|null} [keyPress] PlayerAction keyPress
+         * @property {string|null} [keyPress] PlayerAction keyPress
          */
 
         /**
@@ -1171,11 +1452,11 @@ $root.chefmoji = (function() {
 
         /**
          * PlayerAction keyPress.
-         * @member {Uint8Array} keyPress
+         * @member {string} keyPress
          * @memberof chefmoji.PlayerAction
          * @instance
          */
-        PlayerAction.prototype.keyPress = $util.newBuffer([]);
+        PlayerAction.prototype.keyPress = "";
 
         /**
          * Creates a new PlayerAction instance using the specified properties.
@@ -1202,7 +1483,7 @@ $root.chefmoji = (function() {
             if (!writer)
                 writer = $Writer.create();
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.keyPress);
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.keyPress);
             return writer;
         };
 
@@ -1238,7 +1519,7 @@ $root.chefmoji = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.keyPress = reader.bytes();
+                    message.keyPress = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1276,8 +1557,8 @@ $root.chefmoji = (function() {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                if (!(message.keyPress && typeof message.keyPress.length === "number" || $util.isString(message.keyPress)))
-                    return "keyPress: buffer expected";
+                if (!$util.isString(message.keyPress))
+                    return "keyPress: string expected";
             return null;
         };
 
@@ -1294,10 +1575,7 @@ $root.chefmoji = (function() {
                 return object;
             var message = new $root.chefmoji.PlayerAction();
             if (object.keyPress != null)
-                if (typeof object.keyPress === "string")
-                    $util.base64.decode(object.keyPress, message.keyPress = $util.newBuffer($util.base64.length(object.keyPress)), 0);
-                else if (object.keyPress.length)
-                    message.keyPress = object.keyPress;
+                message.keyPress = String(object.keyPress);
             return message;
         };
 
@@ -1315,15 +1593,9 @@ $root.chefmoji = (function() {
                 options = {};
             var object = {};
             if (options.defaults)
-                if (options.bytes === String)
-                    object.keyPress = "";
-                else {
-                    object.keyPress = [];
-                    if (options.bytes !== Array)
-                        object.keyPress = $util.newBuffer(object.keyPress);
-                }
+                object.keyPress = "";
             if (message.keyPress != null && message.hasOwnProperty("keyPress"))
-                object.keyPress = options.bytes === String ? $util.base64.encode(message.keyPress, 0, message.keyPress.length) : options.bytes === Array ? Array.prototype.slice.call(message.keyPress) : message.keyPress;
+                object.keyPress = message.keyPress;
             return object;
         };
 
@@ -1343,18 +1615,5 @@ $root.chefmoji = (function() {
 
     return chefmoji;
 })();
-const MapUpdate = $root.chefmoji.MapUpdate;
-const OrderType = $root.chefmoji.OrderType;
-const PlayerUpdate = $root.chefmoji.PlayerUpdate;
-const OrderUpdate = $root.chefmoji.OrderUpdate;
-const MapRow = $root.chefmoji.MapRow;
-const PlayerAction = $root.chefmoji.PlayerAction;
-module.exports = {
-    default: $root.chefmoji,
-    MapUpdate,
-    OrderType,
-    PlayerUpdate,
-    OrderUpdate,
-    MapRow,
-    PlayerAction
-};
+
+module.exports = $root;
