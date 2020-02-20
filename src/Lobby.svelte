@@ -1,4 +1,32 @@
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+</svelte:head>
+
 <style>
+
+#gamename {
+  position: relative;
+  margin-top: 3%;
+
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 100px;
+  /* line-height: 117px; */
+  text-align: center;
+
+  color: #7E9DC7;
+}
+
+#redirect_text {
+  text-transform: lowercase;
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: normal;
+  text-align: center;
+  color: #000000;
+}
+
 </style>
 
 <script>
@@ -77,13 +105,16 @@
     }
 </script>
 
-{#if authd()}
-    {#if !game_id}
-        <JoinGame joinGame={joinGame} {createGame} {game_id} {player_id}/>
-    {:else}
-        <Game {session_key} {game_id} {socket}/>
-    {/if}
-{:else}
-    <h1 style="color: red; font-size: 24px;">Client did not receive session-key and player-ID</h1>
-{/if}
-
+<main>
+  <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
+  {#if authd()}
+      {#if !game_id}
+          <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+      {:else}
+          <Game {session_key} {game_id} {socket}/>
+      {/if}
+  {:else}
+      <h1 id="redirect_text"> redirecting you to the login screen... </h1>
+      <script> window.location.replace("index.html"); </script>
+  {/if}
+</main>

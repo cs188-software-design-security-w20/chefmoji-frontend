@@ -10,22 +10,70 @@
     <div class='join-game'>
         <form>
             <label for="join-code"></label>
-            <input 
-                type="text" 
-                id="join-code" 
-                name="Join With Game Code" required 
+            <input
+                type="text"
+                id="join-code"
+                name="Join With Game Code" required
                 bind:value={game_id}
                 minlength="8"
-                maxlength="8">
+                maxlength="8"
+                placeholder="Join Code">
         </form>
         <button on:click={joinGame}>
-            Join Game With Code
+            join an existing game
         </button>
     </div>
 
     <div class='create-game'>
         <button on:click={createGame}>
-            Create a New Game
+            create a new game
         </button>
     </div>
 </div>
+
+<style>
+
+  .join-game, .create-game {
+    postion: relative;
+    margin: 0 auto;
+  }
+
+  .join-game button, .create-game button { /* labels for input boxes */
+    width: 250px;
+		height: 40px;
+    margin: 15px 15px;
+
+    color: black; /* font color */
+    background: #AEC2DC; /* light blue */
+		border-radius: 15px;
+		cursor: pointer;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .join-game button:hover, .create-game button:hover {
+    background: #7E9DC7; /* dark blue */
+    color: white; /* font color */
+  }
+
+  .join-game input { /* input boxes */
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+
+    width: 250px;
+    height: 40px;
+    margin: 15px 15px;
+
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+
+</style>
