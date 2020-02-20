@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
 const build_into = process.env.BUILD_INTO || 'public';
+const no_terser = true;
 
 export default {
 	input: 'src/main.js',
@@ -23,7 +24,8 @@ export default {
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
 			browser: true,
-			dedupe: ['svelte']
+			dedupe: ['svelte'],
+			preferBuiltins: false,
 		}),
 		commonjs({
 			namedExports: {
@@ -51,7 +53,7 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && !no_terser && terser()
 	],
 	watch: {
 		clearScreen: false
