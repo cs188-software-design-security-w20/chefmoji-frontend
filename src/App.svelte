@@ -21,6 +21,14 @@
 		font-family: 'Indie Flower', cursive;
 		text-align: center;
 	}
+	.inventories {
+		background-color: lightsteelblue;
+		font-family: 'Indie Flower', cursive;
+		text-align: center;
+		margin-right: 8px;
+		display: flex;
+		justify-content: center;
+	}
 
 	.map {
 		display: inline-block;
@@ -29,6 +37,7 @@
 
 <script>
 	import Order from './Order.svelte';
+	import Inventory from './Inventory.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
 	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
@@ -39,6 +48,7 @@
 	let ticked = false;
 	let map = [];
 	let cookbook = {};
+	let players = [];
 	const ADDR = 'http://localhost:8080';
 
 	const socket = io(ADDR, { transports: ['websocket'] });
@@ -73,6 +83,7 @@
 			let decoded = MapUpdate.decode(bytes);
 			console.log(decoded);
 			map = decoded.map;
+			players = decoded.players;
 		}
 	});
 
@@ -204,6 +215,13 @@
 		<h1>Orders</h1>
 		{#each Object.values(orders) as order}
 			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
+		{/each}
+	</div>
+
+	<div class='inventories'>
+		<h1>Inventories</h1>
+		{#each players as player}
+			<Inventory emoji={player.emoji} inventory={player.inventory}/>
 		{/each}
 	</div>
 </div>
