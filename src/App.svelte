@@ -206,17 +206,13 @@
             },
             body: JSON.stringify(data),
         })
-        .then((response) => {console.log(response); return response.json();})
-        .then((data) => {
-            // consult backend, allow or deny privileges
-            if (data['success']){
-                document.getElementById("hiddentext").innerHTML = "success" ;
-            } else {
-                document.getElementById("hiddentext").innerHTML = "incorrect player ID or password" ;
-            }
+        .then((response) => {
+          if (response.status == 200){
+            window.location.replace(response.url);
+          }
         })
         .catch((error) => {
-            console.error('Error:', error);
+            console.error(error);
             password = '';
             passhash = '';
             input_totp = '';

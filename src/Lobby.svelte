@@ -64,7 +64,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-            }).then((resp)=>resp.json()).then((data)=>{
+            }).then((resp)=>resp.text()).then((data)=>{
                 console.log(data);
                 game_id=data["game_id"];
                 console.log(`GAME ID: ${game_id}`);
