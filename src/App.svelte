@@ -167,6 +167,7 @@
 
     //debug
 	function click_login() {
+        document.getElementById("hiddentext").innerHTML = "" ;
         // var rc_response = grecaptcha.getResponse();
 
         // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
@@ -282,6 +283,7 @@
   }
 
     function click_signup() {
+        document.getElementById("hiddentext").innerHTML = "" ;
         // send PII to server
         if(!check_playerid_constraints(playerid)){
           password = '';
@@ -342,6 +344,7 @@
 
   function toggle_visible() {
     visible = !visible;
+    document.getElementById("hiddentext").innerHTML = "" ;
   }
 
   onMount(() => {
