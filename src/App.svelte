@@ -71,6 +71,7 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
+			console.log(decoded);
 			map = decoded.map;
 		}
 	});
