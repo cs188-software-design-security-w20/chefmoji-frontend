@@ -76,14 +76,6 @@
 		}
 	});
 
-	// socket.on('inventory-update', (data) => {
-	// 	if (data) {
-	// 		let bytes =  new Uint8Array(data);
-	// 		let decoded = PlayerUpdate.decode(bytes);
-	// 		console.log(decoded);
-	// 	}
-	// });
-
 	let orders = {};
 
 	socket.on('order', (data) => {
