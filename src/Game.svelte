@@ -10,38 +10,68 @@
 		padding: 0;
 		margin: 0;
 	}
+	h1, h3 {
+		margin: 0;
+	}
 	table {
 		border-spacing: 0;
 	}
 	.orders {
 		background-color: lightsteelblue;
-		width: 30%;
-		height: calc(100vh - 16px);
-		float: right;
+		width: 100%;
+		height: 70%;
 		font-family: 'Indie Flower', cursive;
 		text-align: center;
 	}
-
 	.map {
 		display: inline-block;
 	}
-
 	.inventories {
 		background-color: lightsteelblue;
 		font-family: 'Indie Flower', cursive;
 		text-align: center;
-		margin-right: 8px;
+		margin-top: 8px;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
+	}
+	.content {
+		display: flex;
+		flex-direction: row;
+	}
+	.left-content {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		width: 70%;
+		padding-right: 8px;
+	}
+	.right-content {
+		height: 100vh;
+		width: 30%;
+		display: flex;
+		flex-direction: column;
+	}
+	.top {
+		width: 100%;
+		font-size: 32px;
+		font-family: 'Indie Flower', cursive;
+	}
+	.station {
+		background-color: rgb(233, 220, 202);
+		height: 15%;
+		width: 100%;
+		font-family: 'Indie Flower', cursive;
 	}
 </style>
 
 <script>
 	import Order from './Order.svelte';
 	import Inventory from './Inventory.svelte';
+	import Station from './Station.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import {recipes} from './recipes.js';
-	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
+	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
+	import { MapUpdate, OrderUpdate, PlayerAction, StationUpdate } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
 	export let session_key = '';
@@ -53,6 +83,9 @@
 	let ticked = false;
 	let map = [];
 	let players = [];
+	let stove = [];
+	let platingStation = [];
+	let points = 0;
 
 	// TODO: CHANGE FOR PRODUCTION
 	const ADDR = 'http://localhost:8080';
@@ -64,6 +97,33 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
+			// console.log(decoded);
+		}
+	});
+
+	socket.on('recipes', (data) => {
+		console.log('hi');
+		if (data) {
+			console.log(data);
+			cookbook = data.cookbook;
+		}
+	});
+
+	socket.on('stove-update', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = StationUpdate.decode(bytes);
+			stove = decoded.slots;
+			console.log(decoded);
+		}
+	});
+
+	socket.on('plating-update', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = StationUpdate.decode(bytes);
+			platingStation = decoded.slots;
+		// 	console.log(decoded);
 		}
 	});
 
@@ -75,27 +135,35 @@
 			let decoded = OrderUpdate.decode(bytes);
 			// console.log(bytes);
 			// console.log(decoded);
+			let orderCountdownHandler = undefined;
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
 				if (!orders.hasOwnProperty(`${decoded.uid}`)){
 					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
 				}
-
-				let orderCountdownHandler = undefined;
 				orderCountdownHandler = setInterval(function(uid){
 					let ttl = orders[`${uid}`].ttl;
 					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
 					if (orders[`${uid}`].ttl <= 0){
-						delete orders[`${uid}`]
+						delete orders[`${uid}`];
 						if (orderCountdownHandler !== undefined){
 							clearInterval(orderCountdownHandler);
 						}
 					}
 					orders = {...orders};
 				}, 1000, decoded.uid);
+				orders[`${decoded.uid}`] = {...orders[`${decoded.uid}`], timer: orderCountdownHandler};
+			} else {
+				points = decoded.points;
+				// console.log(orders);
+				clearInterval(orders[`${decoded.uid}`].timer);
+				delete orders[`${decoded.uid}`];
+				console.log(points);
 			}
 		}
 	});
+
+
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -121,7 +189,7 @@
 	}
 
 	function validKey(key){
-		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
+		return ['w', 'a', 's', 'd', 'e', 'q', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
 
 	// These cell functions are temporary logic as we figure out how to implement protobuf readings in JS
@@ -166,32 +234,46 @@
 
 {#if (game_id != '' && ticked)}
 <div class='content'>
-	<div class='map'>
-		<table>
-			{#each map as map_row}
-				<tr>
-					{#each map_row.row as cell}
-						<td style='background-color: {cellToColor(cell.charAt(0))}'>
-							{cell.slice(1)}
-						</td>
-					{/each}
-				</tr>
+	<div class='left-content'>
+		<div class='top'>
+			<span style="float: right;">Points: {points}</span>
+		</div>		
+		<div class='map'>
+			<table>
+				{#each map as map_row}
+					<tr>
+						{#each map_row.row as cell}
+							<td style='background-color: {cellToColor(cell.charAt(0))}'>
+								{cell.slice(1)}
+							</td>
+						{/each}
+					</tr>
+				{/each}
+			</table>
+		</div>
+		<div class='inventories'>
+			<h1>Inventories</h1>
+			{#each players as player}
+				<Inventory emoji={player.emoji} inventory={player.inventory}/>
 			{/each}
-		</table>
+		</div>
 	</div>
-
-	<div class='orders'>
-		<h1>Orders</h1>
-		{#each Object.values(orders) as order}
-			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
-		{/each}
-	</div>
-
-	<div class='inventories'>
-		<h1>Inventories</h1>
-		{#each players as player}
-			<Inventory emoji={player.emoji} inventory={player.inventory}/>
-		{/each}
+	
+	<div class='right-content'>
+		<div class='orders'>
+			<h1>Orders</h1>
+			{#each Object.values(orders) as order}
+				<Order order={recipes[order.emoji]} ttl={order.ttl}/>
+			{/each}
+		</div>
+		<div class='station'>
+			<h3>Stove</h3>
+			<Station slots={stove}/>
+		</div>
+		<div class='station'>
+			<h3>Plating Station</h3>
+			<Station slots={platingStation}/>		
+		</div>
 	</div>
 </div>
 {/if}
