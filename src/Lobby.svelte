@@ -109,24 +109,33 @@
             });
         }
     }
+
+    function gameplayStarted(){
+      game_in_play = true;
+    }
 </script>
 
 <main>
-  <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
-  <div style="display: table; margin: 0px auto;">
+  {#if !game_in_play}
+    <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
+  {/if}
+
     {#if authd()}
-
-        {#if game_id && game_in_play}
-            <Game {session_key} {game_id} {socket}/>
-        {:else if game_id}
-            <WaitForGame {joinGame} {session_key} {game_id} {game_in_play} {player_list}/>
+      {#if game_id}
+        {#if game_in_play}
+          <Game {session_key} {game_id} {socket}/>
         {:else}
-            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+          <div style="display: table; margin: 0px auto;">
+            <WaitForGame {socket} {joinGame} {session_key} {game_id} {game_in_play} {player_list} {gameplayStarted}/>
+          </div>
         {/if}
-
+      {:else}
+        <div style="display: table; margin: 0px auto;">
+          <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+        </div>
+      {/if}
     {:else}
         <h1 id="redirect_text"> redirecting you to the login screen... </h1>
         <script> window.location.replace("index.html"); </script>
     {/if}
-  </div>
 </main>

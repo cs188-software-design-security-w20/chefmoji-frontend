@@ -4,12 +4,12 @@
     export let joinGame;
     // Game ID value filled into form by user
     export let game_id;
-    export let session_key;
 </script>
 
 <div>
     <div class='join-game'>
         <form>
+            <p id="hiddentext"> <br> </p>
             <label for="join-code"></label>
             <input
                 type="text"
