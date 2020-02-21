@@ -2,35 +2,49 @@
   <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 </svelte:head>
 
+<!-- Add the following code to app.py:
+
+@socketio.on('get-game-players')
+def get_game_players(game_id, player_id, session_key):
+    players = [];
+    if player_ids[session_key] == player_id and game_id in game_sessions and game_sessions[game_id].in_play():
+        socketio.emit('get_game_players', {False, players});
+    else:
+        for player in player_ids:
+            if player_in_game(player, game_sessions, game_id):
+                player_list.append(player);
+        socketio.emit('get_game_players', {True, players});
+
+-->
+
 <style>
+  #gamename {
+    position: relative;
+    margin-top: 3%;
 
-#gamename {
-  position: relative;
-  margin-top: 3%;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100px;
+    /* line-height: 117px; */
+    text-align: center;
 
-  font-family: Quicksand;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 100px;
-  /* line-height: 117px; */
-  text-align: center;
+    color: #7E9DC7;
+  }
 
-  color: #7E9DC7;
-}
-
-#redirect_text {
-  text-transform: lowercase;
-  font-family: 'Quicksand';
-  font-style: normal;
-  font-weight: normal;
-  text-align: center;
-  color: #000000;
-}
-
+  #redirect_text {
+    text-transform: lowercase;
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    color: #000000;
+  }
 </style>
 
 <script>
     import JoinGame from './JoinGame.svelte';
+    import WaitForGame from './WaitForGame.svelte';
     import Game from './Game.svelte';
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
@@ -43,6 +57,8 @@
     let game_id = undefined;
     let session_key = undefined;
     let player_id = undefined;
+    let game_in_play = false;
+    let player_list = []; // for players in the current game (if any)
 
     // Get session-key and player-id from cookie store
     // Picks the first cookie matching the search name found
@@ -79,9 +95,27 @@
         return (game_id !== undefined);
     }
 
+    socket.on('get-game-players', ({in_game, players}) => {
+      if (in_game) {
+        game_in_play = true;
+        player_list = []
+      } else {
+        game_in_play = false;
+        player_list = players;
+      }
+      console.log("requested players from server");
+    });
+
+    function checkPlayers(){
+        if (authd()){
+            socket.emit('get-game-players', game_id, player_id, session_key);
+        }
+    }
+
     function joinGame(){
         if (authd()){
             socket.emit('join-game-with-id', game_id, player_id, session_key);
+            checkPlayers();
         }
     }
 
@@ -97,6 +131,7 @@
                 body: JSON.stringify(data),
             }).then((resp)=>resp.json()).then((data)=>{
                 game_id=data.game_id;
+                console.log(game_id);
                 joinGame();
             }).catch((e)=>{
                 console.error(e);
@@ -109,11 +144,22 @@
   <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   <div style="display: table; margin: 0px auto;">
     {#if authd()}
-        {#if !game_id}
-            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
-        {:else}
+
+        <!-- commented out block below is currently not functional -->
+        <!-- {#if game_id && game_in_play}
             <Game {session_key} {game_id} {socket}/>
+        {:else if game_id}
+            <WaitForGame {joinGame} {checkPlayers} {session_key} {game_id} {game_in_play} {player_list}/>
+        {:else}
+            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+        {/if} -->
+
+        {#if game_id}
+            <Game {session_key} {game_id} {socket}/>
+        {:else}
+            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
         {/if}
+
     {:else}
         <h1 id="redirect_text"> redirecting you to the login screen... </h1>
         <script> window.location.replace("index.html"); </script>

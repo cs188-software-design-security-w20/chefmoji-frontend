@@ -4,6 +4,7 @@
     export let joinGame;
     // Game ID value filled into form by user
     export let game_id;
+    export let session_key;
 </script>
 
 <div>
@@ -32,11 +33,6 @@
 </div>
 
 <style>
-
-  /* .join-game, .create-game {
-    postion: relative;
-    margin: 0 auto;
-  } */
 
   .join-game button, .create-game button { /* labels for input boxes */
     width: 300px;
