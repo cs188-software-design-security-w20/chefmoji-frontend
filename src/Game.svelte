@@ -101,7 +101,7 @@
 	const TABLE = '#ecb476';
 	const FLOOR = '#fff';
 	const FRIDGE = '#75c3d1';
-	
+
 	class Player {
 		constructor(r, c, emoji) {
 			this.r = r;
@@ -156,10 +156,6 @@
 		}
 	}
 
-	function playGame(){
-		socket.emit('play', session_key, game_id);
-	}
-	
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -167,12 +163,6 @@
 <svelte:head>
 	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 </svelte:head>
-
-{#if (game_id != '' && !ticked)}
-	<button on:click={playGame}>
-		Play game!
-	</button>
-{/if}
 
 {#if (game_id != '' && ticked)}
 <div class='content'>
@@ -189,7 +179,7 @@
 			{/each}
 		</table>
 	</div>
-	
+
 	<div class='orders'>
 		<h1>Orders</h1>
 		{#each Object.values(orders) as order}

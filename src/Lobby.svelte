@@ -1,8 +1,35 @@
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+</svelte:head>
+
 <style>
+  #gamename {
+    position: relative;
+    margin-top: 3%;
+
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100px;
+    /* line-height: 117px; */
+    text-align: center;
+
+    color: #7E9DC7;
+  }
+
+  #redirect_text {
+    text-transform: lowercase;
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    color: #000000;
+  }
 </style>
 
 <script>
     import JoinGame from './JoinGame.svelte';
+    import WaitForGame from './WaitForGame.svelte';
     import Game from './Game.svelte';
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
@@ -16,6 +43,8 @@
     let game_id = undefined;
     let session_key = undefined;
     let player_id = undefined;
+    let game_in_play = false;
+    let player_list = []; // for players in the current game (if any)
     let cookbook = {};
 
     // Get session-key and player-id from cookie store
@@ -34,7 +63,7 @@
     }
 
     socket.on('connect', () => {
-		console.log("CONNECTED");
+		    console.log("CONNECTED");
     });
 
     socket.on('disconnect', () => {
@@ -53,6 +82,11 @@
     function inGame(){
         return (game_id !== undefined);
     }
+
+    socket.on('get-game-players', (in_game, players) => {
+      game_in_play = in_game;
+      player_list = players;
+    });
 
     function joinGame(){
         if (authd()){
@@ -78,15 +112,33 @@
             });
         }
     }
+
+    function gameplayStarted(){
+      game_in_play = true;
+    }
 </script>
 
-{#if authd()}
-    {#if !game_id}
-        <JoinGame joinGame={joinGame} {createGame} {game_id} {player_id}/>
-    {:else}
-        <Game {session_key} {game_id} {cookbook} {socket}/>
-    {/if}
-{:else}
-    <h1 style="color: red; font-size: 24px;">Client did not receive session-key and player-ID</h1>
-{/if}
+<main>
+  {#if !game_in_play}
+    <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
+  {/if}
 
+    {#if authd()}
+      {#if game_id}
+        {#if game_in_play}
+          <Game {session_key} {game_id} {socket}/>
+        {:else}
+          <div style="display: table; margin: 0px auto;">
+            <WaitForGame {socket} {joinGame} {session_key} {game_id} {game_in_play} {player_list} {gameplayStarted}/>
+          </div>
+        {/if}
+      {:else}
+        <div style="display: table; margin: 0px auto;">
+          <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+        </div>
+      {/if}
+    {:else}
+        <h1 id="redirect_text"> redirecting you to the login screen... </h1>
+        <script> window.location.replace("index.html"); </script>
+    {/if}
+</main>
