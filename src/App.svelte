@@ -4,6 +4,12 @@
 </svelte:head>
 
 <style>
+  p {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+  }
+
 	main {
 		text-align: left;
 		padding: 1em;
@@ -92,9 +98,8 @@
   }
 
 	#recaptcha {
-
+    display: table;
     position: relative;
-    display: block;
     margin: 0 auto;
 	}
 
@@ -140,6 +145,7 @@
 
 	  let playerid, password, repeat_password, email, input_totp;
     let visible = false;
+    let recaptcha_passed = false;
 
     // let pass_upper = false, pass_lower = false, pass_number = false;
     // let pass_special = false, pass_len = false;
@@ -169,11 +175,13 @@
             passhash = '';
             return;
         }
-        // else if (rc_response.length == 0) {
+        
+        // else if (rc_response.length == 0 || !recaptcha_passed) {
         //     document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
         //     password = '';
         //     return;
         // }
+        // encrypt the password, clear out plaintext password
 
         // encrypt the password, clear out plaintext password
         const hash = new SHA3(256);
@@ -210,7 +218,11 @@
         password = '';
         passhash = '';
         input_totp = '';
-	}
+  }
+  
+  function recaptchaPass() {
+        recaptcha_passed = true;
+    }
 
   function check_playerid_constraints(pid) {
     // length check
@@ -348,40 +360,35 @@
 
 <main>
 	<h1 id="gamename"> chef<br>moji </h1>
-
   <div id="entire_input_form">
-    <p id="hiddentext"> <br> </p>
+    <p id="hiddentext"> </p>
     <div class ="input_div">
       <p> player id: </p>
     	<label>
-          <input type="text" name="username" bind:value={playerid}>
+          <input type="text" name="username" placeholder="player id" bind:value={playerid}>
       </label>
     </div>
-
     <div class ="input_div">
       <p> password: </p>
     	<label> <!-- ignore warnings in WebStorms, this input block works -->
-          <input type="password" name="password" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+          <input type="password" name="password" placeholder="password" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
-
     {#if !visible}
     <div class ="input_div">
-      <p> totp (6 digits): </p>
+      <p> multifactor key: </p>
     	<label> <!-- ignore warnings in WebStorms, this input block works -->
-          <input type="text" name="input_totp" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+          <input type="text" name="input_totp" placeholder="6 digit multifactor key" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
     {/if}
-
     {#if visible}
       <div class ="input_div">
-        <p> repeat password: </p>
+        <p> retype password: </p>
         <label> <!-- ignore warnings in WebStorms, this input block works -->
-            <input type="password" name="password" bind:value={repeat_password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+            <input type="password" name="password" placeholder="retype your password" bind:value={repeat_password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
         </label>
       </div>
-
       <div class = "pw_constraints_div">
         <p id="pw_upper_lower" style="color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
         <p id="pw_numbers" style="color: #DD6539;"> contains numbers </p>
@@ -389,20 +396,17 @@
         <p id="pw_len" style="color: #DD6539;"> length is between is between 10 and 30 characters </p>
         <p id="pw_repeat_match" style="color: #DD6539;"> passwords match </p>
       </div>
-
       <div class = "input_div">
         <p> email address: </p>
         <label>
-            <input type="email" name="email" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+            <input type="email" name="email" placeholder="email address" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
         </label>
         <br>
       </div>
     {/if}
-
-  	<form action="?" method="POST">
-          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
-    </form>
-
+  	<!-- <form action="?" method="POST"> -->
+          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP" data-callback="recaptchaPass"></div>
+    <!-- </form> -->
     <div class="landbtn_div">
       {#if !visible}
         <button class="landbtn" on:click={toggle_visible}> sign up </button>
@@ -412,8 +416,5 @@
         <button class="landbtn" on:click={click_signup}> make my account </button>
       {/if}
     </div>
-
   </div> <!-- end entire_input_form -->
-
 </main>
-
