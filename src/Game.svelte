@@ -15,17 +15,14 @@
 	}
 	.orders {
 		background-color: lightsteelblue;
-		width: 30%;
-		height: calc(100vh - 16px);
-		float: right;
+		width: 100%;
+		height: 70%;
 		font-family: 'Indie Flower', cursive;
 		text-align: center;
 	}
-
 	.map {
 		display: inline-block;
 	}
-
 	.inventories {
 		background-color: lightsteelblue;
 		font-family: 'Indie Flower', cursive;
@@ -34,11 +31,32 @@
 		display: flex;
 		justify-content: center;
 	}
+	.content {
+		display: flex;
+		flex-direction: row;
+	}
+	.left-content {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		width: 70%;
+	}
+	.right-content {
+		height: 100vh;
+		width: 30%;
+		display: flex;
+		flex-direction: column;
+	}
+	.station {
+		height: 15%;
+		width: 100%;
+	}
 </style>
 
 <script>
 	import Order from './Order.svelte';
 	import Inventory from './Inventory.svelte';
+	import Station from './Station.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
 	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
 	import { MapUpdate, OrderUpdate, PlayerAction, StationUpdate } from './proto/messages.js';
@@ -53,6 +71,8 @@
 	let ticked = false;
 	let map = [];
 	let players = [];
+	let stove = [];
+	let platingStation = [];
 
 	// TODO: CHANGE FOR PRODUCTION
 	const ADDR = 'http://localhost:8080';
@@ -64,13 +84,13 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
-			console.log(decoded);
+			// console.log(decoded);
 		}
 	});
 
 	socket.on('cookbook', (data) => {
 		if (data) {
-			console.log(cookbook);
+			// console.log(cookbook);
 			cookbook = data.cookbook;
 		}
 	});
@@ -78,8 +98,17 @@
 	socket.on('stove-update', (data) => {
 		if (data) {
 			let bytes =  new Uint8Array(data);
-			console.log(bytes);
 			let decoded = StationUpdate.decode(bytes);
+			stove = decoded.slots;
+			console.log(decoded);
+		}
+	});
+
+	socket.on('plating-update', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = StationUpdate.decode(bytes);
+			platingStation = decoded.slots;
 			console.log(decoded);
 		}
 	});
@@ -138,7 +167,7 @@
 	}
 
 	function validKey(key){
-		return ['w', 'a', 's', 'd', 'e', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
+		return ['w', 'a', 's', 'd', 'e', 'q', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(key)
 	}
 
 	// These cell functions are temporary logic as we figure out how to implement protobuf readings in JS
@@ -193,32 +222,42 @@
 
 {#if (game_id != '' && ticked)}
 <div class='content'>
-	<div class='map'>
-		<table>
-			{#each map as map_row}
-				<tr>
-					{#each map_row.row as cell}
-						<td style='background-color: {cellToColor(cell.charAt(0))}'>
-							{cell.slice(1)}
-						</td>
-					{/each}
-				</tr>
+	<div class='left-content'>
+		<div class='map'>
+			<table>
+				{#each map as map_row}
+					<tr>
+						{#each map_row.row as cell}
+							<td style='background-color: {cellToColor(cell.charAt(0))}'>
+								{cell.slice(1)}
+							</td>
+						{/each}
+					</tr>
+				{/each}
+			</table>
+		</div>
+		<div class='inventories'>
+			<h1>Inventories</h1>
+			{#each players as player}
+				<Inventory emoji={player.emoji} inventory={player.inventory}/>
 			{/each}
-		</table>
+		</div>
 	</div>
-	
-	<div class='orders'>
-		<h1>Orders</h1>
-		{#each Object.values(orders) as order}
-			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
-		{/each}
-	</div>
-
-	<div class='inventories'>
-		<h1>Inventories</h1>
-		{#each players as player}
-			<Inventory emoji={player.emoji} inventory={player.inventory}/>
-		{/each}
+	<div class='right-content'>
+		<div class='orders'>
+			<h1>Orders</h1>
+			{#each Object.values(orders) as order}
+				<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
+			{/each}
+		</div>
+		<div class='station'>
+			<h3>Stove</h3>
+			<Station slots={stove}/>
+		</div>
+		<div class='station'>
+			<h3>Plating Station</h3>
+			<Station slots={platingStation}/>		
+		</div>
 	</div>
 </div>
 {/if}
