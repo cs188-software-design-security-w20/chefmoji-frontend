@@ -20,7 +20,7 @@
                 maxlength="8"
                 placeholder="join code">
         </form>
-        <button on:click={joinGame}>
+        <button on:click={()=>{joinGame(game_id)}}>
             join an existing game
         </button>
     </div>
