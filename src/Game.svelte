@@ -100,7 +100,8 @@
 		}
 	});
 
-	socket.on('cookbook', (data) => {
+	socket.on('recipes', (data) => {
+		console.log('hi');
 		if (data) {
 			console.log(data);
 			cookbook = data.cookbook;
@@ -261,7 +262,7 @@
 		<div class='orders'>
 			<h1>Orders</h1>
 			{#each Object.values(orders) as order}
-				<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
+				<Order order={recipes[order.emoji]} ttl={order.ttl}/>
 			{/each}
 		</div>
 		<div class='station'>

@@ -1,6 +1,6 @@
 <script>
     // Handler Funcs
-    export let checkPlayers;
+    // export let checkPlayers;
 
     // Game ID value filled into form by user
     export let game_id = '';

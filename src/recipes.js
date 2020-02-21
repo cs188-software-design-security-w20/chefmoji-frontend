@@ -61,7 +61,24 @@ const EmojiFromOrderEnum = (type) => {
 
 const ORDER_TTL = 120;
 
+
 const recipes = {
+    '🌭': {'name': 'HOT_DOG', 'emoji': '🌭', 'difficulty': 1, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🍖', 'chopped': false}], 'cooked': true},
+    '🍕': {'name': 'PIZZA', 'emoji': '🍕', 'difficulty': 1, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🍅', 'chopped': true}], 'cooked': true},
+    '🧇': {'name': 'WAFFLES', 'emoji': '🧇', 'difficulty': 1, 'ingredients': [{'emoji': '🥛', 'chopped': false}, {'emoji': '🥚', 'chopped': false}, {'emoji': '🌾', 'chopped': false}], 'cooked': true},
+    '🍣': {'name': 'SUSHI', 'emoji': '🍣', 'difficulty': 1, 'ingredients': [{'emoji': '🐟', 'chopped': true}, {'emoji': '🍚', 'chopped': false}], 'cooked': false},
+    '🍳': {'name': 'EGGS', 'emoji': '🍳', 'difficulty': 1, 'ingredients': [{'emoji': '🥚', 'chopped': false}, {'emoji': '🥚', 'chopped': false}, {'emoji': '🥚', 'chopped': false}], 'cooked': true},
+    '🥙': {'name': 'GYRO', 'emoji': '🥙', 'difficulty': 2, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🍅', 'chopped': true}], 'cooked': false},
+    '🥞': {'name': 'PANCAKES', 'emoji': '🥞', 'difficulty': 2, 'ingredients': [{'emoji': '🥛', 'chopped': false}, {'emoji': '🥚', 'chopped': false}, {'emoji': '🧈', 'chopped': false}, {'emoji': '🌾', 'chopped': false}], 'cooked': true},
+    '🍜': {'name': 'RAMEN', 'emoji': '🍜', 'difficulty': 2, 'ingredients': [{'emoji': '🍵', 'chopped': false}, {'emoji': '🐖', 'chopped': true}, {'emoji': '🍝', 'chopped': false}, {'emoji': '🍥', 'chopped': false}], 'cooked': true}, 
+    '🍲': {'name': 'STEW', 'emoji': '🍲', 'difficulty': 2, 'ingredients': [{'emoji': '🍵', 'chopped': false}, {'emoji': '🥔', 'chopped': true}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🥕', 'chopped': true}], 'cooked': true},
+    '🍱': {'name': 'BENTO_BOX', 'emoji': '🍱', 'difficulty': 3, 'ingredients': [{'emoji': '🍚', 'chopped': false}, {'emoji': '🐟', 'chopped': true}, {'emoji': '🥔', 'chopped': true}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🍥', 'chopped': false}], 'cooked': false},
+    '🌮': {'name': 'TACO', 'emoji': '🌮', 'difficulty': 3, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🥩', 'chopped': false}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🧅', 'chopped': true}], 'cooked': false},
+    '🥪': {'name': 'SANDWICH', 'emoji': '🥪', 'difficulty': 3, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🐖', 'chopped': true}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🍅', 'chopped': true}], 'cooked': false},
+    '🍔': {'name': 'HAMBURGER', 'emoji': '🍔', 'difficulty': 3, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🥩', 'chopped': false}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🍅', 'chopped': true}, {'emoji': '🧅', 'chopped': true}], 'cooked': true},
+    '🌯': {'name': 'BURRITO', 'emoji': '🌯', 'difficulty': 3, 'ingredients': [{'emoji': '🍞', 'chopped': false}, {'emoji': '🧀', 'chopped': false}, {'emoji': '🥩', 'chopped': false}, {'emoji': '🥬', 'chopped': true}, {'emoji': '🧅', 'chopped': true}], 'cooked': true},
+    '🍛': {'name': 'CURRY_RICE', 'emoji': '🍛', 'difficulty': 3, 'ingredients': [{'emoji': '🍚', 'chopped': false}, {'emoji': '🧅', 'chopped': true}, {'emoji': '🧄', 'chopped': true}, {'emoji': '🍵', 'chopped': false}, {'emoji': '🥕', 'chopped': true}], 'cooked': true}}
+const recipes_old = {
     '🌭' : {
         name : 'Hot Dog',
         emoji : '🌭',
