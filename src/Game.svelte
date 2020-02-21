@@ -249,7 +249,7 @@
 			{/each}
 		</div>
 	</div>
-	
+
 	<div class='right-content'>
 		<div class='orders'>
 			<h1>Orders</h1>
