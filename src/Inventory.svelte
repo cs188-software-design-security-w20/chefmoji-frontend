@@ -16,22 +16,34 @@
     .inventory-item-wrapper {
         border: 2px solid black;
         background-color: rgb(196, 173, 139);
-        height: 44px;
-        width: 44px;
+        height: 50px;
+        width: 45px;
         position: relative;
         padding-bottom: 5px;
     }
 
     .inventory-item {
         font-size: 32px;
-        position: relative;
+        line-height: 32px;
+        display: flex;
+        flex-direction: column;
+        /* position: relative; */
     }
     
     .variant {
         font-size: var(--variant-font-size-13);
-        position: absolute;
-        left: 0;
-        bottom: 0;
+        margin: 0;
+        /* position: absolute; */
+        /* left: 0; */
+        /* bottom: 0; */
+    }
+
+    .plated {
+        font-size: var(--variant-font-size-13);
+        margin: 0;
+        /* position: absolute; */
+        /* left: 0; */
+        /* top: 0; */
     }
 </style>
 
@@ -47,17 +59,20 @@
     <div class="inventory-item-wrapper">
         {#if inventory}
             <div class="inventory-item">
+                <span class="plated">
+                    {#if inventory.plated}
+                        plated
+                        <script>
+                            console.log("PLATED!!!!");
+                        </script>
+                    {/if}
+                </span>
                 {inventory.item}
                 <span class='variant'>
                     {#if inventory.chopped}
                         chopped
                         <script>
                             console.log("CHOPPED!!!!");
-                        </script>
-                    {:else if inventory.plated}
-                        plated
-                        <script>
-                            console.log("PLATED!!!!");
                         </script>
                     {:else if inventory.cooked}
                         cooked
