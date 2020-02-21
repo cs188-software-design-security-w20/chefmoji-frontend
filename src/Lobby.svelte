@@ -2,21 +2,6 @@
   <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 </svelte:head>
 
-<!-- Add the following code to app.py:
-
-@socketio.on('get-game-players')
-def get_game_players(game_id, player_id, session_key):
-    players = [];
-    if player_ids[session_key] == player_id and game_id in game_sessions and game_sessions[game_id].in_play():
-        socketio.emit('get_game_players', {False, players});
-    else:
-        for player in player_ids:
-            if player_in_game(player, game_sessions, game_id):
-                player_list.append(player);
-        socketio.emit('get_game_players', {True, players});
-
--->
-
 <style>
   #gamename {
     position: relative;
@@ -76,7 +61,7 @@ def get_game_players(game_id, player_id, session_key):
     }
 
     socket.on('connect', () => {
-		console.log("CONNECTED");
+		    console.log("CONNECTED");
     });
 
     socket.on('disconnect', () => {
@@ -95,27 +80,16 @@ def get_game_players(game_id, player_id, session_key):
         return (game_id !== undefined);
     }
 
-    socket.on('get-game-players', ({in_game, players}) => {
-      if (in_game) {
-        game_in_play = true;
-        player_list = []
-      } else {
-        game_in_play = false;
-        player_list = players;
-      }
+    socket.on('get-game-players', (in_game, players) => {
+      game_in_play = in_game;
+      player_list = players;
       console.log("requested players from server");
+      console.log(players);
     });
-
-    function checkPlayers(){
-        if (authd()){
-            socket.emit('get-game-players', game_id, player_id, session_key);
-        }
-    }
 
     function joinGame(){
         if (authd()){
             socket.emit('join-game-with-id', game_id, player_id, session_key);
-            checkPlayers();
         }
     }
 
@@ -145,17 +119,10 @@ def get_game_players(game_id, player_id, session_key):
   <div style="display: table; margin: 0px auto;">
     {#if authd()}
 
-        <!-- commented out block below is currently not functional -->
-        <!-- {#if game_id && game_in_play}
+        {#if game_id && game_in_play}
             <Game {session_key} {game_id} {socket}/>
         {:else if game_id}
-            <WaitForGame {joinGame} {checkPlayers} {session_key} {game_id} {game_in_play} {player_list}/>
-        {:else}
-            <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
-        {/if} -->
-
-        {#if game_id}
-            <Game {session_key} {game_id} {socket}/>
+            <WaitForGame {joinGame} {session_key} {game_id} {game_in_play} {player_list}/>
         {:else}
             <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
         {/if}
