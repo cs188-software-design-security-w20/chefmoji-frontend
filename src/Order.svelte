@@ -75,7 +75,7 @@
                     {ingredient.emoji}
                     {#if ingredient.chopped}
                         <span class='variant'>
-                        chopped
+                            chopped
                         </span>
                     {/if}
                 </div>
@@ -83,7 +83,6 @@
         </div>
     </div>  
     <div class="top-wrapper">
-        ‎
         <div class='item'>
             👉🏼
         </div>

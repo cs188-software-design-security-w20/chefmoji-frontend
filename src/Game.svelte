@@ -32,6 +32,12 @@
 		text-align: center;
 		margin-right: 8px;
 		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.player-item-pair {
+		display: flex;
 		justify-content: center;
 	}
 </style>
@@ -199,9 +205,11 @@
 
 	<div class='inventories'>
 		<h1>Inventories</h1>
-		{#each players as player}
-			<Inventory emoji={player.emoji} inventory={player.inventory}/>
-		{/each}
+		<div class='player-item-pair'>
+			{#each players as player}
+				<Inventory emoji={player.emoji} inventory={player.inventory}/>
+			{/each}
+		</div>
 	</div>
 </div>
 {/if}
