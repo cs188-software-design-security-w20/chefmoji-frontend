@@ -59,7 +59,7 @@ const EmojiFromOrderEnum = (type) => {
     }
 };
 
-const ORDER_TTL = 20;
+const ORDER_TTL = 120;
 
 const recipes = {
     '🌭' : {

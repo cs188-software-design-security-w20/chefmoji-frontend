@@ -19,7 +19,7 @@
 <main>
   <h3 id="game_id_header">game id: {game_id}</h3>
   <div id="list_of_players" >
-
+  
   {#each player_list as player}
     <p> {player} </p>
   {/each}
