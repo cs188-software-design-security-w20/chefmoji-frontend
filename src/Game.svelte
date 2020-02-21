@@ -25,10 +25,20 @@
 	.map {
 		display: inline-block;
 	}
+
+	.inventories {
+		background-color: lightsteelblue;
+		font-family: 'Indie Flower', cursive;
+		text-align: center;
+		margin-right: 8px;
+		display: flex;
+		justify-content: center;
+	}
 </style>
 
 <script>
 	import Order from './Order.svelte';
+	import Inventory from './Inventory.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
 	import {recipes} from './recipes.js';
 	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
@@ -37,15 +47,15 @@
 	export let session_key = '';
 	export let game_id = '';
 	export let socket;
+	export let cookbook = {};
+
 
 	let ticked = false;
 	let map = [];
-	const ADDR = 'http://localhost:8080';
+	let players = [];
 
-	socket.on('issue-id', (issued_id) => {
-		console.log("Issued id: " + issued_id);
-		session_key = issued_id;
-	});
+	// TODO: CHANGE FOR PRODUCTION
+	const ADDR = 'http://localhost:8080';
 
 	socket.on('tick', (data) => {
 		if (data) {
@@ -53,10 +63,39 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
+			players = decoded.players;
 		}
 	});
 
-	let orders = ['🍔', '🧇'];
+	let orders = {};
+
+	socket.on('order', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			let decoded = OrderUpdate.decode(bytes);
+			// console.log(bytes);
+			// console.log(decoded);
+			if (!decoded.fulfilled) {
+				// At current, allow no updates
+				if (!orders.hasOwnProperty(`${decoded.uid}`)){
+					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
+				}
+
+				let orderCountdownHandler = undefined;
+				orderCountdownHandler = setInterval(function(uid){
+					let ttl = orders[`${uid}`].ttl;
+					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
+					if (orders[`${uid}`].ttl <= 0){
+						delete orders[`${uid}`]
+						if (orderCountdownHandler !== undefined){
+							clearInterval(orderCountdownHandler);
+						}
+					}
+					orders = {...orders};
+				}, 1000, decoded.uid);
+			}
+		}
+	});
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -143,8 +182,15 @@
 
 	<div class='orders'>
 		<h1>Orders</h1>
-		{#each orders as order}
-			<Order order={recipes[order]}/>
+		{#each Object.values(orders) as order}
+			<Order order={cookbook[order.emoji]} ttl={order.ttl}/>
+		{/each}
+	</div>
+
+	<div class='inventories'>
+		<h1>Inventories</h1>
+		{#each players as player}
+			<Inventory emoji={player.emoji} inventory={player.inventory}/>
 		{/each}
 	</div>
 </div>

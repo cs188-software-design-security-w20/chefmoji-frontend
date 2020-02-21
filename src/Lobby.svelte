@@ -34,6 +34,7 @@
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
     const PORT = '8080';
+    // TODO: Change for production from localhist
     const ADDR = `http://localhost:${PORT}`;
     const socket = io(ADDR, { transports: ['websocket'] });
     const SESSION_KEY = 'session-key';
@@ -44,6 +45,7 @@
     let player_id = undefined;
     let game_in_play = false;
     let player_list = []; // for players in the current game (if any)
+    let cookbook = {};
 
     // Get session-key and player-id from cookie store
     // Picks the first cookie matching the search name found
@@ -69,8 +71,9 @@
     });
 
     socket.on('session-init', (issued_game_id) => {
-        joinGame();
+        cookbook = data.cookbook;
         game_id = issued_game_id;
+        joinGame();
     });
 
     session_key = fromCookie(SESSION_KEY);

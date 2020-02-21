@@ -24,17 +24,7 @@
 		font-size: 100px;
 		line-height: 117px;
 		text-align: center;
-
 		color: #7E9DC7;
-	}
-
-	p {
-		color: #000000;
-		text-transform: lowercase;
-		font-family: 'Quicksand';
-    font-style: normal;
-		font-weight: normal;
-    white-space: nowrap;
 	}
 
   #entire_input_form {
@@ -62,12 +52,10 @@
 	.input_div p { /* labels for input boxes */
     display: flex;
     justify-content: flex-end;
-    /* margin-right: 20px; */
 
 		width: 127px;
 		height: 38px;
 		font-size: 30px;
-		/* line-height: 35px; */
     white-space: nowrap;
 
 		color: #000000;
@@ -92,10 +80,8 @@
   .pw_constraints_div { /* block of constraints */
     display: flex;
     flex-flow: column nowrap;
-    /* height: 100%; */
     position: relative;
     margin-left: 17%;
-    /* margin-top: 25%; */
   }
 
   .pw_constraints_div p { /* individual constraints */
@@ -106,9 +92,6 @@
   }
 
 	#recaptcha {
-		/* position: absolute; */
-		/* left: 850px; */
-    /* top: 430px; */
 
     position: relative;
     display: block;
@@ -433,3 +416,4 @@
   </div> <!-- end entire_input_form -->
 
 </main>
+
