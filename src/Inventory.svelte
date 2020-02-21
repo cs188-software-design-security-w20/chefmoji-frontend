@@ -13,11 +13,18 @@
         margin-right: 5px;
     }
 
-    .inventory-item {
+    .inventory-item-wrapper {
         border: 2px solid black;
         background-color: rgb(196, 173, 139);
-        height: 36px;
-        width: 36px;
+        height: 44px;
+        width: 44px;
+        position: relative;
+        padding-bottom: 5px;
+    }
+
+    .inventory-item {
+        font-size: 32px;
+        position: relative;
     }
     
     .variant {
@@ -37,35 +44,31 @@
     <div class="player">
         {emoji}
     </div>
-    <div class="inventory-item">
+    <div class="inventory-item-wrapper">
         {#if inventory}
-            {inventory.item}
-            <span class='variant'>
-                {#if inventory.item.chopped}
-                    chopped
-                    <script>
-                        console.log("CHOPPED!!!!");
-                    </script>
-                {:else}
-                    <script></script>
-                {/if}
-                {#if inventory.item.plated}
-                    plated
-                    <script>
-                        console.log("PLATED!!!!");
-                    </script>
-                {:else}
-                    <script></script>
-                {/if}
-                {#if inventory.item.cooked}
-                    cooked
-                    <script>
-                        console.log("COOKED!!!!");
-                    </script>
-                {:else}
-                    <script></script>
-                {/if}
-            </span>
+            <div class="inventory-item">
+                {inventory.item}
+                <span class='variant'>
+                    {#if inventory.chopped}
+                        chopped
+                        <script>
+                            console.log("CHOPPED!!!!");
+                        </script>
+                    {:else if inventory.plated}
+                        plated
+                        <script>
+                            console.log("PLATED!!!!");
+                        </script>
+                    {:else if inventory.cooked}
+                        cooked
+                        <script>
+                            console.log("COOKED!!!!");
+                        </script>
+                    {:else}
+                        <script></script>
+                    {/if}
+                </span>
+            </div>
         {/if}
     </div>
 </div>
