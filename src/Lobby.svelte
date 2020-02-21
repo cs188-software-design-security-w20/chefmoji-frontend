@@ -83,8 +83,6 @@
     socket.on('get-game-players', (in_game, players) => {
       game_in_play = in_game;
       player_list = players;
-      console.log("requested players from server");
-      console.log(players);
     });
 
     function joinGame(){
@@ -105,7 +103,6 @@
                 body: JSON.stringify(data),
             }).then((resp)=>resp.json()).then((data)=>{
                 game_id=data.game_id;
-                console.log(game_id);
                 joinGame();
             }).catch((e)=>{
                 console.error(e);
