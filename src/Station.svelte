@@ -1,7 +1,7 @@
 <style>
     :root {
         --variant-font-size-13: 12px;
-        --slot-font-size-13: 24px;
+        --slot-font-size-13: 32px;
         --variant-font-size-24: 12px;
     }
     .station-slots {
@@ -25,9 +25,9 @@
         border-collapse: collapse;
     }
 
-    table, tr, td {
+    /* table, tr, td {
         border: 1px solid black;
-    }
+    } */
 </style>
 
 <script>

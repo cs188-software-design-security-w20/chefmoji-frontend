@@ -58,6 +58,7 @@
 		font-family: 'Indie Flower', cursive;
 	}
 	.station {
+		background-color: rgb(233, 220, 202);
 		height: 15%;
 		width: 100%;
 		font-family: 'Indie Flower', cursive;
@@ -122,7 +123,7 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = StationUpdate.decode(bytes);
 			platingStation = decoded.slots;
-			console.log(decoded);
+		// 	console.log(decoded);
 		}
 	});
 
@@ -133,7 +134,7 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
 			// console.log(bytes);
-			console.log(decoded);
+			// console.log(decoded);
 			let orderCountdownHandler = undefined;
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
@@ -154,7 +155,7 @@
 				orders[`${decoded.uid}`] = {...orders[`${decoded.uid}`], timer: orderCountdownHandler};
 			} else {
 				points = decoded.points;
-				console.log(orders);
+				// console.log(orders);
 				clearInterval(orders[`${decoded.uid}`].timer);
 				delete orders[`${decoded.uid}`];
 				console.log(points);
