@@ -40,8 +40,8 @@
 	import Order from './Order.svelte';
 	import Inventory from './Inventory.svelte';
 	import io from '../node_modules/socket.io-client/dist/socket.io.js';
-	import {recipes} from './recipes.js';
-	import { MapUpdate, OrderType, PlayerUpdate, OrderUpdate, PlayerAction } from './proto/messages.js';
+	import {recipes, OrderTypeEnum, EmojiFromOrderEnum, ORDER_TTL} from './recipes.js';
+	import { MapUpdate, OrderUpdate, PlayerAction, StationUpdate } from './proto/messages.js';
 	import chefmoji from './proto/messages.js';
 
 	export let session_key = '';
@@ -64,6 +64,23 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
+			console.log(decoded);
+		}
+	});
+
+	socket.on('cookbook', (data) => {
+		if (data) {
+			console.log(cookbook);
+			cookbook = data.cookbook;
+		}
+	});
+
+	socket.on('stove-update', (data) => {
+		if (data) {
+			let bytes =  new Uint8Array(data);
+			console.log(bytes);
+			let decoded = StationUpdate.decode(bytes);
+			console.log(decoded);
 		}
 	});
 

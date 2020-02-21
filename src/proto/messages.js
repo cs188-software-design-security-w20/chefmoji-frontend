@@ -1054,6 +1054,214 @@ $root.chefmoji = (function() {
         return InventoryUpdate;
     })();
 
+    chefmoji.StationUpdate = (function() {
+
+        /**
+         * Properties of a StationUpdate.
+         * @memberof chefmoji
+         * @interface IStationUpdate
+         * @property {Array.<chefmoji.IInventoryUpdate>|null} [slots] StationUpdate slots
+         */
+
+        /**
+         * Constructs a new StationUpdate.
+         * @memberof chefmoji
+         * @classdesc Represents a StationUpdate.
+         * @implements IStationUpdate
+         * @constructor
+         * @param {chefmoji.IStationUpdate=} [properties] Properties to set
+         */
+        function StationUpdate(properties) {
+            this.slots = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * StationUpdate slots.
+         * @member {Array.<chefmoji.IInventoryUpdate>} slots
+         * @memberof chefmoji.StationUpdate
+         * @instance
+         */
+        StationUpdate.prototype.slots = $util.emptyArray;
+
+        /**
+         * Creates a new StationUpdate instance using the specified properties.
+         * @function create
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {chefmoji.IStationUpdate=} [properties] Properties to set
+         * @returns {chefmoji.StationUpdate} StationUpdate instance
+         */
+        StationUpdate.create = function create(properties) {
+            return new StationUpdate(properties);
+        };
+
+        /**
+         * Encodes the specified StationUpdate message. Does not implicitly {@link chefmoji.StationUpdate.verify|verify} messages.
+         * @function encode
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {chefmoji.IStationUpdate} message StationUpdate message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        StationUpdate.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.slots != null && message.slots.length)
+                for (var i = 0; i < message.slots.length; ++i)
+                    $root.chefmoji.InventoryUpdate.encode(message.slots[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified StationUpdate message, length delimited. Does not implicitly {@link chefmoji.StationUpdate.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {chefmoji.IStationUpdate} message StationUpdate message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        StationUpdate.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a StationUpdate message from the specified reader or buffer.
+         * @function decode
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {chefmoji.StationUpdate} StationUpdate
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        StationUpdate.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.chefmoji.StationUpdate();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.slots && message.slots.length))
+                        message.slots = [];
+                    message.slots.push($root.chefmoji.InventoryUpdate.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a StationUpdate message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {chefmoji.StationUpdate} StationUpdate
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        StationUpdate.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a StationUpdate message.
+         * @function verify
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        StationUpdate.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.slots != null && message.hasOwnProperty("slots")) {
+                if (!Array.isArray(message.slots))
+                    return "slots: array expected";
+                for (var i = 0; i < message.slots.length; ++i) {
+                    var error = $root.chefmoji.InventoryUpdate.verify(message.slots[i]);
+                    if (error)
+                        return "slots." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a StationUpdate message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {chefmoji.StationUpdate} StationUpdate
+         */
+        StationUpdate.fromObject = function fromObject(object) {
+            if (object instanceof $root.chefmoji.StationUpdate)
+                return object;
+            var message = new $root.chefmoji.StationUpdate();
+            if (object.slots) {
+                if (!Array.isArray(object.slots))
+                    throw TypeError(".chefmoji.StationUpdate.slots: array expected");
+                message.slots = [];
+                for (var i = 0; i < object.slots.length; ++i) {
+                    if (typeof object.slots[i] !== "object")
+                        throw TypeError(".chefmoji.StationUpdate.slots: object expected");
+                    message.slots[i] = $root.chefmoji.InventoryUpdate.fromObject(object.slots[i]);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a StationUpdate message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof chefmoji.StationUpdate
+         * @static
+         * @param {chefmoji.StationUpdate} message StationUpdate
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        StationUpdate.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.slots = [];
+            if (message.slots && message.slots.length) {
+                object.slots = [];
+                for (var j = 0; j < message.slots.length; ++j)
+                    object.slots[j] = $root.chefmoji.InventoryUpdate.toObject(message.slots[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Converts this StationUpdate to JSON.
+         * @function toJSON
+         * @memberof chefmoji.StationUpdate
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        StationUpdate.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return StationUpdate;
+    })();
+
     /**
      * OrderType enum.
      * @name chefmoji.OrderType
@@ -1615,13 +1823,13 @@ $root.chefmoji = (function() {
 
     return chefmoji;
 })();
-
 const MapUpdate = $root.chefmoji.MapUpdate;
 const OrderType = $root.chefmoji.OrderType;
 const PlayerUpdate = $root.chefmoji.PlayerUpdate;
 const OrderUpdate = $root.chefmoji.OrderUpdate;
 const MapRow = $root.chefmoji.MapRow;
 const PlayerAction = $root.chefmoji.PlayerAction;
+const StationUpdate = $root.chefmoji.StationUpdate;
 module.exports = {
     default: $root.chefmoji,
     MapUpdate,
@@ -1629,5 +1837,6 @@ module.exports = {
     PlayerUpdate,
     OrderUpdate,
     MapRow,
-    PlayerAction
+    PlayerAction,
+    StationUpdate
 };
