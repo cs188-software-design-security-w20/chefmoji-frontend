@@ -60,7 +60,7 @@
         }
     }
     function getTTLWidth(ttl) {
-        return (ttl * 100 / 20) + '%';
+        return (ttl * 100 / 120) + '%';
     }
 </script>
 
