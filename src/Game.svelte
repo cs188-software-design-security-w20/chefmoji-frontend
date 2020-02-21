@@ -138,7 +138,7 @@
 					let ttl = orders[`${uid}`].ttl;
 					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
 					if (orders[`${uid}`].ttl <= 0){
-						delete orders[`${uid}`]
+						delete orders[`${uid}`];
 						if (orderCountdownHandler !== undefined){
 							clearInterval(orderCountdownHandler);
 						}
