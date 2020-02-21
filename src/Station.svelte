@@ -1,7 +1,32 @@
 <style>
-    .stove-slots {
+    :root {
+        --variant-font-size-13: 12px;
+        --slot-font-size-13: 24px;
+        --variant-font-size-24: 12px;
+    }
+    .station-slots {
         display: flex;
         flex-direction: row;
+        font-size: var(--variant-font-size-13);
+        margin: auto;
+    }
+    .slot {
+        position: relative;
+        font-size: var(--slot-font-size-13);
+    }
+    .variant {
+        font-size: var(--variant-font-size-13);
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    table, tr, td {
+        border: 1px solid black;
     }
 </style>
 
@@ -10,8 +35,19 @@
     console.log(slots);
 </script>
 
-<div class='stove-slots'>
-    {#each slots as item}
-        {item.item}
-    {/each}
-</div>
+<table class='station-slots'>
+    <tr>
+        {#each slots as item}
+            <td class='slot'>
+                {item.item}
+                <span class='variant'>
+                    {#if item.chopped}
+                        chopped
+                    {:else if item.cooked}
+                        cooked
+                    {/if}
+                </span>
+            </td>
+        {/each}
+    </tr>    
+</table>

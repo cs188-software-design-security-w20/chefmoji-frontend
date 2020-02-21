@@ -1312,6 +1312,7 @@ $root.chefmoji = (function() {
          * @property {number|null} [registrationTime] OrderUpdate registrationTime
          * @property {chefmoji.OrderType|null} [orderType] OrderUpdate orderType
          * @property {boolean|null} [fulfilled] OrderUpdate fulfilled
+         * @property {number|null} [points] OrderUpdate points
          */
 
         /**
@@ -1362,6 +1363,14 @@ $root.chefmoji = (function() {
         OrderUpdate.prototype.fulfilled = false;
 
         /**
+         * OrderUpdate points.
+         * @member {number} points
+         * @memberof chefmoji.OrderUpdate
+         * @instance
+         */
+        OrderUpdate.prototype.points = 0;
+
+        /**
          * Creates a new OrderUpdate instance using the specified properties.
          * @function create
          * @memberof chefmoji.OrderUpdate
@@ -1393,6 +1402,8 @@ $root.chefmoji = (function() {
                 writer.uint32(/* id 3, wireType 0 =*/24).int32(message.orderType);
             if (message.fulfilled != null && message.hasOwnProperty("fulfilled"))
                 writer.uint32(/* id 4, wireType 0 =*/32).bool(message.fulfilled);
+            if (message.points != null && message.hasOwnProperty("points"))
+                writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.points);
             return writer;
         };
 
@@ -1438,6 +1449,9 @@ $root.chefmoji = (function() {
                     break;
                 case 4:
                     message.fulfilled = reader.bool();
+                    break;
+                case 5:
+                    message.points = reader.uint32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1504,6 +1518,9 @@ $root.chefmoji = (function() {
             if (message.fulfilled != null && message.hasOwnProperty("fulfilled"))
                 if (typeof message.fulfilled !== "boolean")
                     return "fulfilled: boolean expected";
+            if (message.points != null && message.hasOwnProperty("points"))
+                if (!$util.isInteger(message.points))
+                    return "points: integer expected";
             return null;
         };
 
@@ -1587,6 +1604,8 @@ $root.chefmoji = (function() {
             }
             if (object.fulfilled != null)
                 message.fulfilled = Boolean(object.fulfilled);
+            if (object.points != null)
+                message.points = object.points >>> 0;
             return message;
         };
 
@@ -1608,6 +1627,7 @@ $root.chefmoji = (function() {
                 object.registrationTime = 0;
                 object.orderType = options.enums === String ? "HOT_DOG" : 0;
                 object.fulfilled = false;
+                object.points = 0;
             }
             if (message.uid != null && message.hasOwnProperty("uid"))
                 object.uid = message.uid;
@@ -1617,6 +1637,8 @@ $root.chefmoji = (function() {
                 object.orderType = options.enums === String ? $root.chefmoji.OrderType[message.orderType] : message.orderType;
             if (message.fulfilled != null && message.hasOwnProperty("fulfilled"))
                 object.fulfilled = message.fulfilled;
+            if (message.points != null && message.hasOwnProperty("points"))
+                object.points = message.points;
             return object;
         };
 

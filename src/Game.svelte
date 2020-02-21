@@ -10,6 +10,9 @@
 		padding: 0;
 		margin: 0;
 	}
+	h1, h3 {
+		margin: 0;
+	}
 	table {
 		border-spacing: 0;
 	}
@@ -27,14 +30,9 @@
 		background-color: lightsteelblue;
 		font-family: 'Indie Flower', cursive;
 		text-align: center;
-		margin-right: 8px;
+		margin-top: 8px;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-	}
-
-	.player-item-pair {
-		display: flex;
 		justify-content: center;
 	}
 	.content {
@@ -46,6 +44,7 @@
 		flex-direction: column;
 		height: 100vh;
 		width: 70%;
+		padding-right: 8px;
 	}
 	.right-content {
 		height: 100vh;
@@ -53,9 +52,15 @@
 		display: flex;
 		flex-direction: column;
 	}
+	.top {
+		width: 100%;
+		font-size: 32px;
+		font-family: 'Indie Flower', cursive;
+	}
 	.station {
 		height: 15%;
 		width: 100%;
+		font-family: 'Indie Flower', cursive;
 	}
 </style>
 
@@ -79,6 +84,7 @@
 	let players = [];
 	let stove = [];
 	let platingStation = [];
+	let points = 0;
 
 	// TODO: CHANGE FOR PRODUCTION
 	const ADDR = 'http://localhost:8080';
@@ -126,14 +132,13 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
 			// console.log(bytes);
-			// console.log(decoded);
+			console.log(decoded);
+			let orderCountdownHandler = undefined;
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
 				if (!orders.hasOwnProperty(`${decoded.uid}`)){
 					orders[`${decoded.uid}`] = {ttl: ORDER_TTL, emoji: EmojiFromOrderEnum(decoded.orderType)};
 				}
-
-				let orderCountdownHandler = undefined;
 				orderCountdownHandler = setInterval(function(uid){
 					let ttl = orders[`${uid}`].ttl;
 					orders[`${uid}`] = {...orders[`${uid}`], ttl: ttl-1};
@@ -145,9 +150,18 @@
 					}
 					orders = {...orders};
 				}, 1000, decoded.uid);
+				orders[`${decoded.uid}`] = {...orders[`${decoded.uid}`], timer: orderCountdownHandler};
+			} else {
+				points = decoded.points;
+				console.log(orders);
+				clearInterval(orders[`${decoded.uid}`].timer);
+				delete orders[`${decoded.uid}`];
+				console.log(points);
 			}
 		}
 	});
+
+
 
 	const WALL = '#000';
 	const TABLE = '#ecb476';
@@ -229,6 +243,9 @@
 {#if (game_id != '' && ticked)}
 <div class='content'>
 	<div class='left-content'>
+		<div class='top'>
+			<span style="float: right;">Points: {points}</span>
+		</div>		
 		<div class='map'>
 			<table>
 				{#each map as map_row}
@@ -249,7 +266,7 @@
 			{/each}
 		</div>
 	</div>
-
+	
 	<div class='right-content'>
 		<div class='orders'>
 			<h1>Orders</h1>
