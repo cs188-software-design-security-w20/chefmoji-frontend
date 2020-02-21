@@ -73,7 +73,7 @@
     socket.on('session-init', (issued_game_id) => {
         cookbook = data.cookbook;
         game_id = issued_game_id;
-        joinGame();
+        joinGame(game_id);
     });
 
     session_key = fromCookie(SESSION_KEY);
@@ -88,9 +88,12 @@
       player_list = players;
     });
 
-    function joinGame(){
+    function joinGame(id){
+        console.log("in joinGame!");
         if (authd()){
-            socket.emit('join-game-with-id', game_id, player_id, session_key);
+            console.log("Joining game!");
+            game_id = id;
+            socket.emit('join-game-with-id', id, player_id, session_key);
         }
     }
 
@@ -106,7 +109,7 @@
                 body: JSON.stringify(data),
             }).then((resp)=>resp.json()).then((data)=>{
                 game_id=data.game_id;
-                joinGame();
+                joinGame(game_id);
             }).catch((e)=>{
                 console.error(e);
             });
@@ -129,7 +132,7 @@
           <Game {session_key} {game_id} {socket}/>
         {:else}
           <div style="display: table; margin: 0px auto;">
-            <WaitForGame {socket} {joinGame} {session_key} {game_id} {game_in_play} {player_list} {gameplayStarted}/>
+            <WaitForGame {socket} {session_key} {game_id} {game_in_play} {player_list} {gameplayStarted}/>
           </div>
         {/if}
       {:else}
