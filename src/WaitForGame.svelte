@@ -1,16 +1,11 @@
 <script>
-    // Handler Funcs
-    // export let checkPlayers;
+    export let game_id = ''; // Game ID value filled into form by user
 
-    // Game ID value filled into form by user
-    export let game_id = '';
-
-    export let is_owner;
-    export let game_owner;
-    export let player_list;
-    export let session_key;
+    export let is_owner = false; // Don't remove this! Insiya already knows this is unused
+    export let game_owner = undefined;
+    export let player_list = [];
+    export let session_key = undefined;
     export let socket;
-    // export let gameplayStarted;
 
     function playGame(socket, session_key, game_id){
   		socket.emit('play', session_key, game_id);
@@ -102,7 +97,7 @@
 
     font-size: 25px;
     margin: 20px 20px;
-    color: #9c978f;
+    color: #9C978F;
     text-align: center;
   }
 
