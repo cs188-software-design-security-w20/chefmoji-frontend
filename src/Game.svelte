@@ -79,17 +79,12 @@
 	export let socket;
 	export let cookbook = {};
 
-
 	let ticked = false;
 	let map = [];
 	let players = [];
 	let stove = [];
 	let platingStation = [];
 	let points = 0;
-
-	// TODO: CHANGE FOR PRODUCTION
-	const PORT = '8080';
-	const ADDR = 'http://localhost'+PORT;
 
 	socket.on('tick', (data) => {
 		if (data) {
@@ -98,14 +93,11 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
-			// console.log(decoded);
 		}
 	});
 
 	socket.on('recipes', (data) => {
-		console.log('hi');
 		if (data) {
-			console.log(data);
 			cookbook = data.cookbook;
 		}
 	});

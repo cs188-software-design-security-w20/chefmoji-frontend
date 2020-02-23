@@ -33,9 +33,10 @@
     import Game from './Game.svelte';
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
-    const PORT = '8080';
+    const PORT = __buildEnv__ ? '80' : '8080';
+    const HOSTNAME = __buildEnv__ ? 'https://chefmoji.wtf' : 'http://localhost';
     // TODO: Change for production from localhist
-    const ADDR = `http://localhost:${PORT}`;
+    const ADDR = `${HOSTNAME}:${PORT}`;
     const socket = io(ADDR, { transports: ['websocket'] });
     const SESSION_KEY = 'session-key';
     const PLAYER_ID = 'player-id';
