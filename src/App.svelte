@@ -46,7 +46,6 @@
     font-size: 30px;
     text-align: center;
     margin: 0px 0px 10px 0px;
-    color: #9C978F;
   }
 
   .input_div { /* child items are .input_label and .input_box */
@@ -176,7 +175,7 @@
             passhash = '';
             return;
         }
-
+        
         // else if (rc_response.length == 0 || !recaptcha_passed) {
         //     document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
         //     password = '';
@@ -220,7 +219,7 @@
         passhash = '';
         input_totp = '';
   }
-
+  
   function recaptchaPass() {
         recaptcha_passed = true;
     }
