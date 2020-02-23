@@ -5,10 +5,12 @@
     // Game ID value filled into form by user
     export let game_id = '';
 
+    export let is_owner;
+    export let game_owner;
     export let player_list;
     export let session_key;
     export let socket;
-    export let gameplayStarted;
+    // export let gameplayStarted;
 
     function playGame(socket, session_key, game_id){
   		socket.emit('play', session_key, game_id);
@@ -17,20 +19,25 @@
 </script>
 
 <main>
-  <h3 id="game_id_header">game id: {game_id}</h3>
+  <h3 id="game_id_header"> game code: {game_id} </h3>
+
   <div id="list_of_players" >
-  
-  {#each player_list as player}
-    <p> {player} </p>
-  {/each}
+    {#each player_list as player}
+      <p> {player} </p>
+    {/each}
+  </div>
+
+  <!-- {#if is_owner} -->
     <div class="playbtn_div">
       <div class="play-game">
-      	<button on:click={()=>{playGame(socket, session_key, game_id); gameplayStarted();}}>
+      	<button on:click={()=>{playGame(socket, session_key, game_id);}}>
       		Play game!
       	</button>
       </div>
     </div>
-  </div>
+  <!-- {:else} -->
+    <p id="non_owner_msg"> {game_owner} will start the game once everyone is ready... </p>
+  <!-- {/if} -->
 </main>
 
 <style>
@@ -47,7 +54,7 @@
     text-align: center;
   }
 
-  #list_of_players p { /* input boxes */
+  #list_of_players p {
     font-family: Quicksand;
     font-style: normal;
     font-weight: normal;
@@ -86,6 +93,17 @@
   .play-game button:hover {
     background: #7E9DC7; /* dark blue */
     color: white; /* font color */
+  }
+
+  #non_owner_msg {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+
+    font-size: 25px;
+    margin: 20px 20px;
+    color: #9c978f;
+    text-align: center;
   }
 
 </style>
