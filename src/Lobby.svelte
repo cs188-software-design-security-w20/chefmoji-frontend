@@ -43,7 +43,9 @@
     let game_id = undefined;
     let session_key = undefined;
     let player_id = undefined;
-    let game_in_play = false;
+    let game_in_play = false; // is a game currently in play?
+    let is_owner = false; // does the current player own a game?
+    let game_owner = undefined; // owner of the game
     let player_list = []; // for players in the current game (if any)
     let cookbook = {};
 
@@ -83,9 +85,15 @@
         return (game_id !== undefined);
     }
 
-    socket.on('get-game-players', (in_game, players) => {
+    socket.on('get-game-players', (in_game, owns_game, owner, players) => {
       game_in_play = in_game;
+      is_owner = owns_game;
+      game_owner = owner;
       player_list = players;
+    });
+
+    socket.on('game-started', data => {
+      game_in_play = data;
     });
 
     function joinGame(id){
@@ -116,9 +124,9 @@
         }
     }
 
-    function gameplayStarted(){
-      game_in_play = true;
-    }
+    // function gameplayStarted(){
+    //   game_in_play = true;
+    // }
 </script>
 
 <main>
@@ -126,22 +134,23 @@
     <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   {/if}
 
-    {#if authd()}
-      {#if game_id}
-        {#if game_in_play}
-          <Game {session_key} {game_id} {socket}/>
-        {:else}
-          <div style="display: table; margin: 0px auto;">
-            <WaitForGame {socket} {session_key} {game_id} {game_in_play} {player_list} {gameplayStarted}/>
-          </div>
-        {/if}
+  {#if authd()}
+    {#if game_id}
+      {#if game_in_play}
+        <Game {session_key} {game_id} {socket}/>
       {:else}
         <div style="display: table; margin: 0px auto;">
-          <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+          <WaitForGame {socket} {session_key} {game_id} {game_in_play} {is_owner} {game_owner} {player_list}/>
         </div>
       {/if}
     {:else}
-        <h1 id="redirect_text"> redirecting you to the login screen... </h1>
-        <script> window.location.replace("index.html"); </script>
+      <div style="display: table; margin: 0px auto;">
+        <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+      </div>
     {/if}
+  {:else}
+      <h1 id="redirect_text"> redirecting you to the login screen... </h1>
+      <script> window.location.replace("index.html"); </script>
+  {/if}
+
 </main>
