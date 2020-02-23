@@ -61,7 +61,7 @@
     }
 
     function authd(){
-        return (session_key !== undefined && session_key !== '' && player_id !== undefined && player_id !== '');
+        return (session_key !== undefined && player_id !== undefined);
     }
 
     socket.on('connect', () => {
@@ -97,31 +97,11 @@
     });
 
     function joinGame(id){
-        // console.log("in joinGame!");
+        console.log("in joinGame!");
         if (authd()){
             console.log("Joining game!");
             game_id = id;
             socket.emit('join-game-with-id', id, player_id, session_key);
-        }
-    }
-
-    function checkAuth(){
-        if (authd()){
-            // fetch check-auth api endpoint with player_id and session_key
-            var data = {playerid: player_id, sessionkey: session_key};
-            fetch('/check-auth', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            }).then((resp)=>resp.json()).then((data)=>{
-                if(!data.authorized){
-                  window.location.replace("index.html");
-                }
-            }).catch((e)=>{
-                console.error(e);
-            });
         }
     }
 
@@ -144,6 +124,9 @@
         }
     }
 
+    // function gameplayStarted(){
+    //   game_in_play = true;
+    // }
 </script>
 
 <main>
@@ -151,7 +134,7 @@
     <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   {/if}
 
-  {#if checkAuth()}
+  {#if authd()}
     {#if game_id}
       {#if game_in_play}
         <Game {session_key} {game_id} {socket}/>
