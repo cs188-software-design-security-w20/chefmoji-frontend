@@ -88,7 +88,8 @@
 	let points = 0;
 
 	// TODO: CHANGE FOR PRODUCTION
-	const ADDR = 'http://localhost:8080';
+	const PORT = '8080';
+	const ADDR = 'http://localhost'+PORT;
 
 	socket.on('tick', (data) => {
 		if (data) {
