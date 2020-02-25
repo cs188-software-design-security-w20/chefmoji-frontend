@@ -5,7 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 
-const production = !process.env.ROLLUP_WATCH;
+const production = false;
 const build_into = process.env.BUILD_INTO || 'public';
 
 export default {
@@ -45,11 +45,11 @@ export default {
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
-		!production && serve(),
+		// !production && serve(),
 
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
-		!production && livereload(build_into),
+		// !production && livereload(build_into),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
