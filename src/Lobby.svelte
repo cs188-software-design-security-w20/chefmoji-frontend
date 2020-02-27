@@ -66,10 +66,6 @@
 
     socket.on('connect', () => {
 		console.log("CONNECTED");
-		socket.on('disconnect', () => {
-			socket.emit('disconnecting', player_id);
-			game_id = '';
-		});
     });
 
 
