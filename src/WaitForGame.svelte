@@ -5,7 +5,6 @@
     // Game ID value filled into form by user
     export let game_id = '';
 
-    export let is_owner;
     export let game_owner;
     export let player_list;
     export let session_key;
