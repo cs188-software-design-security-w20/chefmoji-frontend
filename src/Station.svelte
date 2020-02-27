@@ -32,7 +32,6 @@
 
 <script>
     export let slots;
-    console.log(slots);
 </script>
 
 <table class='station-slots'>

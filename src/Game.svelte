@@ -97,14 +97,11 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
-			// console.log(decoded);
 		}
 	});
 
 	socket.on('recipes', (data) => {
-		console.log('hi');
 		if (data) {
-			console.log(data);
 			cookbook = data.cookbook;
 		}
 	});
@@ -114,7 +111,6 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = StationUpdate.decode(bytes);
 			stove = decoded.slots;
-			console.log(decoded);
 		}
 	});
 
@@ -123,7 +119,6 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = StationUpdate.decode(bytes);
 			platingStation = decoded.slots;
-		// 	console.log(decoded);
 		}
 	});
 
@@ -133,8 +128,6 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
-			// console.log(bytes);
-			// console.log(decoded);
 			let orderCountdownHandler = undefined;
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
@@ -155,10 +148,8 @@
 				orders[`${decoded.uid}`] = {...orders[`${decoded.uid}`], timer: orderCountdownHandler};
 			} else {
 				points = decoded.points;
-				// console.log(orders);
 				clearInterval(orders[`${decoded.uid}`].timer);
 				delete orders[`${decoded.uid}`];
-				console.log(points);
 			}
 		}
 	});
