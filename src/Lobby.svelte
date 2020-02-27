@@ -65,12 +65,13 @@
     }
 
     socket.on('connect', () => {
-		    console.log("CONNECTED");
+		console.log("CONNECTED");
+		socket.on('disconnect', () => {
+			socket.emit('disconnecting', player_id);
+			game_id = '';
+		});
     });
 
-    socket.on('disconnect', () => {
-        game_id = '';
-    });
 
     socket.on('session-init', (issued_game_id) => {
         cookbook = data.cookbook;
@@ -94,6 +95,15 @@
 
     socket.on('game-started', data => {
       game_in_play = data;
+	});
+	
+    socket.on('timedout', data => {
+		if (data) {
+			if (data.player == player_id) {
+				game_id = undefined;
+			}
+			console.log(data.player, "has timed out");
+		}
     });
 
     function joinGame(id){
@@ -108,7 +118,8 @@
     function createGame(){
         if (authd() && !inGame()){
             // fetch create-game api endpoint with session_key
-            var data = {playerid: player_id, sessionkey: session_key};
+			var data = {playerid: player_id, sessionkey: session_key};
+			console.log('createGame in Lobby.svelte called');
             fetch('/create-game', {
                 method: 'POST',
                 headers: {
