@@ -67,10 +67,6 @@
 
     socket.on('connect', () => {
 		console.log("CONNECTED");
-		socket.on('disconnect', () => {
-			socket.emit('disconnecting', player_id);
-			game_id = '';
-		});
     });
 
 
@@ -108,9 +104,7 @@
     });
 
     function joinGame(id){
-        console.log("in joinGame!");
         if (authd()){
-            console.log("Joining game!");
             game_id = id;
             socket.emit('join-game-with-id', id, player_id, session_key);
         }
@@ -120,7 +114,6 @@
         if (authd() && !inGame()){
             // fetch create-game api endpoint with session_key
 			var data = {playerid: player_id, sessionkey: session_key};
-			console.log('createGame in Lobby.svelte called');
             fetch('/create-game', {
                 method: 'POST',
                 headers: {
