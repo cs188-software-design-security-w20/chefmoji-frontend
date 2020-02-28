@@ -16,11 +16,15 @@
 	table {
 		border-spacing: 0;
 	}
+	.inventory-slots {
+		display: flex;
+		flex-direction: row;
+	}
 	.orders {
 		background-color: lightsteelblue;
 		width: 100%;
 		height: 70%;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 		text-align: center;
 	}
 	.map {
@@ -28,7 +32,7 @@
 	}
 	.inventories {
 		background-color: lightsteelblue;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 		text-align: center;
 		margin-top: 8px;
 		display: flex;
@@ -55,13 +59,13 @@
 	.top {
 		width: 100%;
 		font-size: 32px;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 	}
 	.station {
 		background-color: rgb(233, 220, 202);
-		height: 15%;
+		height: 10%;
 		width: 100%;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 	}
 </style>
 
@@ -227,6 +231,7 @@
 <div class='content'>
 	<div class='left-content'>
 		<div class='top'>
+			<span>👩‍🍳 chefmoji 👨‍🍳</span>
 			<span style="float: right;">Points: {points}</span>
 		</div>		
 		<div class='map'>
@@ -244,9 +249,11 @@
 		</div>
 		<div class='inventories'>
 			<h1>Inventories</h1>
-			{#each players as player}
-				<Inventory emoji={player.emoji} inventory={player.inventory}/>
-			{/each}
+			<div class='inventory-slots'>
+				{#each players as player}
+					<Inventory emoji={player.emoji} inventory={player.inventory}/>
+				{/each}
+			</div>
 		</div>
 	</div>
 	
