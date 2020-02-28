@@ -9,7 +9,6 @@
     export let player_list;
     export let session_key;
     export let socket;
-    // export let gameplayStarted;
 
     function playGame(socket, session_key, game_id){
   		socket.emit('play', session_key, game_id);
