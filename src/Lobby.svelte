@@ -34,9 +34,9 @@
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
     const PORT = __buildEnv__ ? '80' : '8080';
-    const HOSTNAME = __buildEnv__ ? 'https://chefmoji.wtf' : 'http://localhost';
+    const HOSTNAME = __buildEnv__ ? (__sslSupport__ ? 'https://chefmoji.wtf': 'http://chefmoji.wtf') : 'http://localhost';
     // TODO: Change for production from localhist
-    const ADDR = `${HOSTNAME}:${PORT}`;
+    const ADDR = (__sslSupport__ && __buildEnv__) ? HOSTNAME : `${HOSTNAME}:${PORT}`;
     const socket = io(ADDR, { transports: ['websocket']});
     const SESSION_KEY = 'session-key';
     const PLAYER_ID = 'player-id';
@@ -66,7 +66,7 @@
     }
 
     socket.on('connect', () => {
-		console.log("CONNECTED");
+		  console.log("CONNECTED");
     });
 
 
@@ -95,17 +95,20 @@
 	});
 	
     socket.on('timedout', data => {
-		if (data) {
-			if (data.player == player_id) {
-				game_id = undefined;
-			}
-			console.log(data.player, "has timed out");
-		}
+      if (data) {
+        if (data.player == player_id) {
+          game_id = undefined;
+        }
+        console.log(data.player, "has timed out");
+      }
+    });
+
+    socket.on('join-confirm', (id) => {
+      game_id = id;
     });
 
     function joinGame(id){
         if (authd()){
-            game_id = id;
             socket.emit('join-game-with-id', id, player_id, session_key);
         }
     }
@@ -126,7 +129,6 @@
               }
               return resp.json();
             }).then((data)=>{
-                game_id=data.game_id;
                 joinGame(game_id);
             }).catch((e)=>{
                 console.error(e);

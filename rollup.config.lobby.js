@@ -4,8 +4,9 @@ import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 
-const production = false;
+const production = true;
 const build_into = process.env.BUILD_INTO || 'public';
+const ssl_support = true;
 
 export default {
 	input: 'src/lobby.js',
@@ -21,7 +22,7 @@ export default {
 		// some cases you'll need additional configuration —
 		// consult the documentation for details:
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
-		replace({__buildEnv__: production}),
+		replace({__buildEnv__: production, __sslSupport__: ssl_support}),
 		resolve({
 			browser: true,
 			dedupe: ['svelte']
