@@ -1,11 +1,12 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
+import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 
-const production = !process.env.ROLLUP_WATCH;
 const build_into = process.env.BUILD_INTO || 'public';
+const production = false;
+const ssl_support = false;
 
 export default {
 	input: 'src/lobby.js',
@@ -21,6 +22,7 @@ export default {
 		// some cases you'll need additional configuration —
 		// consult the documentation for details:
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
+		replace({__buildEnv__: production, __sslSupport__: ssl_support}),
 		resolve({
 			browser: true,
 			dedupe: ['svelte']
@@ -40,14 +42,6 @@ export default {
 				css.write('public/build/bundle.lobby.css');
 			}
 		}),
-
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
-
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload(build_into),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify

@@ -7,6 +7,7 @@
         font-size: 36px;
         display: flex;
         flex-direction: row;
+        margin: 0 10px 0 10px;
     }
 
     .player {
@@ -62,23 +63,14 @@
                 <span class="plated">
                     {#if inventory.plated}
                         plated
-                        <script>
-                            console.log("PLATED!!!!");
-                        </script>
                     {/if}
                 </span>
                 {inventory.item}
                 <span class='variant'>
                     {#if inventory.chopped}
                         chopped
-                        <script>
-                            console.log("CHOPPED!!!!");
-                        </script>
                     {:else if inventory.cooked}
                         cooked
-                        <script>
-                            console.log("COOKED!!!!");
-                        </script>
                     {:else}
                         <script></script>
                     {/if}

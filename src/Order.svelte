@@ -46,7 +46,6 @@
 <script>
     export let order;
     export let ttl;
-    console.log(order);
 
     function getTTLStyle(ttl){
         if(ttl > 10){

@@ -1,12 +1,10 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 
-const production = !process.env.ROLLUP_WATCH;
+const production = false;
 const build_into = process.env.BUILD_INTO || 'public';
-const no_terser = true;
 
 export default {
 	input: 'src/main.js',
@@ -43,17 +41,9 @@ export default {
 			}
 		}),
 
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
-
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload(build_into),
-
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && !no_terser && terser()
+		production && terser()
 	],
 	watch: {
 		clearScreen: false

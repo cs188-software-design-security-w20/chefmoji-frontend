@@ -16,11 +16,15 @@
 	table {
 		border-spacing: 0;
 	}
+	.inventory-slots {
+		display: flex;
+		flex-direction: row;
+	}
 	.orders {
 		background-color: lightsteelblue;
 		width: 100%;
 		height: 70%;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 		text-align: center;
 	}
 	.map {
@@ -28,7 +32,7 @@
 	}
 	.inventories {
 		background-color: lightsteelblue;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 		text-align: center;
 		margin-top: 8px;
 		display: flex;
@@ -55,13 +59,13 @@
 	.top {
 		width: 100%;
 		font-size: 32px;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 	}
 	.station {
 		background-color: rgb(233, 220, 202);
-		height: 15%;
+		height: 10%;
 		width: 100%;
-		font-family: 'Indie Flower', cursive;
+		font-family: 'Quicksand';
 	}
 </style>
 
@@ -79,16 +83,12 @@
 	export let socket;
 	export let cookbook = {};
 
-
 	let ticked = false;
 	let map = [];
 	let players = [];
 	let stove = [];
 	let platingStation = [];
 	let points = 0;
-
-	// TODO: CHANGE FOR PRODUCTION
-	const ADDR = 'http://localhost:8080';
 
 	socket.on('tick', (data) => {
 		if (data) {
@@ -97,14 +97,11 @@
 			let decoded = MapUpdate.decode(bytes);
 			map = decoded.map;
 			players = decoded.players;
-			// console.log(decoded);
 		}
 	});
 
 	socket.on('recipes', (data) => {
-		console.log('hi');
 		if (data) {
-			console.log(data);
 			cookbook = data.cookbook;
 		}
 	});
@@ -114,7 +111,6 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = StationUpdate.decode(bytes);
 			stove = decoded.slots;
-			console.log(decoded);
 		}
 	});
 
@@ -123,7 +119,6 @@
 			let bytes =  new Uint8Array(data);
 			let decoded = StationUpdate.decode(bytes);
 			platingStation = decoded.slots;
-		// 	console.log(decoded);
 		}
 	});
 
@@ -133,8 +128,6 @@
 		if (data) {
 			let bytes =  new Uint8Array(data);
 			let decoded = OrderUpdate.decode(bytes);
-			// console.log(bytes);
-			// console.log(decoded);
 			let orderCountdownHandler = undefined;
 			if (!decoded.fulfilled) {
 				// At current, allow no updates
@@ -155,10 +148,8 @@
 				orders[`${decoded.uid}`] = {...orders[`${decoded.uid}`], timer: orderCountdownHandler};
 			} else {
 				points = decoded.points;
-				// console.log(orders);
 				clearInterval(orders[`${decoded.uid}`].timer);
 				delete orders[`${decoded.uid}`];
-				console.log(points);
 			}
 		}
 	});
@@ -236,6 +227,7 @@
 <div class='content'>
 	<div class='left-content'>
 		<div class='top'>
+			<span>👩‍🍳 chefmoji 👨‍🍳</span>
 			<span style="float: right;">Points: {points}</span>
 		</div>		
 		<div class='map'>
@@ -253,9 +245,11 @@
 		</div>
 		<div class='inventories'>
 			<h1>Inventories</h1>
-			{#each players as player}
-				<Inventory emoji={player.emoji} inventory={player.inventory}/>
-			{/each}
+			<div class='inventory-slots'>
+				{#each players as player}
+					<Inventory emoji={player.emoji} inventory={player.inventory}/>
+				{/each}
+			</div>
 		</div>
 	</div>
 	
