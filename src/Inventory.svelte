@@ -7,6 +7,7 @@
         font-size: 36px;
         display: flex;
         flex-direction: row;
+        margin: 0 10px 0 10px;
     }
 
     .player {
