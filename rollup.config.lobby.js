@@ -4,9 +4,9 @@ import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 
-const production = true;
 const build_into = process.env.BUILD_INTO || 'public';
-const ssl_support = true;
+const production = false;
+const ssl_support = false;
 
 export default {
 	input: 'src/lobby.js',

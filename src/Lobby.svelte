@@ -129,7 +129,7 @@
               }
               return resp.json();
             }).then((data)=>{
-                joinGame(game_id);
+                joinGame(data.game_id);
             }).catch((e)=>{
                 console.error(e);
             });
