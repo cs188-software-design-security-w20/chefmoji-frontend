@@ -83,16 +83,12 @@
 	export let socket;
 	export let cookbook = {};
 
-
 	let ticked = false;
 	let map = [];
 	let players = [];
 	let stove = [];
 	let platingStation = [];
 	let points = 0;
-
-	// TODO: CHANGE FOR PRODUCTION
-	const ADDR = 'http://localhost:8080';
 
 	socket.on('tick', (data) => {
 		if (data) {

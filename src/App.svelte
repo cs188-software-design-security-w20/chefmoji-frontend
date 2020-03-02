@@ -147,14 +147,10 @@
     let visible = false;
     let recaptcha_passed = false;
 
-    // let pass_upper = false, pass_lower = false, pass_number = false;
-    // let pass_special = false, pass_len = false;
-
     var isEmailWithTLD = function (email){
         return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
     };
 
-    //debug
 	function click_login() {
         document.getElementById("hiddentext").innerHTML = "" ;
         // var rc_response = grecaptcha.getResponse();
@@ -172,7 +168,7 @@
         }
         else if (playerid.length < 6 || playerid.length > 20){
             document.getElementById("hiddentext").innerHTML = "incorrect player ID" ;
-            passhash = '';
+            password = '';
             return;
         }
         
@@ -210,10 +206,8 @@
             document.getElementById("hiddentext").innerHTML = 'Incorrect Player ID or Password';
         })
         .catch((error) => {
+            document.getElementById("hiddentext").innerHTML = 'An error has occurred with your request.'
             console.error(error);
-            password = '';
-            passhash = '';
-            input_totp = '';
         });
         password = '';
         passhash = '';
@@ -233,7 +227,7 @@
 
     // profanity check
     else if (pid.search("fuck") != -1 || pid.search("shit") != -1 || pid.search("whore") != -1 || pid.search("bitch") != -1 || pid.search("asshole") != -1) {
-        document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
+        document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?";
         return false;
     }
 
@@ -250,7 +244,7 @@
 
   function check_password_constraints(pwd, repeat_pwd) {
     var flag = true;
-    if(pwd && pwd != pwd.toLocaleLowerCase() && pwd != pwd.toLocaleUpperCase()){ // check forat least one lower and one upper
+    if(pwd && pwd != pwd.toLocaleLowerCase() && pwd != pwd.toLocaleUpperCase()){ // check for at least one lower and one upper
       document.getElementById("pw_upper_lower").style.color = "#28A53C"; // green
     } else {
       document.getElementById("pw_upper_lower").style.color = "#DD6539"; // red
@@ -262,7 +256,7 @@
       document.getElementById("pw_numbers").style.color = "#DD6539";
       flag = false;
     }
-    if(pwd && /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(pwd)){ // check for at least one symbol //OWASP Standard Symbol Set for passwords
+    if(pwd && /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g.test(pwd)){ // check for at least one symbol // OWASP Standard Symbol Set for passwords
       document.getElementById("pw_symbols").style.color = "#28A53C";
     } else {
       document.getElementById("pw_symbols").style.color = "#DD6539";
@@ -285,7 +279,6 @@
 
     function click_signup() {
         document.getElementById("hiddentext").innerHTML = "" ;
-        // send PII to server
         if(!check_playerid_constraints(playerid)){
           password = '';
           repeat_password = '';
@@ -309,6 +302,7 @@
             password: passhash,
             email: email
         };
+
         fetch('/register', {
             method: 'POST',
             headers: {
@@ -320,7 +314,7 @@
         .then((data) => {
             // consult backend, allow or deny privileges
             if (data['success']){
-              document.getElementById("hiddentext").innerHTML = "success! a verification link has been sent to your email" ;
+              document.getElementById("hiddentext").innerHTML = "success! a verification link has been sent to your email";
               email = '';
             } else if (data['playerid'] == "NOTUNIQUE"){
               document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
@@ -335,7 +329,7 @@
             passhash = '';
             repeat_password = '';
             email = '';
-            console.error('Error Register:', error);
+            console.error('Error Registered:', error);
         });
         password = '';
         passhash = '';

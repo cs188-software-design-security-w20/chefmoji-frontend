@@ -33,10 +33,11 @@
     import Game from './Game.svelte';
     import io from '../node_modules/socket.io-client/dist/socket.io.js';
 
-    const PORT = '8080';
+    const PORT = __buildEnv__ ? '80' : '8080';
+    const HOSTNAME = __buildEnv__ ? (__sslSupport__ ? 'https://chefmoji.wtf': 'http://chefmoji.wtf') : 'http://localhost';
     // TODO: Change for production from localhist
-    const ADDR = `http://localhost:${PORT}`;
-    const socket = io(ADDR, { transports: ['websocket'] });
+    const ADDR = (__sslSupport__ && __buildEnv__) ? HOSTNAME : `${HOSTNAME}:${PORT}`;
+    const socket = io(ADDR, { transports: ['websocket']});
     const SESSION_KEY = 'session-key';
     const PLAYER_ID = 'player-id';
 
@@ -94,17 +95,20 @@
 	});
 	
     socket.on('timedout', data => {
-		if (data) {
-			if (data.player == player_id) {
-				game_id = undefined;
-			}
-			console.log(data.player, "has timed out");
-		}
+      if (data) {
+        if (data.player == player_id) {
+          game_id = undefined;
+        }
+        console.log(data.player, "has timed out");
+      }
+    });
+
+    socket.on('join-confirm', (id) => {
+      game_id = id;
     });
 
     function joinGame(id){
         if (authd()){
-            game_id = id;
             socket.emit('join-game-with-id', id, player_id, session_key);
         }
     }
@@ -119,18 +123,18 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-            }).then((resp)=>resp.json()).then((data)=>{
-                game_id=data.game_id;
-                joinGame(game_id);
+            }).then((resp)=>{
+              if(!resp.status || resp.status != 200){
+                 throw resp;
+              }
+              return resp.json();
+            }).then((data)=>{
+                joinGame(data.game_id);
             }).catch((e)=>{
                 console.error(e);
             });
         }
     }
-
-    // function gameplayStarted(){
-    //   game_in_play = true;
-    // }
 </script>
 
 <main>
@@ -144,12 +148,12 @@
         <Game {session_key} {game_id} {socket}/>
       {:else}
         <div style="display: table; margin: 0px auto;">
-          <WaitForGame {socket} {session_key} {game_id} {game_in_play} {is_owner} {game_owner} {player_list}/>
+          <WaitForGame {socket} {session_key} {game_id} {game_owner} {player_list}/>
         </div>
       {/if}
     {:else}
       <div style="display: table; margin: 0px auto;">
-        <JoinGame {joinGame} {createGame} {game_id} {player_id}/>
+        <JoinGame {joinGame} {createGame} {game_id}/>
       </div>
     {/if}
   {:else}
