@@ -66,9 +66,9 @@
     }
 
     socket.on('connect', () => {
-		  console.log("CONNECTED");
+      console.log("CONNECTED");
+      socket.emit('player-id', player_id);
     });
-
 
     socket.on('session-init', (issued_game_id) => {
         cookbook = data.cookbook;
