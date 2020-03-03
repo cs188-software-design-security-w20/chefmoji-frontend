@@ -8,7 +8,7 @@ For production, everything in this folder is run through Docker. This repository
 
 For development, you can choose one of two routes: 
 
-If you want to see a fully functional website running on [localhost:8080](http://localhost:8080/), you will still need to go to project-sixth-sense](https://github.com/cs188-software-design-security-w20/project-sixth-sense). From there, follow the build instructions for development in the [README](https://github.com/cs188-software-design-security-w20/project-sixth-sense/blob/master/README.md). 
+If you want to see a fully functional website running on [localhost:8080](http://localhost:8080/), you will still need to go to [project-sixth-sense](https://github.com/cs188-software-design-security-w20/project-sixth-sense). From there, follow the build instructions for development in the [README](https://github.com/cs188-software-design-security-w20/project-sixth-sense/blob/master/README.md). 
 
 If you're simply interested in what the landing page looks like, you can clone this repository into an empty folder on your computer and run from there: 
 
