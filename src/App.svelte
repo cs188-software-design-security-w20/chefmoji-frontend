@@ -7,8 +7,10 @@
   import { onMount, onDestroy } from 'svelte';
   import { SHA3 } from 'sha3';
 
-  let playerid, password, repeat_password, email, input_totp;
+  let jq = window.$
+  let playerid, password, repeat_password, email, input_totp, forgot_input_email, forgot_mfakey, forgot_input_password;
   let visible = false;
+  let visible_mfakey_field, visible_password_field;
 
   // var isEmailWithTLD = function (email){
   //     return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
@@ -207,9 +209,102 @@
     window.click_login = null;
   })
 
+  function click_forget() {
+    let forgotwhat = jq(this).data('forgot-type')
+    var data = {
+      forgotwhat: forgotwhat,
+      email: forgot_input_email,
+      mfakey: forgot_mfakey,
+      password: forgot_input_password
+    };
+    jq('#forgetSendButton').prop('disabled', true)
+    jq('#forgetSendButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+    fetch('/forget', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data)=>{
+        if(data.success) {
+          jq('#forgetSendButton').removeClass('btn-primary').addClass('btn-success')
+          jq('#forgetSendButton').html('✓')
+        } else {
+          jq('#forgetSendButton').removeClass('btn-primary').addClass('btn-danger')
+          jq('#forgetSendButton').html('x')
+        }
+    })
+    .catch((error) => {
+        console.error(error);
+        jq('#forgetSendButton').removeClass('btn-primary').addClass('btn-danger')
+        jq('#forgetSendButton').html('x')
+    });
+  }
+  function click_modal_toggler() {
+    jq('#forgotModalLabel').html(jq(this).html())
+    jq('#forgetSendButton').data('forgot-type', jq(this).data('forgot-type'))
+    visible_mfakey_field = false;
+    visible_password_field = false;
+    if(jq(this).data('forgot-type') == 'password') {
+      visible_mfakey_field = true;
+    }
+    if(jq(this).data('forgot-type') == 'playerid') {
+      visible_password_field = true;
+    }
+    jq('#forgotInputEmail').val('')
+    jq('#forgetSendButton').prop('disabled', false)
+    jq('#forgetSendButton').removeClass('btn-success').addClass('btn-primary')
+    jq('#forgetSendButton').removeClass('btn-danger').addClass('btn-primary')
+    jq('#forgetSendButton').html('Send')
+  }
+
 </script>
 
 <main>
+  <div class="modal fade" id="forgotModal" tabindex="-1" role="dialog" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="forgotModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="forgotModalBody">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="forgotInputEmailLabel">email</span>
+            </div>
+            <input id="forgotInputEmail" bind:value={forgot_input_email} type="text" class="form-control" placeholder="johndoe@email.com" aria-label="Email" aria-describedby="forgotInputEmailLabel">
+          </div>
+          {#if visible_password_field}
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="forgotInputPasswordLabel">password</span>
+            </div>
+            <input id="forgotInputPassword" bind:value={forgot_input_password} type="text" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
+          </div>
+          {/if}
+          {#if visible_mfakey_field}
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="forgotInputMfakeyLabel">mfakey</span>
+            </div>
+            <input id="forgotInputMfakey" bind:value={forgot_mfakey} type="text" class="form-control" placeholder="" aria-label="mfakey" aria-describedby="forgotInputMfakeyLabel">
+          </div>
+          {/if}
+        </div>
+        <div class="modal-footer">
+          <button id="forgetSendButton" type="button" class="btn btn-primary" on:click={click_forget}>Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 	<h1 id="gamename"> chef<br>moji </h1>
   <div id="entire_input_form">
     <p id="hiddentext"> </p>
@@ -225,14 +320,6 @@
           <input type="password" name="password" placeholder="password" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
-    {#if !visible}
-    <div class ="input_div">
-      <p> multifactor key: </p>
-    	<label>
-          <input type="text" name="input_totp" placeholder="6 digit multifactor key" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
-      </label>
-    </div>
-    {/if}
     {#if visible}
       <div class ="input_div">
         <p> retype password: </p>
@@ -259,6 +346,14 @@
           <!--look into data callback function for recaptcha: data-callback="function"-->
           <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
     <!-- </form> -->
+    {#if !visible}
+    <div class ="input_div">
+      <p> multifactor key: </p>
+      <label>
+          <input type="text" name="input_totp" placeholder="6 digit multifactor key" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      </label>
+    </div>
+    {/if}
     <div class="landbtn_div">
       {#if !visible}
         <button class="landbtn" on:click={toggle_visible}> sign up </button>
@@ -268,6 +363,18 @@
         <button class="landbtn" on:click={click_signup}> make my account </button>
       {/if}
     </div>
+
+    {#if !visible}
+      <div class="container">
+      <div class="row">
+      <div class="col-sm">
+        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot playerid</button>
+        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot password</button>
+      </div>
+      </div>
+      </div>
+    {/if}
+
   </div> <!-- end entire_input_form -->
 </main>
 
@@ -300,6 +407,11 @@
 		text-align: center;
 		color: #7E9DC7;
 	}
+
+  #forgetSendButton {
+    height: 38px;
+    width: 74px;
+  }
 
   #entire_input_form {
     position: absolute;
