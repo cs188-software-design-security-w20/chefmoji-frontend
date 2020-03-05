@@ -11,7 +11,6 @@
     font-style: normal;
     font-weight: bold;
     font-size: 100px;
-    /* line-height: 117px; */
     text-align: center;
 
     color: #7E9DC7;
@@ -25,6 +24,15 @@
     text-align: center;
     color: #000000;
   }
+
+  #hiddentext {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+  }
+
 </style>
 
 <script>
@@ -93,7 +101,7 @@
     socket.on('game-started', data => {
       game_in_play = data;
 	});
-	
+
     socket.on('timedout', data => {
       if (data) {
         if (data.player == player_id) {
@@ -104,7 +112,13 @@
     });
 
     socket.on('join-confirm', (id) => {
-      game_id = id;
+      if(id == ""){
+        document.getElementById("hiddentext").innerHTML = "incorrect join code";
+        game_id = undefined;
+      }
+      else {
+        game_id = id;
+      }
     });
 
     function joinGame(id){
@@ -153,6 +167,7 @@
       {/if}
     {:else}
       <div style="display: table; margin: 0px auto;">
+        <p id="hiddentext"> </p>
         <JoinGame {joinGame} {createGame} {game_id}/>
       </div>
     {/if}

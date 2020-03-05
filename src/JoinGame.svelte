@@ -9,7 +9,6 @@
 <div>
     <div class='join-game'>
         <form>
-            <p id="hiddentext"> <br> </p>
             <label for="join-code"></label>
             <input
                 type="text"
