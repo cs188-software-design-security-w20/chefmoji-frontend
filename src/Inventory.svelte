@@ -1,6 +1,7 @@
 <style>
     :root {
         --variant-font-size-13: 12px;
+        --slot-color: rgb(233, 220, 202);
     }
 
     .inventory-wrapper {
@@ -16,7 +17,7 @@
 
     .inventory-item-wrapper {
         border: 2px solid black;
-        background-color: rgb(196, 173, 139);
+        background-color: var(--slot-color);
         height: 50px;
         width: 45px;
         position: relative;

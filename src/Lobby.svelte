@@ -92,12 +92,13 @@
 
     socket.on('game-started', data => {
       game_in_play = data;
-	});
+	  });
 	
     socket.on('timedout', data => {
       if (data) {
         if (data.player == player_id) {
           game_id = undefined;
+          game_in_play = false;
         }
         console.log(data.player, "has timed out");
       }

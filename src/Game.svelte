@@ -1,6 +1,7 @@
 <style>
 	:root {
 		--main-unit-dim: 45px;
+		--ui-color: lightblue;
 	}
 	td {
 		width: var(--main-unit-dim);
@@ -10,62 +11,85 @@
 		padding: 0;
 		margin: 0;
 	}
-	h1, h3 {
+	h2 {
 		margin: 0;
 	}
 	table {
 		border-spacing: 0;
 	}
-	.inventory-slots {
-		display: flex;
-		flex-direction: row;
-	}
-	.orders {
-		background-color: lightsteelblue;
-		width: 100%;
-		height: 70%;
-		font-family: 'Quicksand';
-		text-align: center;
-	}
-	.map {
-		display: inline-block;
-	}
-	.inventories {
-		background-color: lightsteelblue;
-		font-family: 'Quicksand';
-		text-align: center;
-		margin-top: 8px;
+	.content {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 	}
-	.content {
+
+	/* TOP HALF */
+	.top-content {
+		height: 80%;
+		width: 100%;
 		display: flex;
 		flex-direction: row;
 	}
 	.left-content {
 		display: flex;
 		flex-direction: column;
-		height: 100vh;
 		width: 70%;
-		padding-right: 8px;
-	}
-	.right-content {
-		height: 100vh;
-		width: 30%;
-		display: flex;
-		flex-direction: column;
+		margin-right: 8px;
 	}
 	.top {
 		width: 100%;
 		font-size: 32px;
 		font-family: 'Quicksand';
 	}
+	.map {
+		display: inline-block;
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Old versions of Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none;
+	}
+	.orders {
+		background-color: var(--ui-color);
+		width: 30%;
+		height: 100%;
+		font-family: 'Quicksand';
+		text-align: center;
+	}
+
+
+	.inventories {
+		background-color: var(--ui-color);
+		font-family: 'Quicksand';
+		text-align: center;
+		margin-top: 8px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		width: 30%;
+	}
+	.inventory-slots {
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 8px;
+	}
+	.bottom-content {
+		width: 100vw;
+		display: flex;
+		flex-direction: row;
+	}	
 	.station {
-		background-color: rgb(233, 220, 202);
-		height: 10%;
+		background-color: var(--ui-color);
 		width: 100%;
 		font-family: 'Quicksand';
+		text-align: center;
+		margin-top: 8px;
+	}
+	.stations {
+		display: flex;
+		flex-direction: row;
+		width: 70%;
+		margin-right: 8px;
 	}
 </style>
 
@@ -225,48 +249,52 @@
 
 {#if (game_id != '' && ticked)}
 <div class='content'>
-	<div class='left-content'>
-		<div class='top'>
-			<span>👩‍🍳 chefmoji 👨‍🍳</span>
-			<span style="float: right;">Points: {points}</span>
-		</div>		
-		<div class='map'>
-			<table>
-				{#each map as map_row}
-					<tr>
-						{#each map_row.row as cell}
-							<td style='background-color: {cellToColor(cell.charAt(0))}'>
-								{cell.slice(1)}
-							</td>
-						{/each}
-					</tr>
-				{/each}
-			</table>
+	<div class='top-content'>
+		<div class='left-content'>
+			<div class='top'>
+				<span>👩‍🍳 chefmoji 👨‍🍳</span>
+				<span style="float: right;">Points: {points}</span>
+			</div>		
+			<div class='map'>
+				<table>
+					{#each map as map_row}
+						<tr>
+							{#each map_row.row as cell}
+								<td style='background-color: {cellToColor(cell.charAt(0))}'>
+									{cell.slice(1)}
+								</td>
+							{/each}
+						</tr>
+					{/each}
+				</table>
+			</div>
+		</div>
+		<div class='orders'>
+			<h2>Orders</h2>
+			{#each Object.values(orders) as order}
+				<Order order={recipes[order.emoji]} ttl={order.ttl}/>
+			{/each}
+		</div>
+	</div>
+	
+	<div class='bottom-content'>
+		<div class='stations'>
+			<div class='station'>
+				<h2>Stove</h2>
+				<Station slots={stove}/>
+			</div>
+			<div class='station'>
+				<h2>Plating Station</h2>
+				<Station slots={platingStation}/>		
+			</div>
 		</div>
 		<div class='inventories'>
-			<h1>Inventories</h1>
+			<h2>Inventories</h2>
 			<div class='inventory-slots'>
 				{#each players as player}
 					<Inventory emoji={player.emoji} inventory={player.inventory}/>
 				{/each}
 			</div>
-		</div>
-	</div>
-	
-	<div class='right-content'>
-		<div class='orders'>
-			<h1>Orders</h1>
-			{#each Object.values(orders) as order}
-				<Order order={recipes[order.emoji]} ttl={order.ttl}/>
-			{/each}
-		</div>
-		<div class='station'>
-			<h3>Stove</h3>
-			<Station slots={stove}/>
-		</div>
-		<div class='station'>
-			<h3>Plating Station</h3>
-			<Station slots={platingStation}/>		
 		</div>
 	</div>
 </div>
