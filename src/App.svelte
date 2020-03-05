@@ -211,12 +211,21 @@
 
   function click_forget() {
     let forgotwhat = jq(this).data('forgot-type')
+
+    const hash = new SHA3(256);
+    hash.update(forgot_input_password);
+    forgot_input_password = '';
+    var passhash = hash.digest('hex');
+
     var data = {
       forgotwhat: forgotwhat,
       email: forgot_input_email,
       mfakey: forgot_mfakey,
-      password: forgot_input_password
+      password: passhash
     };
+
+    passhash = '';
+
     jq('#forgetSendButton').prop('disabled', true)
     jq('#forgetSendButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
     fetch('/forget', {
@@ -286,7 +295,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="forgotInputPasswordLabel">password</span>
             </div>
-            <input id="forgotInputPassword" bind:value={forgot_input_password} type="text" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
+            <input id="forgotInputPassword" bind:value={forgot_input_password} type="password" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
           </div>
           {/if}
           {#if visible_mfakey_field}
