@@ -309,9 +309,9 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="forgotInputEmailLabel">email address</span>
             </div>
-            <!-- <label for="email address"> -->
+            <label for="email address">
               <input id="forgotInputEmail" bind:value={forgot_input_email} type="text" class="form-control" placeholder="johndoe@email.com" aria-label="Email" aria-describedby="forgotInputEmailLabel">
-            <!-- </label> -->
+            </label>
           </div>
 
           {#if visible_password_field}
@@ -319,9 +319,9 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="forgotInputPasswordLabel">password</span>
             </div>
-            <!-- <label for="password"> -->
+            <label for="password">
               <input id="forgotInputPassword" bind:value={forgot_input_password} type="password" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
-            <!-- </label> -->
+            </label>
           </div>
           {/if}
 
@@ -330,9 +330,9 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="forgotInputmfakeyLabel">multifactor code</span>
             </div>
-            <!-- <label for="multifactor code"> -->
+            <label for="multifactor code">
               <input id="forgotInputmfakey" bind:value={forgot_mfakey} type="text" class="form-control" placeholder="" aria-label="mfakey" aria-describedby="forgotInputmfakeyLabel">
-            <!-- </label> -->
+            </label>
           </div>
           {/if}
         </div> <!-- end "modal-body"-->
@@ -411,7 +411,7 @@
       	<button class="landbtn" on:click={click_login}> log in </button>
       </div>
       <div class="landbtn_div">
-        <!-- add the "forgot device" button here as well, use style="width: 200px;" on all 3 buttons once "forgot device" is implemented -->
+        <!-- add the "forgot device" button here as well - once "forgot device" is implemented, use style="width: 200px;" on all 3 buttons -->
         <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your player id?</button>
         <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your password?</button>
       </div>
@@ -421,10 +421,6 @@
         <button class="landbtn" on:click={click_signup}> make my account </button>
       </div>
     {/if}
-
-    <!-- {#if !visible}
-
-    {/if} -->
 
   </div> <!-- end entire_input_form -->
 </main>
