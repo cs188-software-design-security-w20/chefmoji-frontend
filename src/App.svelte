@@ -22,7 +22,7 @@
     var rc_response = grecaptcha.getResponse();
 
     // check lengths - if they don't fit our sign up constraints, there's no point to consulting backend
-    if (!password || !playerid ){
+    if (!password || !playerid || !input_totp){
       elem_hiddentext.innerHTML = "did you fill out all the fields?" ;
       password = '';
       input_totp = '';
@@ -41,7 +41,7 @@
       return;
     }
     else if (rc_response.length == 0) {
-      document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
+      elem_hiddentext.innerHTML = "recaptcha failed" ;
       password = '';
       return;
     }
@@ -179,6 +179,22 @@
         elem_hiddentext.innerHTML = "is your player ID clean from swearing and profanity?" ;
       } else if (data['email'] == "NOTUNIQUE"){
         elem_hiddentext.innerHTML = "that email is already registered!" ;
+      } else {
+        elem_hiddentext.innerHTML = "uh oh, something went wrong! please try again!" ;
+      }
+
+      // consult backend, allow or deny privileges
+      if (data['success']){
+        elem_hiddentext.innerHTML = "success! a verification link has been sent to your email";
+        email = '';
+      } else if (data['playerid'] == "NOTUNIQUE"){
+        elem_hiddentext.innerHTML = "that player ID is already in use! try another one!" ;
+      } else if (data['playerid'] == "NOTCLEAN"){
+        elem_hiddentext.innerHTML = "is your player ID clean from swearing and profanity?" ;
+      } else if (data['email'] == "NOTUNIQUE"){
+        elem_hiddentext.innerHTML = "that email is already registered!" ;
+      } else if (data['email'] == "NOTVALID"){
+        elem_hiddentext.innerHTML = "that email doesn't seem right" ;
       } else {
         elem_hiddentext.innerHTML = "uh oh, something went wrong! please try again!" ;
       }
