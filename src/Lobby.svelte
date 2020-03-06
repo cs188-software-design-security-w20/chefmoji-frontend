@@ -7,11 +7,10 @@
     position: relative;
     margin-top: 3%;
 
-    font-family: Quicksand;
+    font-family: 'Quicksand';
     font-style: normal;
     font-weight: bold;
     font-size: 100px;
-    /* line-height: 117px; */
     text-align: center;
 
     color: #7E9DC7;
@@ -25,6 +24,65 @@
     text-align: center;
     color: #000000;
   }
+
+  #hiddentext {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+  }
+	main {
+		position: relative;
+	}
+
+	#instructions {
+		position: absolute;
+		width: 90vw;
+		height: 80vh;
+    top: 0;
+    border: 5px solid #7E9DC7;
+    border-radius: 10px;
+    background-color: white;
+    z-index: 999;
+    text-align: center;
+    left: 50%;
+    margin-left: calc((90vw / 2) * -1);
+	}
+	#instructions h2 {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-size: 50px;
+    text-align: center;
+    margin: 0;
+	}
+	#instructions img{
+		width: 100%;
+    margin: auto;
+	}
+
+  .view-ins {
+    width: 300px;
+    height: 40px;
+    margin: 15px 15px;
+
+    color: black; /* font color */
+    background: #AEC2DC; /* light blue */
+    border-radius: 15px;
+    cursor: pointer;
+
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .view-ins:hover {
+    background: #7E9DC7; /* dark blue */
+    color: white; /* font color */
+  }
+
 </style>
 
 <script>
@@ -49,6 +107,13 @@
     let game_owner = undefined; // owner of the game
     let player_list = []; // for players in the current game (if any)
     let cookbook = {};
+
+    let instructionsVisible = false;
+	  let imageSrc = 'https://drive.google.com/uc?export=view&id=1gZfqyJfcFh1twE3yGvUFyc6Fj1UFlnoX';
+
+    function toggleIns() {
+      instructionsVisible = !instructionsVisible;
+    }
 
     // Get session-key and player-id from cookie store
     // Picks the first cookie matching the search name found
@@ -105,7 +170,13 @@
     });
 
     socket.on('join-confirm', (id) => {
-      game_id = id;
+      if(id == ""){
+        document.getElementById("hiddentext").innerHTML = "incorrect join code";
+        game_id = undefined;
+      }
+      else {
+        game_id = id;
+      }
     });
 
     function joinGame(id){
@@ -142,7 +213,10 @@
   {#if !game_in_play}
     <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   {/if}
-
+  <div id='instructions' style="display: {(instructionsVisible & !game_in_play) ? 'block' : 'none'}">
+    <h2> 👩‍🍳 How to play? 👨‍🍳 </h2>
+    <img src={imageSrc} alt='instructions image'/>
+  </div>
   {#if authd()}
     {#if game_id}
       {#if game_in_play}
@@ -150,11 +224,18 @@
       {:else}
         <div style="display: table; margin: 0px auto;">
           <WaitForGame {socket} {session_key} {game_id} {game_owner} {player_list}/>
+          <button class='view-ins' on:click={()=>toggleIns()}>
+            How to play?
+          </button>
         </div>
       {/if}
     {:else}
       <div style="display: table; margin: 0px auto;">
+        <p id="hiddentext"> </p>
         <JoinGame {joinGame} {createGame} {game_id}/>
+        <button class='view-ins' on:click={()=>toggleIns()}>
+          How to play?
+        </button>
       </div>
     {/if}
   {:else}
