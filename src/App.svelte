@@ -8,9 +8,9 @@
   import { SHA3 } from 'sha3';
 
   let jq = window.$
-  let playerid, password, repeat_password, email, input_totp, forgot_input_email, forgot_mfakey, forgot_input_password;
+  let playerid, password, repeat_password, email, input_totp, forgot_input_email, forgot_mfacode, forgot_input_password;
   let visible = false;
-  let visible_mfakey_field, visible_password_field;
+  let visible_mfacode_field, visible_password_field;
 
   // var isEmailWithTLD = function (email){
   //     return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(email);
@@ -220,7 +220,7 @@
     var data = {
       forgotwhat: forgotwhat,
       email: forgot_input_email,
-      mfakey: forgot_mfakey,
+      mfacode: forgot_mfacode,
       password: passhash
     };
 
@@ -256,10 +256,10 @@
   function click_modal_toggler() {
     jq('#forgotModalLabel').html(jq(this).html())
     jq('#forgetSendButton').data('forgot-type', jq(this).data('forgot-type'))
-    visible_mfakey_field = false;
+    visible_mfacode_field = false;
     visible_password_field = false;
     if(jq(this).data('forgot-type') == 'password') {
-      visible_mfakey_field = true;
+      visible_mfacode_field = true;
     }
     if(jq(this).data('forgot-type') == 'playerid') {
       visible_password_field = true;
@@ -286,7 +286,7 @@
         <div class="modal-body" id="forgotModalBody">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="forgotInputEmailLabel">email</span>
+              <span class="input-group-text" id="forgotInputEmailLabel">email address</span>
             </div>
             <input id="forgotInputEmail" bind:value={forgot_input_email} type="text" class="form-control" placeholder="johndoe@email.com" aria-label="Email" aria-describedby="forgotInputEmailLabel">
           </div>
@@ -298,12 +298,12 @@
             <input id="forgotInputPassword" bind:value={forgot_input_password} type="password" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
           </div>
           {/if}
-          {#if visible_mfakey_field}
+          {#if visible_mfacode_field}
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="forgotInputMfakeyLabel">mfakey</span>
+              <span class="input-group-text" id="forgotInputmfacodeLabel">multifactor code</span>
             </div>
-            <input id="forgotInputMfakey" bind:value={forgot_mfakey} type="text" class="form-control" placeholder="" aria-label="mfakey" aria-describedby="forgotInputMfakeyLabel">
+            <input id="forgotInputmfacode" bind:value={forgot_mfacode} type="text" class="form-control" placeholder="" aria-label="mfacode" aria-describedby="forgotInputmfacodeLabel">
           </div>
           {/if}
         </div>
@@ -357,9 +357,9 @@
     <!-- </form> -->
     {#if !visible}
     <div class ="input_div">
-      <p> multifactor key: </p>
+      <p> multifactor code: </p>
       <label>
-          <input type="text" name="input_totp" placeholder="6 digit multifactor key" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+          <input type="text" name="input_totp" placeholder="6 digit multifactor code" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
     {/if}
@@ -374,13 +374,15 @@
     </div>
 
     {#if !visible}
-      <div class="container">
-      <div class="row">
-      <div class="col-sm">
-        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot playerid</button>
-        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot password</button>
-      </div>
-      </div>
+      <div style="display: flex; flex-flow: row nowrap; align-items: center;">
+      <!-- <div class="container"> -->
+        <!-- <div class="row"> -->
+          <!-- <div class="col-sm"> -->
+            <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your player id?</button>
+            <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your password?</button>
+          <!-- </div> -->
+        <!-- </div> -->
+      <!-- </div> -->
       </div>
     {/if}
 
@@ -519,6 +521,12 @@
   .landbtn:hover {
     background: #7E9DC7; /* dark blue */
     color: white; /* font color */
+  }
+
+  .modal-dialog {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
   }
 
 	@media (min-width: 640px) {
