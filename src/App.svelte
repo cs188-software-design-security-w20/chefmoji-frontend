@@ -290,68 +290,89 @@
 </script>
 
 <main>
+
+  <!-- alert box for forgotten information -->
+
   <div class="modal fade" id="forgotModal" tabindex="-1" role="dialog" aria-labelledby="forgotModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="forgotModalLabel">Modal title</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+
         <div class="modal-body" id="forgotModalBody">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="forgotInputEmailLabel">email</span>
+              <span class="input-group-text" id="forgotInputEmailLabel">email address</span>
             </div>
-            <input id="forgotInputEmail" bind:value={forgot_input_email} type="text" class="form-control" placeholder="johndoe@email.com" aria-label="Email" aria-describedby="forgotInputEmailLabel">
+            <label for="email address">
+              <input id="forgotInputEmail" bind:value={forgot_input_email} type="text" class="form-control" placeholder="johndoe@email.com" aria-label="Email" aria-describedby="forgotInputEmailLabel">
+            </label>
           </div>
+
           {#if visible_password_field}
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="forgotInputPasswordLabel">password</span>
             </div>
-            <input id="forgotInputPassword" bind:value={forgot_input_password} type="password" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
+            <label for="password">
+              <input id="forgotInputPassword" bind:value={forgot_input_password} type="password" class="form-control" placeholder="" aria-label="password" aria-describedby="forgotInputPasswordLabel">
+            </label>
           </div>
           {/if}
+
           {#if visible_mfakey_field}
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="forgotInputMfakeyLabel">mfakey</span>
+              <span class="input-group-text" id="forgotInputmfakeyLabel">multifactor code</span>
             </div>
-            <input id="forgotInputMfakey" bind:value={forgot_mfakey} type="text" class="form-control" placeholder="" aria-label="mfakey" aria-describedby="forgotInputMfakeyLabel">
+            <label for="multifactor code">
+              <input id="forgotInputmfakey" bind:value={forgot_mfakey} type="text" class="form-control" placeholder="" aria-label="mfakey" aria-describedby="forgotInputmfakeyLabel">
+            </label>
           </div>
           {/if}
-        </div>
+        </div> <!-- end "modal-body"-->
+
         <div class="modal-footer">
           <button id="forgetSendButton" type="button" class="btn btn-primary" on:click={click_forget}>Send</button>
         </div>
-      </div>
-    </div>
-  </div>
+
+      </div> <!-- end "modal-content"-->
+    </div> <!-- end "modal-dialogue"-->
+  </div> <!-- end "modal fade"-->
 
 	<h1 id="gamename"> chef<br>moji </h1>
+
   <div id="entire_input_form">
     <p id="hiddentext"> </p>
+
     <div class ="input_div">
       <p> player id: </p>
-    	<label>
+    	<label for="player ID">
           <input type="text" name="username" placeholder="player id" bind:value={playerid}>
       </label>
     </div>
+
     <div class ="input_div">
       <p> password: </p>
-    	<label>
+    	<label for="password">
           <input type="password" name="password" placeholder="password" bind:value={password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
+
+    <!-- sign up form content only - repeat password, email address -->
     {#if visible}
       <div class ="input_div">
         <p> retype password: </p>
-        <label>
+        <label for="retype your password">
             <input type="password" name="password" placeholder="retype your password" bind:value={repeat_password} on:input={visible?check_password_constraints(password, repeat_password):''} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
         </label>
       </div>
+
       <div class = "pw_constraints_div">
         <p id="pw_upper_lower" style="color: #DD6539;"> contains upper and lowercase letters </p> <!-- red -->
         <p id="pw_numbers" style="color: #DD6539;"> contains numbers </p>
@@ -359,44 +380,45 @@
         <p id="pw_len" style="color: #DD6539;"> length is between is between 10 and 30 characters </p>
         <p id="pw_repeat_match" style="color: #DD6539;"> passwords match </p>
       </div>
+
       <div class = "input_div">
         <p> email address: </p>
-        <label>
+        <label for="email address">
             <input type="email" name="email" placeholder="email address" bind:value={email} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
         </label>
         <br>
       </div>
     {/if}
-  	<!-- <form action="?" method="POST"> -->
+
+    <!-- <form action="?" method="POST"> -->
           <!--look into data callback function for recaptcha: data-callback="function"-->
-          <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
+    <div id="recaptcha" class="g-recaptcha" data-sitekey="6Let39YUAAAAACzwA-hE3mbCstRaQdJC52E0l4iP"></div>
     <!-- </form> -->
+
+    <!-- login content only - mfa code, -->
     {#if !visible}
     <div class ="input_div">
-      <p> multifactor key: </p>
-      <label>
-          <input type="text" name="input_totp" placeholder="6 digit multifactor key" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
+      <p> multifactor code: </p>
+      <label for="multifactor code">
+          <input type="text" name="input_totp" placeholder="6 digit multifactor code" bind:value={input_totp} onCopy="return false;" onCut="return false;" onDrag="return false;" autocomplete=off >
       </label>
     </div>
     {/if}
-    <div class="landbtn_div">
-      {#if !visible}
-        <button class="landbtn" on:click={toggle_visible}> sign up </button>
-      	<button class="landbtn" on:click={click_login}> log in </button>
-      {:else}
-        <button class="landbtn" on:click={toggle_visible}> go back </button>
-        <button class="landbtn" on:click={click_signup}> make my account </button>
-      {/if}
-    </div>
 
     {#if !visible}
-      <div class="container">
-      <div class="row">
-      <div class="col-sm">
-        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot playerid</button>
-        <button class="btn btn-outline-secondary btn-sm" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>Forgot password</button>
+      <div class="landbtn_div">
+        <button class="landbtn" on:click={toggle_visible}> sign up </button>
+      	<button class="landbtn" on:click={click_login}> log in </button>
       </div>
+      <div class="landbtn_div">
+        <!-- add the "forgot device" button here as well - once "forgot device" is implemented, use style="width: 200px;" on all 3 buttons -->
+        <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="playerid" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your player id?</button>
+        <button class="btn btn-outline-secondary btn-sm landbtn" data-forgot-type="password" data-toggle="modal" data-target="#forgotModal" on:click={click_modal_toggler}>forgot your password?</button>
       </div>
+    {:else}
+      <div class="landbtn_div">
+        <button class="landbtn" on:click={toggle_visible}> go back </button>
+        <button class="landbtn" on:click={click_signup}> make my account </button>
       </div>
     {/if}
 
@@ -410,28 +432,28 @@
     font-weight: normal;
   }
 
-	main {
-		text-align: left;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  main {
+    text-align: left;
+    padding: 1em;
+    max-width: 240px;
+    margin: 0 auto;
+  }
 
-	#gamename {
+  #gamename {
     position: absolute;
-		width: 210px;
-		height: 250px;
-		left: 70px;
-		top: 225px;
+    width: 210px;
+    height: 250px;
+    left: 70px;
+    top: 225px;
 
-		font-family: Quicksand;
-		font-style: normal;
-		font-weight: bold;
-		font-size: 100px;
-		line-height: 117px;
-		text-align: center;
-		color: #7E9DC7;
-	}
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 100px;
+    line-height: 117px;
+    text-align: center;
+    color: #7E9DC7;
+  }
 
   #forgetSendButton {
     height: 38px;
@@ -460,33 +482,32 @@
     float: right;
   }
 
-	.input_div p { /* labels for input boxes */
+  .input_div p { /* labels for input boxes */
     display: flex;
     justify-content: flex-end;
 
-		width: 127px;
-		height: 38px;
-		font-size: 30px;
+    width: 127px;
+    height: 38px;
+    font-size: 30px;
     white-space: nowrap;
 
-		color: #000000;
+    color: #000000;
     margin: 23px 20px 23px 0px;
-	}
+  }
 
-	.input_div input { /* input boxes */
-		font-family: Quicksand;
-		font-style: normal;
-		font-weight: normal;
+  .input_div input { /* input boxes */
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
 
-		width: 650px;
-		height: 40px;
+    width: 650px;
+    height: 40px;
     margin: 0px 120px 0px 0px;
 
-		background: #FFFFFF;
-		border: 1px solid #000000;
-		border-radius: 15px;
-
-	}
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 15px;
+  }
 
   .pw_constraints_div { /* block of constraints */
     display: flex;
@@ -502,11 +523,11 @@
     margin: 0px 0px 0px 0px;
   }
 
-	#recaptcha {
+  #recaptcha {
     display: table;
     position: relative;
     margin: 0 auto;
-	}
+  }
 
   .landbtn_div {
     position: relative;
@@ -515,20 +536,21 @@
     justify-content: center;
   }
 
-	.landbtn {
-	  width: 300px;
-		height: 40px;
+  .landbtn {
+    width: 300px;
+    height: 40px;
 
-    margin: 15px 60px;
+    margin: 15px 30px;
 
-		background: #AEC2DC; /* light blue */
-		border-radius: 15px;
-		cursor: pointer;
+    background: #AEC2DC; /* light blue */
+    border-radius: 15px;
+    border: 1px solid #C7CECC;
+    cursor: pointer;
 
     font-family: Quicksand;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
     color: black; /* font color */
   }
 
@@ -537,9 +559,20 @@
     color: white; /* font color */
   }
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  .landbtn:active, .landbtn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .modal-dialog {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
 </style>
