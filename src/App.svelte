@@ -171,13 +171,12 @@
             password = '';
             return;
         }
-        
+
         // else if (rc_response.length == 0 || !recaptcha_passed) {
         //     document.getElementById("hiddentext").innerHTML = "recaptcha failed" ;
         //     password = '';
         //     return;
         // }
-        // encrypt the password, clear out plaintext password
 
         // encrypt the password, clear out plaintext password
         const hash = new SHA3(256);
@@ -198,7 +197,7 @@
           if (response.status == 200){
             window.location.replace(response.url);
           }
-          if (response.status == 400){
+          else if (response.status == 400 || response.status == 502 || response.status == 503){
             return response.json();
           }
         })
@@ -213,7 +212,7 @@
         passhash = '';
         input_totp = '';
   }
-  
+
   function recaptchaPass() {
         recaptcha_passed = true;
     }
@@ -231,7 +230,7 @@
         return false;
     }
 
-    // consult database - "that player ID is already in use! try another one!"
+    // TODO: consult database - "that player ID is already in use! try another one!"
     var reused_playerid = false;
     if (reused_playerid) {
       document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
@@ -320,6 +319,8 @@
               document.getElementById("hiddentext").innerHTML = "that player ID is already in use! try another one!" ;
             } else if (data['email'] == "NOTUNIQUE"){
               document.getElementById("hiddentext").innerHTML = "that email is already registered!" ;
+            } else if (data['playerid'] == "NOTCLEAN"){
+              document.getElementById("hiddentext").innerHTML = "is your player ID clean from swearing and profanity?" ;
             } else {
               document.getElementById("hiddentext").innerHTML = "uh oh, something went wrong! please try again!" ;
             }
@@ -330,6 +331,7 @@
             repeat_password = '';
             email = '';
             console.error('Error Registered:', error);
+            //document.getElementById("hiddentext").innerHTML = "uh oh, something went wrong! please try again!" ;
         });
         password = '';
         passhash = '';
