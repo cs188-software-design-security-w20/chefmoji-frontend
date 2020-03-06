@@ -4,6 +4,8 @@
         --slot-font-size-13: 32px;
         --variant-font-size-24: 12px;
         --slot-color: rgb(233, 220, 202);
+        --slot-height: 56px;
+        --slot-width: 48px;
     }
     .station-slots {
         display: flex;
@@ -17,8 +19,8 @@
         font-size: var(--slot-font-size-13);
         border: 2px solid black;
         background-color: var(--slot-color);
-        height: 50px;
-        width: 45px;
+        height: var(--slot-height);
+        width: var(--slot-width);
     }
     .variant {
         font-size: var(--variant-font-size-13);

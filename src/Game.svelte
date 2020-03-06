@@ -11,8 +11,12 @@
 		padding: 0;
 		margin: 0;
 	}
+	body {
+		height: 100%;
+		width: 100%;
+	}
 	h2 {
-		margin: 0;
+		margin: 10px 0 10px 0;
 	}
 	table {
 		border-spacing: 0;
@@ -24,7 +28,7 @@
 
 	/* TOP HALF */
 	.top-content {
-		height: 80%;
+		height: calc(80vh - 8px);
 		width: 100%;
 		display: flex;
 		flex-direction: row;
@@ -32,7 +36,7 @@
 	.left-content {
 		display: flex;
 		flex-direction: column;
-		width: 70%;
+		width: 70vw;
 		margin-right: 8px;
 	}
 	.top {
@@ -61,34 +65,33 @@
 	.inventories {
 		background-color: var(--ui-color);
 		font-family: 'Quicksand';
-		text-align: center;
-		margin-top: 8px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		width: 30%;
+		height: 100%;
+		text-align: center;
 	}
 	.inventory-slots {
 		display: flex;
 		flex-direction: row;
-		margin-bottom: 8px;
+		justify-content: center;
 	}
 	.bottom-content {
-		width: 100vw;
+		width: 100%;
+		height: calc(20vh - 16px);
 		display: flex;
 		flex-direction: row;
+		margin-top: 8px;
 	}	
 	.station {
 		background-color: var(--ui-color);
 		width: 100%;
 		font-family: 'Quicksand';
 		text-align: center;
-		margin-top: 8px;
 	}
 	.stations {
 		display: flex;
 		flex-direction: row;
-		width: 70%;
+		width: 70vw;
+		height: 100%;
 		margin-right: 8px;
 	}
 </style>

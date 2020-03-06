@@ -303,6 +303,9 @@
             email: email
         };
 
+        console.log(data);
+        console.log(JSON.stringify(data));
+        
         fetch('/register', {
             method: 'POST',
             headers: {
