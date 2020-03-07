@@ -55,7 +55,7 @@
                 </span>
             </td>
         {/each}
-        {#each Array(5-slots.length) as _}
+        {#each Array(6-slots.length) as _}
             <td class='slot'>
             </td>
         {/each}

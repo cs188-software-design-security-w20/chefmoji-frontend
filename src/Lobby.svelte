@@ -57,7 +57,7 @@
     margin: 0;
 	}
 	#instructions img{
-		width: 100%;
+		width: 98%;
     margin: auto;
 	}
 
@@ -81,6 +81,14 @@
   .view-ins:hover {
     background: #7E9DC7; /* dark blue */
     color: white; /* font color */
+  }
+
+  #close-instructions {
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
   }
 
 </style>
@@ -214,7 +222,8 @@
     <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   {/if}
   <div id='instructions' style="display: {(instructionsVisible & !game_in_play) ? 'block' : 'none'}">
-    <h2> 👩‍🍳 How to play? 👨‍🍳 </h2>
+    <div id='close-instructions' on:click={()=>toggleIns()}> ✖️ </div>
+    <h2> 👩‍🍳 how to play 👨‍🍳 </h2>
     <img src={imageSrc} alt='instructions image'/>
   </div>
   {#if authd()}
@@ -234,7 +243,7 @@
         <p id="hiddentext"> </p>
         <JoinGame {joinGame} {createGame} {game_id}/>
         <button class='view-ins' on:click={()=>toggleIns()}>
-          How to play?
+          how to play
         </button>
       </div>
     {/if}
