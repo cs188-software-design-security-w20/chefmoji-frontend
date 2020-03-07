@@ -64,7 +64,8 @@
   .view-ins {
     width: 300px;
     height: 40px;
-    margin: 15px 15px;
+    margin-top: 15px;
+    margin-left: calc((100% - 300px) / 2);
 
     color: black; /* font color */
     background: #AEC2DC; /* light blue */
@@ -234,9 +235,9 @@
         <div style="display: table; margin: 0px auto;">
           <WaitForGame {socket} {session_key} {game_id} {game_owner} {player_list}/>
           <button class='view-ins' on:click={()=>toggleIns()}>
-            How to play?
+            how to play
           </button>
-        </div>
+        </div>        
       {/if}
     {:else}
       <div style="display: table; margin: 0px auto;">
