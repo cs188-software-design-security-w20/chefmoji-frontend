@@ -41,6 +41,10 @@
         border-radius: 5px;
         font-size: var(--variant-font-size-13);
     }
+    .timer {
+        height: 2px;
+        margin-bottom: 5px;
+    }
 </style>
 
 <script>
@@ -97,7 +101,6 @@
     color: ${getTTLStyle(ttl)};
     width: ${getTTLWidth(ttl)};
     background-color: ${getTTLStyle(ttl)};
-    height: 2px;
     `} >
     {ttl}
 </div>

@@ -3,16 +3,24 @@
         --variant-font-size-13: 12px;
         --slot-font-size-13: 32px;
         --variant-font-size-24: 12px;
+        --slot-color: rgb(233, 220, 202);
+        --slot-height: 56px;
+        --slot-width: 48px;
     }
     .station-slots {
         display: flex;
         flex-direction: row;
+        justify-content: center;
         font-size: var(--variant-font-size-13);
-        margin: auto;
+        margin-bottom: 8px;
     }
     .slot {
         position: relative;
         font-size: var(--slot-font-size-13);
+        border: 2px solid black;
+        background-color: var(--slot-color);
+        height: var(--slot-height);
+        width: var(--slot-width);
     }
     .variant {
         font-size: var(--variant-font-size-13);
@@ -25,9 +33,6 @@
         border-collapse: collapse;
     }
 
-    /* table, tr, td {
-        border: 1px solid black;
-    } */
 </style>
 
 <script>
@@ -38,7 +43,9 @@
     <tr>
         {#each slots as item}
             <td class='slot'>
-                {item.item}
+                {#if item.item}
+                    {item.item}
+                {/if}                
                 <span class='variant'>
                     {#if item.chopped}
                         chopped
@@ -46,6 +53,10 @@
                         cooked
                     {/if}
                 </span>
+            </td>
+        {/each}
+        {#each Array(6-slots.length) as _}
+            <td class='slot'>
             </td>
         {/each}
     </tr>    

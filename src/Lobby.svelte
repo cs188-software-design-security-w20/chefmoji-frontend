@@ -7,7 +7,7 @@
     position: relative;
     margin-top: 3%;
 
-    font-family: Quicksand;
+    font-family: 'Quicksand';
     font-style: normal;
     font-weight: bold;
     font-size: 100px;
@@ -31,6 +31,64 @@
     font-weight: normal;
     font-size: 20px;
     text-align: center;
+  }
+	main {
+		position: relative;
+	}
+
+	#instructions {
+		position: absolute;
+		width: 90vw;
+		height: 80vh;
+    top: 0;
+    border: 5px solid #7E9DC7;
+    border-radius: 10px;
+    background-color: white;
+    z-index: 999;
+    text-align: center;
+    left: 50%;
+    margin-left: calc((90vw / 2) * -1);
+	}
+	#instructions h2 {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-size: 50px;
+    text-align: center;
+    margin: 0;
+	}
+	#instructions img{
+		width: 98%;
+    margin: auto;
+	}
+
+  .view-ins {
+    width: 300px;
+    height: 40px;
+    margin: 15px 15px;
+
+    color: black; /* font color */
+    background: #AEC2DC; /* light blue */
+    border-radius: 15px;
+    cursor: pointer;
+
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .view-ins:hover {
+    background: #7E9DC7; /* dark blue */
+    color: white; /* font color */
+  }
+
+  #close-instructions {
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
   }
 
 </style>
@@ -57,6 +115,13 @@
     let game_owner = undefined; // owner of the game
     let player_list = []; // for players in the current game (if any)
     let cookbook = {};
+
+    let instructionsVisible = false;
+	  let imageSrc = 'https://drive.google.com/uc?export=view&id=1_co1nwfzENYFTLYKhx7yAf1geeelIMY6';
+
+    function toggleIns() {
+      instructionsVisible = !instructionsVisible;
+    }
 
     // Get session-key and player-id from cookie store
     // Picks the first cookie matching the search name found
@@ -100,12 +165,13 @@
 
     socket.on('game-started', data => {
       game_in_play = data;
-	});
-
+	  });
+	
     socket.on('timedout', data => {
       if (data) {
         if (data.player == player_id) {
           game_id = undefined;
+          game_in_play = false;
         }
         console.log(data.player, "has timed out");
       }
@@ -155,7 +221,11 @@
   {#if !game_in_play}
     <h1 id="gamename"> 👩‍🍳 chefmoji 👨‍🍳 </h1>
   {/if}
-
+  <div id='instructions' style="display: {(instructionsVisible & !game_in_play) ? 'block' : 'none'}">
+    <div id='close-instructions' on:click={()=>toggleIns()}> ✖️ </div>
+    <h2> 👩‍🍳 how to play 👨‍🍳 </h2>
+    <img src={imageSrc} alt='instructions image'/>
+  </div>
   {#if authd()}
     {#if game_id}
       {#if game_in_play}
@@ -163,12 +233,18 @@
       {:else}
         <div style="display: table; margin: 0px auto;">
           <WaitForGame {socket} {session_key} {game_id} {game_owner} {player_list}/>
+          <button class='view-ins' on:click={()=>toggleIns()}>
+            How to play?
+          </button>
         </div>
       {/if}
     {:else}
       <div style="display: table; margin: 0px auto;">
         <p id="hiddentext"> </p>
         <JoinGame {joinGame} {createGame} {game_id}/>
+        <button class='view-ins' on:click={()=>toggleIns()}>
+          how to play
+        </button>
       </div>
     {/if}
   {:else}

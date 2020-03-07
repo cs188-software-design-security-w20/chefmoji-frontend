@@ -1,13 +1,16 @@
 <style>
     :root {
         --variant-font-size-13: 12px;
+        --slot-color: rgb(233, 220, 202);
+        --slot-height: 56px;
+        --slot-width: 48px;
     }
 
     .inventory-wrapper {
         font-size: 36px;
+        margin: 0 10px 0 10px;
         display: flex;
         flex-direction: row;
-        margin: 0 10px 0 10px;
     }
 
     .player {
@@ -16,11 +19,10 @@
 
     .inventory-item-wrapper {
         border: 2px solid black;
-        background-color: rgb(196, 173, 139);
-        height: 50px;
-        width: 45px;
+        background-color: var(--slot-color);
+        height: var(--slot-height);
+        width: var(--slot-width);
         position: relative;
-        padding-bottom: 5px;
     }
 
     .inventory-item {

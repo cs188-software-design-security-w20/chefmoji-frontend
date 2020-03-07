@@ -17,29 +17,27 @@
 </script>
 
 <main>
-  <h3 id="game_id_header"> game code: {game_id} </h3>
+	<h3 id="game_id_header"> game code: {game_id} </h3>
+	<div id="list_of_players" >
+	{#each player_list as player}
+		<p> {player} </p>
+	{/each}
+	</div>
 
-  <div id="list_of_players" >
-    {#each player_list as player}
-      <p> {player} </p>
-    {/each}
-  </div>
-
-  <!-- {#if is_owner} -->
-    <div class="playbtn_div">
-      <div class="play-game">
-      	<button on:click={()=>{playGame(socket, session_key, game_id);}}>
-      		Play game!
-      	</button>
-      </div>
-    </div>
-  <!-- {:else} -->
-    <p id="non_owner_msg"> {game_owner} will start the game once everyone is ready... </p>
-  <!-- {/if} -->
+	<!-- {#if is_owner} -->
+	<div class="playbtn_div">
+		<div class="play-game">
+		<button on:click={()=>{playGame(socket, session_key, game_id);}}>
+			Play game!
+		</button>
+		</div>
+	</div>
+	<!-- {:else} -->
+	<p id="non_owner_msg"> {game_owner} will start the game once everyone is ready... </p>
+	<!-- {/if} -->
 </main>
 
 <style>
-
   #game_id_header {
     font-family: Quicksand;
     font-style: normal;
