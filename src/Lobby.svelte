@@ -117,7 +117,7 @@
     let cookbook = {};
 
     let instructionsVisible = false;
-	  let imageSrc = 'https://drive.google.com/uc?export=view&id=1gZfqyJfcFh1twE3yGvUFyc6Fj1UFlnoX';
+	  let imageSrc = 'https://drive.google.com/uc?export=view&id=1_co1nwfzENYFTLYKhx7yAf1geeelIMY6';
 
     function toggleIns() {
       instructionsVisible = !instructionsVisible;
